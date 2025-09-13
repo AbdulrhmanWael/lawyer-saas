@@ -8,6 +8,9 @@ import { BlogsModule } from './blogs/blogs.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './users/user.entity';
+import { PermissionsModule } from './permissions/permissions.module';
+import { RolesModule } from './roles/roles.module';
+import { SeedService } from './seed/seed.service';
 
 @Module({
   imports: [
@@ -26,9 +29,11 @@ import { User } from './users/user.entity';
     UsersModule,
     CategoriesModule,
     BlogsModule,
+    PermissionsModule,
+    RolesModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SeedService],
 })
 export class AppModule {}

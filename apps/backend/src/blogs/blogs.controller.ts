@@ -13,14 +13,12 @@ import {
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
-import { Blog } from './blog.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/roles/roles.guard';
-import { User, UserRole } from 'src/users/user.entity';
-import { Roles } from 'src/auth/roles/roles.decorator';
+import { User } from 'src/users/user.entity';
+import { BlogResponse } from './dto/blog-response.dto';
 
 @Controller('blogs')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard)
 export class BlogsController {
   constructor(private readonly blogsService: BlogsService) {}
 
@@ -35,16 +33,15 @@ export class BlogsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Blog> {
+  findOne(@Param('id') id: string): Promise<BlogResponse> {
     return this.blogsService.findOne(id);
   }
 
   @Post()
-  @Roles(UserRole.ADMIN, UserRole.MODERATOR)
   create(
     @Body() body: CreateBlogDto,
     @Request() req: { user: User },
-  ): Promise<Blog> {
+  ): Promise<BlogResponse> {
     return this.blogsService.create(body, req.user.id);
   }
 
@@ -53,7 +50,7 @@ export class BlogsController {
     @Param('id') id: string,
     @Body() body: UpdateBlogDto,
     @Request() req: { user: User },
-  ): Promise<Blog> {
+  ): Promise<BlogResponse> {
     return this.blogsService.update(id, body, req.user.id);
   }
 

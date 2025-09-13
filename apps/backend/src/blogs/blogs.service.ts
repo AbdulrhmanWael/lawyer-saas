@@ -6,6 +6,7 @@ import { Category } from '../categories/category.entity';
 import { User } from '../users/user.entity';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import { BlogResponse } from './dto/blog-response.dto';
 
 @Injectable()
 export class BlogsService {
@@ -23,7 +24,12 @@ export class BlogsService {
     limit?: number,
     categoryId?: string,
     search?: string,
-  ): Promise<{ data: Blog[]; total: number; page?: number; limit?: number }> {
+  ): Promise<{
+    response: BlogResponse[];
+    total: number;
+    page?: number;
+    limit?: number;
+  }> {
     const where: FindOptionsWhere<Blog> = {};
 
     if (categoryId) where.category = { id: categoryId };
@@ -35,31 +41,39 @@ export class BlogsService {
       relations: ['author', 'category'],
     };
 
-    if (page !== undefined && limit !== undefined) {
+    if (page && limit) {
       options.skip = (page - 1) * limit;
       options.take = limit;
     }
 
     const [data, total] = await this.blogsRepo.findAndCount(options);
+    const response: BlogResponse[] = data.map((blog) => ({
+      ...blog,
+      author: blog.author.name,
+      category: blog.category.name,
+    }));
 
     return {
-      data,
+      response,
       total,
       ...(page !== undefined && { page }),
       ...(limit !== undefined && { limit }),
     };
   }
 
-  async findOne(id: string): Promise<Blog> {
+  async findOne(id: string): Promise<BlogResponse> {
     const blog = await this.blogsRepo.findOne({
       where: { id },
       relations: ['author', 'category'],
     });
     if (!blog) throw new NotFoundException(`Blog with ID ${id} not found`);
-    return blog;
+    return { ...blog, author: blog.author.name, category: blog.category.name };
   }
 
-  async create(createDto: CreateBlogDto, authorId: string): Promise<Blog> {
+  async create(
+    createDto: CreateBlogDto,
+    authorId: string,
+  ): Promise<BlogResponse> {
     const category = await this.categoriesRepo.findOneBy({
       id: createDto.categoryId,
     });
@@ -75,15 +89,15 @@ export class BlogsService {
       category,
       author,
     });
-
-    return this.blogsRepo.save(blog);
+    await this.blogsRepo.save(blog);
+    return { ...blog, author: blog.author.name, category: blog.category.name };
   }
 
   async update(
     id: string,
     updateDto: UpdateBlogDto,
     authorId: string,
-  ): Promise<Blog> {
+  ): Promise<BlogResponse> {
     const category = updateDto.categoryId
       ? await this.categoriesRepo.findOneBy({ id: updateDto.categoryId })
       : undefined;
@@ -105,11 +119,16 @@ export class BlogsService {
 
     if (!blog) throw new NotFoundException(`Blog with ID ${id} not found`);
 
-    return this.blogsRepo.save(blog);
+    await this.blogsRepo.save(blog);
+    return { ...blog, author: blog.author.name, category: blog.category.name };
   }
 
   async remove(id: string): Promise<void> {
-    const blog = await this.findOne(id);
+    const blog = await this.blogsRepo.findOne({
+      where: { id },
+      relations: ['author', 'category'],
+    });
+    if (!blog) return;
     await this.blogsRepo.remove(blog);
   }
 }

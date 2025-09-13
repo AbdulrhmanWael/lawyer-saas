@@ -1,11 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Blog } from 'src/blogs/blog.entity';
-
-export enum UserRole {
-  ADMIN = 'admin',
-  MODERATOR = 'moderator',
-}
-
+import { Role } from '../roles/role.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -20,8 +22,9 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.MODERATOR })
-  role: UserRole;
+  @ManyToOne(() => Role, { eager: true })
+  @JoinColumn()
+  role: Role;
 
   @OneToMany(() => Blog, (blog) => blog.author)
   blogs: Blog[];

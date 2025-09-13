@@ -1,10 +1,10 @@
-import { UserRole } from '../user.entity';
+import { Role } from 'src/roles/role.entity';
 
 export class UserResponseDto {
   id: string;
   name: string;
   email: string;
-  role: UserRole;
+  role: Role;
 
   constructor(partial: Partial<UserResponseDto>) {
     Object.assign(this, partial);
