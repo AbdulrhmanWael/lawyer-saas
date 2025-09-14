@@ -5,16 +5,26 @@
   --color-secondary: #222;
   --color-accent: #ffb400;
   --color-bg: #ffffff;
+  --color-text: #111;
+  --form-bg: var(--color-bg);
+  --form-border: #d1d5db;
+  --form-border-focus: var(--color-primary);
+  --form-text: var(--color-secondary);
+  --form-error: #dc2626;
 }
 
 [data-theme="dark"] {
   --color-primary: #2563eb;
-  --color-secondary: #111;
+  --color-secondary: #ddd;
   --color-accent: #fbbf24;
   --color-bg: #000000;
+  --color-text: #fff;
 }
 
 body {
   background-color: var(--color-bg);
-  color: var(--color-secondary);
+  color: var(--color-text);
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }

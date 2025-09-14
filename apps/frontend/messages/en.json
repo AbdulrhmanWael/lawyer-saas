@@ -1,37 +1,19 @@
 {
-  "header": {
+  "Sidebar": {
+    "overview": "Overview",
+    "users": "Users",
+    "settings": "Settings"
+  },
+  "Header": {
     "title": "Admin Panel",
-    "language": "Language"
+    "searchPlaceholder": "Search routes, users, content...",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "logout": "Log out",
+    "profile": "Profile"
   },
-  "sidebar": {
-    "siteSettings": "Site Settings",
-    "practiceAreas": "Practice Areas",
-    "carousel": "Carousel",
-    "staff": "Staff Members",
-    "testimonials": "Testimonials"
-  },
-  "buttons": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "edit": "Edit",
-    "delete": "Delete",
-    "add": "Add"
-  },
-  "forms": {
-    "name": "Name",
-    "email": "Email",
-    "position": "Position",
-    "description": "Description",
-    "title": "Title",
-    "content": "Content",
-    "image": "Image",
-    "logo": "Logo",
-    "url": "URL",
-    "rating": "Rating"
-  },
-  "notifications": {
-    "saved": "Saved successfully",
-    "deleted": "Deleted successfully",
-    "error": "An error occurred"
+  "UserMenu": {
+    "nameUnknown": "Guest",
+    "emailUnknown": "Not signed in"
   }
 }
