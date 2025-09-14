@@ -4,18 +4,18 @@ import {
   Post,
   Put,
   Delete,
+  Patch,
+  Body,
   Param,
   Query,
-  Body,
-  UseGuards,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth/jwt-auth.guard';
 import { User } from 'src/users/user.entity';
-import { BlogResponse } from './dto/blog-response.dto';
 
 @Controller('blogs')
 @UseGuards(JwtAuthGuard)
@@ -24,38 +24,45 @@ export class BlogsController {
 
   @Get()
   findAll(
-    @Query('page') page: number | string,
-    @Query('limit') limit: number | string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
     @Query('categoryId') categoryId?: string,
     @Query('search') search?: string,
   ) {
-    return this.blogsService.findAll(+page, +limit, categoryId, search);
+    return this.blogsService.findAll(page, limit, categoryId, search);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<BlogResponse> {
+  findOne(@Param('id') id: string) {
     return this.blogsService.findOne(id);
   }
 
   @Post()
-  create(
-    @Body() body: CreateBlogDto,
-    @Request() req: { user: User },
-  ): Promise<BlogResponse> {
-    return this.blogsService.create(body, req.user.id);
+  create(@Body() dto: CreateBlogDto, @Request() req: { user: User }) {
+    return this.blogsService.create(dto, req.user.id);
   }
 
   @Put(':id')
   update(
     @Param('id') id: string,
-    @Body() body: UpdateBlogDto,
+    @Body() dto: UpdateBlogDto,
     @Request() req: { user: User },
-  ): Promise<BlogResponse> {
-    return this.blogsService.update(id, body, req.user.id);
+  ) {
+    return this.blogsService.update(id, dto, req.user.id);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.blogsService.remove(id);
+  }
+
+  @Patch(':id/publish')
+  publish(@Param('id') id: string) {
+    return this.blogsService.setPublishStatus(id, true);
+  }
+
+  @Patch(':id/unpublish')
+  unpublish(@Param('id') id: string) {
+    return this.blogsService.setPublishStatus(id, false);
   }
 }

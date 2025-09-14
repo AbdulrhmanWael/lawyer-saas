@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsUUID,
+  IsBoolean,
+} from 'class-validator';
 
 export class CreateBlogDto {
   @IsString()
@@ -16,4 +22,18 @@ export class CreateBlogDto {
   @IsString()
   @IsNotEmpty()
   content: string;
+
+  @IsOptional()
+  translations?: Record<
+    'EN' | 'AR' | 'DE' | 'RO' | 'RU' | 'ZH' | 'IT' | 'FR',
+    string
+  >;
+
+  @IsOptional()
+  @IsBoolean()
+  published?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  draft?: boolean;
 }

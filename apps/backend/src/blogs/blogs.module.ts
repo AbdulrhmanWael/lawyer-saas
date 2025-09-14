@@ -5,11 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Blog } from './blog.entity';
 import { User } from 'src/users/user.entity';
 import { Category } from 'src/categories/category.entity';
+import { ImageService } from 'src/utils/image.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Blog, User, Category])],
   controllers: [BlogsController],
-  providers: [BlogsService],
+  providers: [BlogsService, ImageService],
   exports: [BlogsService],
 })
 export class BlogsModule {}

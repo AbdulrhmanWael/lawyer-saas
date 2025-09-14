@@ -5,8 +5,8 @@ import {
   ManyToOne,
   CreateDateColumn,
 } from 'typeorm';
-import { User } from '../users/user.entity';
 import { Category } from 'src/categories/category.entity';
+import { User } from 'src/users/user.entity';
 
 @Entity()
 export class Blog {
@@ -25,8 +25,20 @@ export class Blog {
   @Column({ nullable: true })
   coverImage: string;
 
+  @Column({ type: 'json', default: {} })
+  translations: Record<
+    'EN' | 'AR' | 'DE' | 'RO' | 'RU' | 'ZH' | 'IT' | 'FR',
+    string
+  >;
+
   @Column({ type: 'text' })
   content: string;
+
+  @Column({ default: false })
+  published: boolean;
+
+  @Column({ default: true })
+  draft: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

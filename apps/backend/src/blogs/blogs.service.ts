@@ -1,22 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike, FindOptionsWhere, FindManyOptions } from 'typeorm';
+import { Repository, FindManyOptions, FindOptionsWhere, ILike } from 'typeorm';
 import { Blog } from './blog.entity';
-import { Category } from '../categories/category.entity';
-import { User } from '../users/user.entity';
+import { User } from 'src/users/user.entity';
+import { Category } from 'src/categories/category.entity';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
-import { BlogResponse } from './dto/blog-response.dto';
+import { ImageService } from 'src/utils/image.service';
 
 @Injectable()
 export class BlogsService {
   constructor(
-    @InjectRepository(Blog)
-    private readonly blogsRepo: Repository<Blog>,
+    @InjectRepository(Blog) private readonly blogsRepo: Repository<Blog>,
     @InjectRepository(Category)
     private readonly categoriesRepo: Repository<Category>,
-    @InjectRepository(User)
-    private readonly usersRepo: Repository<User>,
+    @InjectRepository(User) private readonly usersRepo: Repository<User>,
+    private readonly imageService: ImageService,
   ) {}
 
   async findAll(
@@ -25,7 +24,7 @@ export class BlogsService {
     categoryId?: string,
     search?: string,
   ): Promise<{
-    response: BlogResponse[];
+    response: Blog[];
     total: number;
     page?: number;
     limit?: number;
@@ -47,88 +46,95 @@ export class BlogsService {
     }
 
     const [data, total] = await this.blogsRepo.findAndCount(options);
-    const response: BlogResponse[] = data.map((blog) => ({
-      ...blog,
-      author: blog.author.name,
-      category: blog.category.name,
-    }));
-
     return {
-      response,
+      response: data,
       total,
-      ...(page !== undefined && { page }),
-      ...(limit !== undefined && { limit }),
+      ...(page && { page }),
+      ...(limit && { limit }),
     };
   }
 
-  async findOne(id: string): Promise<BlogResponse> {
+  async findOne(id: string): Promise<Blog> {
     const blog = await this.blogsRepo.findOne({
       where: { id },
       relations: ['author', 'category'],
     });
     if (!blog) throw new NotFoundException(`Blog with ID ${id} not found`);
-    return { ...blog, author: blog.author.name, category: blog.category.name };
+    return blog;
   }
 
   async create(
-    createDto: CreateBlogDto,
+    dto: CreateBlogDto,
     authorId: string,
-  ): Promise<BlogResponse> {
+    fileBuffer?: Buffer,
+  ): Promise<Blog> {
     const category = await this.categoriesRepo.findOneBy({
-      id: createDto.categoryId,
+      id: dto.categoryId,
     });
     const author = await this.usersRepo.findOneBy({ id: authorId });
-
     if (!category) throw new NotFoundException('Category not found');
     if (!author) throw new NotFoundException('Author not found');
 
+    let coverImage: string | undefined;
+    if (fileBuffer) coverImage = await this.imageService.saveImage(fileBuffer);
+
     const blog = this.blogsRepo.create({
-      title: createDto.title,
-      content: createDto.content,
-      coverImage: createDto.coverImage,
-      category,
+      ...dto,
+      coverImage,
       author,
+      category,
+      draft: dto.draft ?? true,
+      published: dto.published ?? false,
     });
-    await this.blogsRepo.save(blog);
-    return { ...blog, author: blog.author.name, category: blog.category.name };
+
+    return await this.blogsRepo.save(blog);
   }
 
   async update(
     id: string,
-    updateDto: UpdateBlogDto,
-    authorId: string,
-  ): Promise<BlogResponse> {
-    const category = updateDto.categoryId
-      ? await this.categoriesRepo.findOneBy({ id: updateDto.categoryId })
-      : undefined;
-
-    const author = authorId
-      ? await this.usersRepo.findOneBy({ id: authorId })
-      : undefined;
-
-    if (updateDto.categoryId && !category)
-      throw new NotFoundException('Category not found');
-    if (authorId && !author) throw new NotFoundException('Author not found');
-
-    const blog = await this.blogsRepo.preload({
-      id,
-      ...updateDto,
-      ...(category ? { category } : {}),
-      ...(author ? { author } : {}),
-    });
-
+    dto: UpdateBlogDto,
+    authorId?: string,
+    fileBuffer?: Buffer,
+  ): Promise<Blog> {
+    const blog = await this.blogsRepo.preload({ id, ...dto });
     if (!blog) throw new NotFoundException(`Blog with ID ${id} not found`);
 
-    await this.blogsRepo.save(blog);
-    return { ...blog, author: blog.author.name, category: blog.category.name };
+    if (dto.categoryId) {
+      const category = await this.categoriesRepo.findOneBy({
+        id: dto.categoryId,
+      });
+      if (!category) throw new NotFoundException('Category not found');
+      blog.category = category;
+    }
+
+    if (authorId) {
+      const author = await this.usersRepo.findOneBy({ id: authorId });
+      if (!author) throw new NotFoundException('Author not found');
+      blog.author = author;
+    }
+
+    if (fileBuffer) {
+      if (blog.coverImage) await this.imageService.deleteImage(blog.coverImage);
+      blog.coverImage = await this.imageService.saveImage(fileBuffer);
+    }
+
+    return await this.blogsRepo.save(blog);
   }
 
-  async remove(id: string): Promise<void> {
-    const blog = await this.blogsRepo.findOne({
-      where: { id },
-      relations: ['author', 'category'],
-    });
+  async remove(id: string) {
+    const blog = await this.blogsRepo.findOneBy({ id });
     if (!blog) return;
+    if (blog.coverImage) await this.imageService.deleteImage(blog.coverImage);
     await this.blogsRepo.remove(blog);
+  }
+
+  async setPublishStatus(id: string, status: boolean) {
+    const blog = await this.blogsRepo.findOneBy({ id });
+    if (!blog) throw new NotFoundException('Blog not found');
+
+    blog.published = status;
+    blog.draft = !status;
+
+    return this.blogsRepo.save(blog);
   }
 }
