@@ -4,12 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import { getBlogs, deleteBlog, Blog } from "@/services/blogs";
 import { getCategories, Category } from "@/services/categories";
 import Table from "@/components/common/Table";
-import { Button } from "@/components/ui/forms/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 import Modal from "@/components/common/Modal";
+import { Button } from '../../../../components/ui/forms/Button';
 
 export default function BlogsPage(props: { params: { locale: string } }) {
   const { locale } = props.params;
@@ -123,7 +123,7 @@ export default function BlogsPage(props: { params: { locale: string } }) {
         ]}
         data={blogs}
         onEdit={(b) => router.push(`blogs/blog/${b.id}`)}
-        onDelete={(b) => confirmDelete(b.id, b.title)}
+        onDelete={(b) => confirmDelete(b.id, b.title.EN)}
         limit={10}
       />
       <Modal
