@@ -29,8 +29,8 @@ export default function Header({ userProp }: { userProp?: any }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const [user, setUser] = useState({
-    name: t("UserMenu.nameUnknown"),
-    email: t("UserMenu.emailUnknown"),
+    name: t("Dashboard.UserMenu.nameUnknown"),
+    email: t("Dashboard.UserMenu.emailUnknown"),
     avatarUrl: "",
   });
 
@@ -58,7 +58,7 @@ export default function Header({ userProp }: { userProp?: any }) {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={t("Header.searchPlaceholder")}
+            placeholder={t("Dashboard.Header.searchPlaceholder")}
             className="w-full py-2 pl-9 pr-4 rounded-md border border-gray-200 bg-white text-sm focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
           />
         </form>
@@ -104,7 +104,7 @@ export default function Header({ userProp }: { userProp?: any }) {
                     setDropdownOpen(false);
                   }}
                 >
-                  {t("Header.profile")}
+                  {t("Dashboard.Header.profile")}
                 </button>
                 <button
                   className="flex items-center gap-2 w-full px-3 py-2 rounded hover:bg-gray-100 text-red-600"
@@ -114,7 +114,7 @@ export default function Header({ userProp }: { userProp?: any }) {
                     router.push(`/auth/signin`);
                   }}
                 >
-                  <LogOut className="w-4 h-4" /> {t("Header.logout")}
+                  <LogOut className="w-4 h-4" /> {t("Dashboard.Header.logout")}
                 </button>
               </div>
             </div>

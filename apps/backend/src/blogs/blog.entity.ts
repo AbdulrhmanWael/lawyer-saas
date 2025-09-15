@@ -5,16 +5,16 @@ import {
   ManyToOne,
   CreateDateColumn,
 } from 'typeorm';
-import { Category } from 'src/categories/category.entity';
-import { User } from 'src/users/user.entity';
+import { Category } from '../categories/category.entity';
+import { User } from '../users/user.entity';
 
 @Entity()
 export class Blog {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  title: string;
+  @Column({ type: 'json', default: {} })
+  title: Record<string, string>;
 
   @ManyToOne(() => Category, (category) => category.blogs, { eager: true })
   category: Category;
@@ -26,13 +26,7 @@ export class Blog {
   coverImage: string;
 
   @Column({ type: 'json', default: {} })
-  translations: Record<
-    'EN' | 'AR' | 'DE' | 'RO' | 'RU' | 'ZH' | 'IT' | 'FR',
-    string
-  >;
-
-  @Column({ type: 'text' })
-  content: string;
+  content: Record<string, string>;
 
   @Column({ default: false })
   published: boolean;

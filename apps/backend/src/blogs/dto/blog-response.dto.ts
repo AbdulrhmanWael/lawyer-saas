@@ -1,11 +1,16 @@
+import { Category } from '../../categories/category.entity';
 export class BlogResponse {
   id: string;
 
-  title: string;
+  title: string | Record<string, string>;
 
-  category: string;
+  category: string | Category;
 
-  content: string;
+  draft: boolean;
+
+  published: boolean;
+
+  content: string | Record<string, string>;
 
   author: string;
 

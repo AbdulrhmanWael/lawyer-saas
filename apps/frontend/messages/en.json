@@ -1,19 +1,58 @@
 {
-  "Sidebar": {
-    "overview": "Overview",
-    "users": "Users",
-    "settings": "Settings"
-  },
-  "Header": {
-    "title": "Admin Panel",
-    "searchPlaceholder": "Search routes, users, content...",
-    "themeLight": "Light",
-    "themeDark": "Dark",
-    "logout": "Log out",
-    "profile": "Profile"
-  },
-  "UserMenu": {
-    "nameUnknown": "Guest",
-    "emailUnknown": "Not signed in"
+  "Dashboard": {
+    "Sidebar": {
+      "overview": "Overview",
+      "users": "Users",
+      "settings": "Settings",
+      "blogs": "Blogs"
+    },
+    "Header": {
+      "title": "Admin Panel",
+      "searchPlaceholder": "Search routes, users, content...",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "logout": "Log out",
+      "profile": "Profile"
+    },
+    "UserMenu": {
+      "nameUnknown": "Guest",
+      "emailUnknown": "Not signed in"
+    },
+    "Blogs": {
+      "title": "Blogs",
+      "create": "Create Blog",
+      "allCategories": "All Categories",
+      "searchPlaceholder": "Search by title...",
+      "searchButton": "Search",
+      "deleteConfirm": "Delete this blog?",
+      "noData": "No data found",
+      "table": {
+        "title": "Title",
+        "category": "Category",
+        "author": "Author",
+        "published": "Published",
+        "actions": "Actions",
+        "noData": "No data found",
+        "prev": "Prev",
+        "next": "Next"
+      }
+    },
+    "BlogForm": {
+      "createHeader": "Create Your Blog",
+      "editHeader": "Edit Your Blog",
+      "title": "Title",
+      "category": "Category",
+      "selectCategory": "Select a category",
+      "addCategory": "Add Category",
+      "delete": "Delete",
+      "categoryName": "Category Name",
+      "coverImage": "Cover Image",
+      "dropImageHere": "Drop an image here or click to upload",
+      "content": "Content",
+      "translate": "Translate",
+      "draft": "Draft",
+      "published": "Published",
+      "submit": "Submit"
+    }
   }
 }

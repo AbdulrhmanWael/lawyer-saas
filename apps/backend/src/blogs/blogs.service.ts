@@ -7,6 +7,7 @@ import { Category } from 'src/categories/category.entity';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { ImageService } from 'src/utils/image.service';
+import { BlogResponse } from './dto/blog-response.dto';
 
 @Injectable()
 export class BlogsService {
@@ -23,8 +24,9 @@ export class BlogsService {
     limit?: number,
     categoryId?: string,
     search?: string,
+    locale: string = 'EN',
   ): Promise<{
-    response: Blog[];
+    response: BlogResponse[];
     total: number;
     page?: number;
     limit?: number;
@@ -32,7 +34,11 @@ export class BlogsService {
     const where: FindOptionsWhere<Blog> = {};
 
     if (categoryId) where.category = { id: categoryId };
-    if (search) where.title = ILike(`%${search}%`);
+
+    if (search) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      where.title = { [locale]: ILike(`%${search}%`) } as any;
+    }
 
     const options: FindManyOptions<Blog> = {
       where,
@@ -47,27 +53,49 @@ export class BlogsService {
 
     const [data, total] = await this.blogsRepo.findAndCount(options);
     return {
-      response: data,
+      response: data.map((blog) => ({
+        ...blog,
+        author: blog.author.name,
+        category: blog.category.name[locale] ?? blog.category.name['EN'],
+        title: blog.title[locale] ?? blog.title['EN'],
+        content: blog.content[locale] ?? blog.content['EN'],
+      })),
       total,
       ...(page && { page }),
       ...(limit && { limit }),
     };
   }
 
-  async findOne(id: string): Promise<Blog> {
+  async findOne(id: string, locale?: string): Promise<BlogResponse> {
     const blog = await this.blogsRepo.findOne({
       where: { id },
       relations: ['author', 'category'],
     });
     if (!blog) throw new NotFoundException(`Blog with ID ${id} not found`);
-    return blog;
+    if (locale)
+      return {
+        ...blog,
+        author: blog.author.name,
+        category: blog.category.name[locale] ?? blog.category.name['EN'],
+        title: blog.title[locale] ?? blog.title['EN'],
+        content: blog.content[locale] ?? blog.content['EN'],
+      };
+    else
+      return {
+        ...blog,
+        author: blog.author.name,
+        category: blog.category,
+        title: blog.title,
+        content: blog.content,
+      };
   }
 
   async create(
     dto: CreateBlogDto,
     authorId: string,
+    locale?: string,
     fileBuffer?: Buffer,
-  ): Promise<Blog> {
+  ): Promise<BlogResponse> {
     const category = await this.categoriesRepo.findOneBy({
       id: dto.categoryId,
     });
@@ -77,25 +105,51 @@ export class BlogsService {
 
     let coverImage: string | undefined;
     if (fileBuffer) coverImage = await this.imageService.saveImage(fileBuffer);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const parsedTitle: Record<string, string> =
+      typeof dto.title === 'string' ? JSON.parse(dto.title) : dto.title;
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const parsedContent: Record<string, string> =
+      typeof dto.content === 'string' ? JSON.parse(dto.content) : dto.content;
 
     const blog = this.blogsRepo.create({
       ...dto,
+      title: parsedTitle,
+      content: parsedContent,
       coverImage,
       author,
       category,
       draft: dto.draft ?? true,
       published: dto.published ?? false,
     });
+    await this.blogsRepo.save(blog);
 
-    return await this.blogsRepo.save(blog);
+    if (locale)
+      return {
+        ...blog,
+        author: blog.author.name,
+        category: blog.category.name[locale] ?? blog.category.name['EN'],
+        title: blog.title[locale] ?? blog.title['EN'],
+        content: blog.content[locale] ?? blog.content['EN'],
+      };
+    else
+      return {
+        ...blog,
+        author: blog.author.name,
+        category: blog.category,
+        title: blog.title,
+        content: blog.content,
+      };
   }
 
   async update(
     id: string,
     dto: UpdateBlogDto,
+    locale?: string,
     authorId?: string,
     fileBuffer?: Buffer,
-  ): Promise<Blog> {
+  ): Promise<BlogResponse> {
     const blog = await this.blogsRepo.preload({ id, ...dto });
     if (!blog) throw new NotFoundException(`Blog with ID ${id} not found`);
 
@@ -118,7 +172,36 @@ export class BlogsService {
       blog.coverImage = await this.imageService.saveImage(fileBuffer);
     }
 
-    return await this.blogsRepo.save(blog);
+    if (dto.title) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      blog.title =
+        typeof dto.title === 'string' ? JSON.parse(dto.title) : dto.title;
+    }
+
+    if (dto.content) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      blog.content =
+        typeof dto.content === 'string' ? JSON.parse(dto.content) : dto.content;
+    }
+
+    await this.blogsRepo.save(blog);
+
+    if (locale)
+      return {
+        ...blog,
+        author: blog.author.name,
+        category: blog.category.name[locale] ?? blog.category.name['EN'],
+        title: blog.title[locale] ?? blog.title['EN'],
+        content: blog.content[locale] ?? blog.content['EN'],
+      };
+    else
+      return {
+        ...blog,
+        author: blog.author.name,
+        category: blog.category,
+        title: blog.title,
+        content: blog.content,
+      };
   }
 
   async remove(id: string) {

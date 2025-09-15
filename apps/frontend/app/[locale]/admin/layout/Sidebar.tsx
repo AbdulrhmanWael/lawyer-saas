@@ -3,16 +3,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Home, Users, Settings } from "lucide-react";
+import { Home, Users, Settings, BookText } from "lucide-react";
 import { useSidebar } from "../context/SidebarContext";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { isOpen } = useSidebar();
-  const t = useTranslations("Sidebar");
+  const t = useTranslations("Dashboard.Sidebar");
 
   const routes = [
     { label: t("overview"), href: "/admin", icon: Home },
+    { label: t("blogs"), href:"/admin/blogs", icon: BookText},
     { label: t("users"), href: "/admin/users", icon: Users },
     { label: t("settings"), href: "/admin/settings", icon: Settings },
   ];

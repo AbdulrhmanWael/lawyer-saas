@@ -6,8 +6,8 @@ export class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
-  name: string;
+  @Column({ type: 'json', default: {} })
+  name: Record<string, string>;
 
   @OneToMany(() => Blog, (blog) => blog.category)
   blogs: Blog[];
