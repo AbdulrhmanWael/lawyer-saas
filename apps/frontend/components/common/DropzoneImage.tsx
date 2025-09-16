@@ -31,7 +31,7 @@ export default function CoverImageInput({
   return (
     <div
       {...getRootProps()}
-      className={`border-2 h-[300px] flex justify-center items-center border-dashed rounded-md p-6 text-center cursor-pointer transition
+      className={`border-[3px] h-[300px] flex justify-center items-center border-dashed rounded-md p-6 text-center cursor-pointer transition
         ${isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}
       `}
     >
@@ -50,7 +50,7 @@ export default function CoverImageInput({
           />
         </div>
       ) : (
-        <p>Drop an image here or click to upload</p>
+        <p className="font-bold text-l text-[var(--color-text)]">Drop an image here or click to upload</p>
       )}
     </div>
   );

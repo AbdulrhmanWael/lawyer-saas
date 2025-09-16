@@ -19,7 +19,7 @@ export class AuthService {
     throw new UnauthorizedException('Invalid credentials');
   }
 
-  login(user: User) {
+  async login(user: User) {
     const role = user.role;
     const permissions = role.permissions;
 
@@ -30,8 +30,40 @@ export class AuthService {
       permissions,
     };
 
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwtService.sign(
+      { sub: user.id },
+      { expiresIn: '7d' },
+    );
+
+    const hashed = await bcrypt.hash(refreshToken, 10);
+    await this.usersService.updateRefreshToken(user.id, hashed);
+
     return {
-      access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        name: user.name,
+        role: user.role,
+        email: user.email,
+        avatarUrl: user.avatarUrl,
+      },
+      access_token: accessToken,
+      refresh_token: refreshToken,
     };
+  }
+
+  async refresh(userId: string, refreshToken: string) {
+    const user = await this.usersService.findOne(userId);
+    if (!user?.refreshTokenHash) {
+      throw new UnauthorizedException('No refresh token found');
+    }
+    const isValid = await bcrypt.compare(refreshToken, user.refreshTokenHash);
+    if (!isValid) throw new UnauthorizedException('Invalid refresh token');
+
+    return this.login(user);
+  }
+
+  async logout(email: string) {
+    await this.usersService.updateRefreshToken(email, null);
   }
 }

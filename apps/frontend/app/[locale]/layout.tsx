@@ -3,6 +3,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import "./globals.css";
+import RouteProgressBar from "./providers";
 
 type Props = {
   children: React.ReactNode;
@@ -33,6 +34,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   try {
     messages = (await import(`../../messages/${locale}.json`)).default;
   } catch (error) {
+    console.error(`Failed to load messages for locale '${locale}':`, error);
     notFound();
   }
 
@@ -40,6 +42,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html lang={locale}>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <RouteProgressBar />
           {children}
         </NextIntlClientProvider>
       </body>

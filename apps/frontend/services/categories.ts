@@ -1,32 +1,27 @@
-import axios from "axios";
+import { apiClient } from "@/utils/apiClient";
 
 export interface Category {
   id: string;
   name: Record<string, string>;
 }
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
 export const getCategories = async (): Promise<Category[]> => {
-  const { data } = await axios.get(backendUrl + "/categories");
-  return data;
+  return apiClient.get<Category[]>("/categories");
 };
 
 export const createCategory = async (
   name: Record<string, string>
 ): Promise<Category> => {
-  const { data } = await axios.post(backendUrl + "/categories", { name });
-  return data;
+  return apiClient.post<Category>("/categories", { name });
 };
 
 export const updateCategory = async (
   id: string,
   name: Record<string, string>
 ): Promise<Category> => {
-  const { data } = await axios.put(`${backendUrl}/categories/${id}`, { name });
-  return data;
+  return apiClient.put<Category>(`/categories/${id}`, { name });
 };
 
-export const deleteCategory = async (id: string) => {
-  await axios.delete(`${backendUrl}/categories/${id}`);
+export const deleteCategory = async (id: string): Promise<void> => {
+  return apiClient.delete<void>(`/categories/${id}`);
 };

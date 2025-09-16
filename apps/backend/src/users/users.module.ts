@@ -6,6 +6,7 @@ import { User } from './user.entity';
 import { PermissionsModule } from '../permissions/permissions.module';
 import { RolesModule } from '../roles/roles.module';
 import { Role } from 'src/roles/role.entity';
+import { ImageService } from 'src/utils/image.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { Role } from 'src/roles/role.entity';
     PermissionsModule,
     RolesModule,
   ],
-  providers: [UsersService],
+  providers: [UsersService, ImageService],
   controllers: [UsersController],
   exports: [UsersService],
 })

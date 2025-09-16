@@ -2,7 +2,6 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
 import { TextStyle } from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
@@ -26,7 +25,6 @@ export default function RichTextEditor({
         bulletList: { keepMarks: true, keepAttributes: true },
         orderedList: { keepMarks: true, keepAttributes: true },
       }),
-      Underline,
       TextStyle,
       Color,
       Placeholder.configure({ placeholder: placeholder ?? "Write something…" }),

@@ -34,6 +34,18 @@ export default function Header({ userProp }: { userProp?: any }) {
     avatarUrl: "",
   });
 
+  const handleLogout = async () => {
+    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, {
+      method: "POST",
+      body: JSON.parse(localStorage.getItem("user")!).email,
+      credentials: "include",
+    });
+    localStorage.removeItem("user");
+    document.cookie = "token=; Max-Age=0; path=/";
+
+    router.push("/admin/login");
+  };
+
   useEffect(() => {
     const storedUser =
       typeof window !== "undefined"
@@ -76,10 +88,11 @@ export default function Header({ userProp }: { userProp?: any }) {
             <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center text-sm text-gray-700">
               {user.avatarUrl ? (
                 <Image
-                  src={user.avatarUrl}
+                  src={process.env.NEXT_PUBLIC_BACKEND_URL + user.avatarUrl}
                   alt={user.name}
-                  fill
-                  className="object-cover"
+                  height={50}
+                  width={50}
+                  className="object-cover rounded-full"
                 />
               ) : (
                 <User className="w-5 h-5 text-gray-600" />
@@ -100,7 +113,7 @@ export default function Header({ userProp }: { userProp?: any }) {
                 <button
                   className="flex items-center gap-2 w-full px-3 py-2 rounded hover:bg-gray-100"
                   onClick={() => {
-                    router.push(`/admin/profile`);
+                    router.push(`/admin/users/profile`);
                     setDropdownOpen(false);
                   }}
                 >
@@ -108,11 +121,7 @@ export default function Header({ userProp }: { userProp?: any }) {
                 </button>
                 <button
                   className="flex items-center gap-2 w-full px-3 py-2 rounded hover:bg-gray-100 text-red-600"
-                  onClick={() => {
-                    localStorage.removeItem("user");
-                    document.cookie = "token=; Max-Age=0; path=/";
-                    router.push(`/auth/signin`);
-                  }}
+                  onClick={handleLogout}
                 >
                   <LogOut className="w-4 h-4" /> {t("Dashboard.Header.logout")}
                 </button>

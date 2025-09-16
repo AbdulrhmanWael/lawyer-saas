@@ -20,6 +20,7 @@ import RichTextEditor from "@/components/common/RichTextEditor";
 import CoverImageInput from "@/components/common/DropzoneImage";
 import CategorySelect from "./CategorySelect";
 import ToggleSwitch from "@/components/common/ToggleSwitch";
+import LanguageTabs from "@/components/common/LanguageTabs";
 
 const blogSchema = z.object({
   title: z.record(z.string(), z.string().min(1, "Title is required")),
@@ -28,6 +29,7 @@ const blogSchema = z.object({
   content: z.record(z.string(), z.string().min(1, "Content is required")),
   draft: z.boolean(),
   published: z.boolean(),
+  inactive: z.boolean(),
 });
 
 type BlogFormData = z.infer<typeof blogSchema>;
@@ -61,6 +63,7 @@ export default function BlogForm() {
       content: Object.fromEntries(LANGS.map((l) => [l, ""])),
       draft: false,
       published: false,
+      inactive: true,
     },
   });
 
@@ -100,6 +103,20 @@ export default function BlogForm() {
     setCategories((prev) => prev.filter((c) => c.id !== id));
   };
 
+  const handleTabSwitch = (lang: string) => {
+    // Save current editor values before switching
+    const currentTitle = getValues(`title.${activeLang}`);
+    const currentContent = getValues(`content.${activeLang}`);
+
+    setValue(`title.${activeLang}`, currentTitle ?? "", {
+      shouldValidate: false,
+    });
+    setValue(`content.${activeLang}`, currentContent ?? "", {
+      shouldValidate: false,
+    });
+    setActiveLang(lang);
+  };
+
   const onSubmit = async (data: BlogFormData) => {
     const payload = {
       ...data,
@@ -129,27 +146,18 @@ export default function BlogForm() {
         encType="multipart/form-data"
       >
         {/* Tab switcher */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {LANGS.map((lang) => (
-            <button
-              key={lang}
-              type="button"
-              onClick={() => setActiveLang(lang)}
-              className={`px-3 py-1 rounded ${
-                activeLang === lang
-                  ? "bg-[var(--color-primary)] text-white"
-                  : "bg-gray-200 dark:bg-gray-700"
-              }`}
-            >
-              {lang}
-            </button>
-          ))}
-        </div>
-
+        <LanguageTabs
+          languages={LANGS}
+          activeLang={activeLang}
+          onChange={handleTabSwitch}
+        />
         {/* Title */}
         <div>
-          <label className="block font-medium mb-1">{t("title")}</label>
+          <label className="block font-bold text-lg text-[var(--color-text)] mb-2">
+            {t("title")}
+          </label>
           <input
+            key={`title-${activeLang}`}
             type="text"
             {...register(`title.${activeLang}`)}
             className="w-full border rounded px-3 py-2"
@@ -163,7 +171,9 @@ export default function BlogForm() {
 
         {/* Category select */}
         <div className="w-full">
-          <label className="block font-medium mb-1">{t("category")}</label>
+          <label className="block font-bold text-lg text-[var(--color-text)] mb-2">
+            {t("category")}
+          </label>
           <CategorySelect
             categories={categories}
             activeLang={activeLang}
@@ -177,7 +187,9 @@ export default function BlogForm() {
         </div>
 
         {/* Cover image dropzone */}
-        <label className="block font-medium mb-1">{t("coverImage")}</label>
+        <label className="block font-bold text-lg text-[var(--color-text)] mb-2">
+          {t("coverImage")}
+        </label>
         <Controller
           name="coverImage"
           control={control}
@@ -195,14 +207,21 @@ export default function BlogForm() {
 
         {/* Content */}
         <div>
-          <label className="block font-medium mb-1">{t("content")}</label>
+          <label className="block font-bold text-lg text-[var(--color-text)] mb-2">
+            {t("content")}
+          </label>
           <Controller
+            key={`content-${activeLang}`}
             name={`content.${activeLang}`}
             control={control}
             render={({ field }) => (
               <RichTextEditor
+                key={`editor-${activeLang}`}
                 value={field.value ?? ""}
-                onChange={field.onChange}
+                onChange={(val) => {
+                  field.onChange(val);
+                  setValue(`content.${activeLang}`, val, { shouldDirty: true });
+                }}
               />
             )}
           />
@@ -216,7 +235,7 @@ export default function BlogForm() {
         {/* Translate button */}
         <button
           type="button"
-          className="px-4 py-2 rounded bg-gray-100 dark:bg-gray-700"
+          className="px-4 py-2 rounded bg-[var(--color-accent)] text-white"
           onClick={() => {
             const title = getValues("title")[activeLang];
             const content = getValues("content")[activeLang];
@@ -238,6 +257,13 @@ export default function BlogForm() {
             onChangeExtra={(val) => {
               if (val) {
                 setValue("published", false);
+                setValue("inactive", false);
+              } else if (
+                !val &&
+                !getValues("published") &&
+                !getValues("inactive")
+              ) {
+                setValue("inactive", true); // default to inactive if all off
               }
             }}
           />
@@ -248,6 +274,24 @@ export default function BlogForm() {
             onChangeExtra={(val) => {
               if (val) {
                 setValue("draft", false);
+                setValue("inactive", false);
+              } else if (
+                !val &&
+                !getValues("draft") &&
+                !getValues("inactive")
+              ) {
+                setValue("inactive", true);
+              }
+            }}
+          />
+          <ToggleSwitch
+            name="inactive"
+            label={t("inactive")}
+            control={control}
+            onChangeExtra={(val) => {
+              if (val) {
+                setValue("draft", false);
+                setValue("published", false);
               }
             }}
           />

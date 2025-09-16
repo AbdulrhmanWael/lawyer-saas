@@ -5,6 +5,7 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
 } from 'typeorm';
 import { Blog } from 'src/blogs/blog.entity';
 import { Role } from '../roles/role.entity';
@@ -22,10 +23,19 @@ export class User {
   @Column()
   password: string;
 
+  @Column({ nullable: true })
+  avatarUrl: string;
+
   @ManyToOne(() => Role, { eager: true })
   @JoinColumn()
   role: Role;
 
   @OneToMany(() => Blog, (blog) => blog.author)
   blogs: Blog[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @Column({ type: 'text', nullable: true })
+  refreshTokenHash: string | null;
 }

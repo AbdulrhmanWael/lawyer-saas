@@ -1,4 +1,4 @@
-import axios from "axios";
+import { apiClient } from "@/utils/apiClient";
 
 export interface Blog {
   id: string;
@@ -12,16 +12,13 @@ export interface Blog {
   createdAt: string;
 }
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const buildFormData = (blog: any) => {
   const formData = new FormData();
 
-  // append normal fields
   Object.keys(blog).forEach((key) => {
     if (key === "coverImage" && blog.coverImage instanceof File) {
-      formData.append("coverImage", blog.coverImage); // 👈 file field
+      formData.append("coverImage", blog.coverImage);
     } else if (blog[key] !== undefined && blog[key] !== null) {
       formData.append(key, blog[key]);
     }
@@ -30,52 +27,52 @@ const buildFormData = (blog: any) => {
   return formData;
 };
 
-export const getBlogs = async (params?: {
+export const getBlogs = (params?: {
   page?: number;
   limit?: number;
   categoryId?: string;
   search?: string;
   locale?: string;
 }) => {
-  const { data } = await axios.get(backendUrl + "/blogs", { params });
-  return data;
+  const filteredParams = params
+    ? Object.fromEntries(
+        Object.entries(params).filter(([_, v]) => v !== undefined)
+      )
+    : undefined;
+
+  return apiClient.get<{
+    response: Blog[];
+    total: number;
+    page?: number;
+    limit?: number;
+  }>("/blogs", filteredParams);
 };
 
-export const getBlog = async (id: string, locale?: string) => {
-  const { data } = await axios.get(backendUrl + `/blogs/${id}`, {
-    params: { locale },
-  });
-  return data;
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const createBlog = async (blog: any, locale?: string) => {
-  const formData = buildFormData(blog);
-  const { data } = await axios.post(backendUrl + "/blogs", formData, {
-    params: { locale },
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-  return data;
+export const getBlog = (id: string, locale?: string) => {
+  if (locale) return apiClient.get<Blog>(`/blogs/${id}`, { locale });
+  else return apiClient.get<Blog>(`/blogs/${id}`);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const updateBlog = async (id: string, blog: any, locale?: string) => {
+export const createBlog = (blog: any, locale?: string) => {
   const formData = buildFormData(blog);
-  const { data } = await axios.put(backendUrl + `/blogs/${id}`, formData, {
-    params: { locale },
-    headers: { "Content-Type": "multipart/form-data" },
+  return apiClient.post<Blog>(`/blogs?locale=${locale ?? ""}`, formData, {
+    "Content-Type": "multipart/form-data",
   });
-  return data;
 };
 
-export const deleteBlog = async (id: string) => {
-  await axios.delete(backendUrl + `/blogs/${id}`);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const updateBlog = (id: string, blog: any, locale?: string) => {
+  const formData = buildFormData(blog);
+  return apiClient.put<Blog>(`/blogs/${id}?locale=${locale ?? ""}`, formData, {
+    "Content-Type": "multipart/form-data",
+  });
 };
 
-export const publishBlog = async (id: string) => {
-  await axios.patch(backendUrl + `/blogs/${id}/publish`);
-};
+export const deleteBlog = (id: string) => apiClient.delete(`/blogs/${id}`);
 
-export const unpublishBlog = async (id: string) => {
-  await axios.patch(backendUrl + `/blogs/${id}/unpublish`);
-};
+export const publishBlog = (id: string) =>
+  apiClient.patch(`/blogs/${id}/publish`);
+
+export const unpublishBlog = (id: string) =>
+  apiClient.patch(`/blogs/${id}/unpublish`);

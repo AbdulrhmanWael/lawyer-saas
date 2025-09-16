@@ -4,21 +4,24 @@ import { SidebarProvider, useSidebar } from "./context/SidebarContext";
 import Sidebar from "./layout/Sidebar";
 import Header from "./layout/Header";
 import "../globals.css";
+import { usePathname } from "next/navigation";
 
 function AdminShell({ children }: { children: React.ReactNode }) {
   const { isOpen } = useSidebar();
+  const pathname = usePathname();
+  const isAuthPage = pathname.endsWith("/login");
 
   const collapsedWidth = 80;
   const expandedWidth = 256;
 
-  const sidebarWidth = isOpen ? expandedWidth : collapsedWidth;
+  const sidebarWidth = isAuthPage ? 0 : isOpen ? expandedWidth : collapsedWidth;
 
   const dir =
     typeof document !== "undefined" ? document.documentElement.dir : "ltr";
 
   return (
     <div>
-      <Sidebar />
+      {!isAuthPage && <Sidebar />}
       <div
         style={{
           [dir === "rtl" ? "marginRight" : "marginLeft"]: `${sidebarWidth}px`,
@@ -26,7 +29,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
         }}
         className="min-h-screen"
       >
-        <Header />
+        {!isAuthPage && <Header />}
         <main className="p-6">{children}</main>
       </div>
     </div>
