@@ -10,7 +10,7 @@ export interface User {
   name: string;
   email: string;
   avatarUrl?: string;
-  role: Role;
+  role: string;
   createdAt: string;
   updatedAt: string;
 }

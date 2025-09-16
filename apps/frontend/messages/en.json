@@ -80,11 +80,21 @@
     },
     "UserForm": {
       "createHeader": "Create User",
+      "editHeader": "Edit User",
       "name": "Name",
       "email": "Email",
       "password": "Password",
+      "passwordPlaceholder": "Leave empty to keep current password",
       "role": "Role",
-      "submit": "Submit"
+      "avatar": "Avatar",
+      "submit": "Submit",
+      "update": "Update",
+      "updating": "Updating...",
+      "creating": "Creating...",
+      "loading": "Loading...",
+      "successCreate": "User created successfully",
+      "successUpdate": "User updated successfully",
+      "error": "Something went wrong. Please try again."
     },
     "ProfileSettings": {
       "title": "User Profile",

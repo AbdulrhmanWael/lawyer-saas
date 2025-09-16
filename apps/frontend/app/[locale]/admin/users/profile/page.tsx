@@ -1,44 +1,73 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Pencil, Eye, EyeOff } from "lucide-react";
-import { updateUser, updatePassword, User } from "@/services/users";
-import { fi } from "zod/v4/locales";
+import { updateUser, updatePassword, getUser, User } from "@/services/users";
 
 export default function AdminSettings() {
   const t = useTranslations("Dashboard.ProfileSettings");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
-  const storedUser = JSON.parse(localStorage.getItem("user")!) as User;
-  const [profile, setProfile] = useState({
-    name: storedUser.name,
-    email: storedUser.email,
-    role: storedUser.role,
-    password: "",
-    avatarUrl: storedUser.avatarUrl,
+  const [showPasswordFields, setShowPasswordFields] = useState({
+    current: false,
+    new: false,
+    confirm: false,
   });
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [profile, setProfile] = useState<{
+    name: string;
+    email: string;
+    role?: User["role"];
+    password: string;
+    avatarUrl?: string;
+  }>({ name: "", email: "", role: "", password: "", avatarUrl: "" });
   const [passwordForm, setPasswordForm] = useState({
     current: "",
     new: "",
     confirm: "",
   });
-
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const storedUser =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("user") || "null")
+      : null;
+
+  useEffect(() => {
+    if (!storedUser?.id) return;
+
+    const fetchUser = async () => {
+      try {
+        setLoading(true);
+        const user = await getUser(storedUser.id);
+        setProfile({
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          password: "",
+          avatarUrl: user.avatarUrl,
+        });
+        localStorage.setItem("user", JSON.stringify(user));
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [storedUser.id]);
 
   const handleSaveProfile = async () => {
     try {
       setLoading(true);
-      const updated = await updateUser(storedUser.id, {
+      const updated = await updateUser(storedUser.id!, {
         name: profile.name,
         email: profile.email,
         password: profile.password || undefined,
       });
-      localStorage.setItem("user", JSON.stringify(updated));
       setProfile((p) => ({ ...p, ...updated, password: "" }));
+      localStorage.setItem("user", JSON.stringify(updated));
       setIsEditingProfile(false);
     } catch (err) {
       console.error("Error updating profile:", err);
@@ -56,7 +85,7 @@ export default function AdminSettings() {
     try {
       setLoading(true);
       await updatePassword({
-        email: storedUser.email,
+        email: profile.email,
         oldPassword: passwordForm.current,
         newPassword: passwordForm.new,
       });
@@ -78,7 +107,7 @@ export default function AdminSettings() {
       const updated = await updateUser(storedUser.id, {
         name: profile.name,
         email: profile.email,
-        roleName: profile.role?.name,
+        roleName: profile.role,
         avatarUrl: file,
       });
 
@@ -137,22 +166,21 @@ export default function AdminSettings() {
                 <label className="block text-sm mb-1">
                   {t(field)}
                   <input
+                    key={field}
                     type={
                       field === "password"
                         ? showPassword
                           ? "text"
                           : "password"
-                        : field === "email"
-                          ? "email"
-                          : "text"
+                        : "text"
                     }
-                    value={profile[field as keyof typeof profile] as string}
+                    value={
+                      (profile[field as keyof typeof profile] as string) || ""
+                    }
                     disabled={field === "role" || !isEditingProfile}
                     className="w-full px-3 py-2 border rounded-md text-[var(--color-text)] bg-white disabled:bg-gray-100 disabled:text-gray-400"
-                    onChange={(e) =>
-                      setProfile((p) => ({ ...p, [field]: e.target.value }))
-                    }
                   />
+
                   {field === "password" && (
                     <button
                       type="button"
@@ -194,24 +222,40 @@ export default function AdminSettings() {
               {t("changePassword")}
             </h3>
             <div className="space-y-4">
-              {["current", "new", "confirm"].map((field) => (
-                <div key={field}>
-                  <label className="block text-sm mb-1">
-                    {t(field + "Password")}
-                    <input
-                      type="password"
-                      value={passwordForm[field as keyof typeof passwordForm]}
-                      onChange={(e) =>
-                        setPasswordForm((f) => ({
-                          ...f,
-                          [field]: e.target.value,
-                        }))
-                      }
-                      className="w-full px-3 py-2 border rounded-md"
-                    />
-                  </label>
-                </div>
-              ))}
+              {["current", "new", "confirm"].map((field) => {
+                const key = field as keyof typeof showPasswordFields;
+                const show = showPasswordFields[key];
+                return (
+                  <div key={field} className="relative">
+                    <label className="block text-sm mb-1">
+                      {t(field + "Password")}
+                      <input
+                        type={show ? "text" : "password"}
+                        value={passwordForm[key]}
+                        onChange={(e) =>
+                          setPasswordForm((f) => ({
+                            ...f,
+                            [key]: e.target.value,
+                          }))
+                        }
+                        className="w-full px-3 py-2 border rounded-md"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowPasswordFields((s) => ({
+                            ...s,
+                            [key]: !s[key],
+                          }))
+                        }
+                        className="absolute top-7.5 right-2 text-gray-500 hover:text-gray-700"
+                      >
+                        {show ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </label>
+                  </div>
+                );
+              })}
             </div>
             <div className="flex justify-end gap-2 mt-4">
               <button

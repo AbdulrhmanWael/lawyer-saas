@@ -1,6 +1,12 @@
 "use client";
 
-import { Menu, Search, ChevronDown, LogOut, User } from "lucide-react";
+import {
+  Menu,
+  Search,
+  ChevronDown,
+  LogOut,
+  User as UserIcon,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -8,6 +14,7 @@ import { useSidebar } from "../context/SidebarContext";
 import ThemeToggle from "../../../../components/common/ThemeToggle";
 import LanguageSwitcher from "../../../../components/common/LanguageSwitcher";
 import Image from "next/image";
+import { getUser, User } from "@/services/users";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function Header({ userProp }: { userProp?: any }) {
@@ -47,13 +54,30 @@ export default function Header({ userProp }: { userProp?: any }) {
   };
 
   useEffect(() => {
-    const storedUser =
-      typeof window !== "undefined"
-        ? JSON.parse(localStorage.getItem("user") || "null")
-        : null;
+    const fetchUser = async () => {
+      if (typeof window === "undefined") return;
 
-    if (storedUser) setUser(storedUser);
-    else if (userProp) setUser(userProp);
+      const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+      if (storedUser?.id) {
+        try {
+          const fullUser: User = await getUser(storedUser.id);
+          setUser({
+            name: fullUser.name,
+            email: fullUser.email,
+            avatarUrl: fullUser.avatarUrl || "",
+          });
+        } catch (err) {
+          console.error("Failed to fetch user:", err);
+          setUser(storedUser);
+        }
+      } else if (storedUser) {
+        setUser(storedUser);
+      } else if (userProp) {
+        setUser(userProp);
+      }
+    };
+
+    fetchUser();
   }, [userProp]);
 
   return (
@@ -95,7 +119,7 @@ export default function Header({ userProp }: { userProp?: any }) {
                   className="object-cover rounded-full"
                 />
               ) : (
-                <User className="w-5 h-5 text-gray-600" />
+                <UserIcon className="w-5 h-5 text-gray-600" />
               )}
             </div>
             <ChevronDown className="w-4 h-4 text-gray-600" />
