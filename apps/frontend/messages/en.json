@@ -9,6 +9,7 @@
     "Header": {
       "title": "Admin Panel",
       "searchPlaceholder": "Search routes, users, content...",
+      "noResults": "No results found",
       "themeLight": "Light",
       "themeDark": "Dark",
       "logout": "Log out",
@@ -95,6 +96,30 @@
       "successCreate": "User created successfully",
       "successUpdate": "User updated successfully",
       "error": "Something went wrong. Please try again."
+    },
+    "settings": {
+      "loading": "Loading settings...",
+      "title": "Site Settings",
+      "logo": "Logo",
+      "contact": "Contact Info",
+      "emailPlaceholder": "Email",
+      "socials": "Socials",
+      "addSocial": "+ Add Social",
+      "save": "Save Changes",
+      "settingsSaveError": "Failed to save settings",
+      "settingsSaved": "Settings saved successfully",
+      "invalidEmail": "Please enter a valid email address",
+      "invalidPhone": "Please enter a valid phone number",
+      "invalidUrl": "Please enter a valid URL",
+      "colors": "Colors",
+      "lightMode": "Light Mode",
+      "darkMode": "Dark Mode",
+      "colorPrimary": "Primary Color",
+      "colorSecondary": "Secondary Color",
+      "colorHeaderBg": "Header Background",
+      "colorAccent": "Accent Color",
+      "colorBg": "Background Color",
+      "colorText": "Text Color"
     },
     "ProfileSettings": {
       "title": "User Profile",

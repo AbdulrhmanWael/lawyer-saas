@@ -6,13 +6,13 @@ import { getCategories, Category } from "@/services/categories";
 import Table from "@/components/common/Table";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 import Modal from "@/components/common/Modal";
-import { Button } from '../../../../components/ui/forms/Button';
+import { Button } from "../../../../components/ui/forms/Button";
 
-export default function BlogsPage(props: { params: { locale: string } }) {
-  const { locale } = props.params;
+export default function BlogsPage() {
+  const locale = useLocale();
   const t = useTranslations("Dashboard.Blogs");
 
   const [blogs, setBlogs] = useState<Blog[]>([]);

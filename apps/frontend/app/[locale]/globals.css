@@ -3,7 +3,6 @@
 :root {
   --color-primary: #2563eb;
   --color-secondary: #222;
-  --color-header-bg: #f3f4f6;
   --color-accent: #3b82f6;
   --color-bg: #ffffff;
   --color-text: #1a1a1a;
@@ -16,7 +15,6 @@
 
 [data-theme="dark"] {
   --color-primary: #60a5fa;
-  --color-header-bg: #374151;
   --color-secondary: #ddd;
   --color-accent: #93c5fd;
   --color-bg: #121212;
@@ -93,4 +91,20 @@ body {
 
 #nprogress .bar {
   background: var(--color-primary) !important;
+}
+
+.text-input {
+  @apply w-full border rounded px-3 py-2;
+}
+
+.PhoneInputCountry,
+.PhoneInputInput {
+  margin: 0;
+  margin-right: 0 !important;
+  border-right: 1px solid black;
+  padding: 8px;
+  border-radius: 5px 0px 0px 5px;
+}
+.PhoneInputInput {
+  border: none;
 }

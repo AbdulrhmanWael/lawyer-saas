@@ -7,7 +7,6 @@ import { CategoriesModule } from './categories/categories.module';
 import { BlogsModule } from './blogs/blogs.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { User } from './users/user.entity';
 import { PermissionsModule } from './permissions/permissions.module';
 import { RolesModule } from './roles/roles.module';
 import { PageModule } from './page/page.module';
@@ -21,6 +20,9 @@ import { TranslationModule } from './translation/translation.module';
 import { SeedService } from './seed/seed.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { CacheModule } from '@nestjs/cache-manager';
+import { SearchModule } from './search/search.module';
+import * as redisStore from 'cache-manager-ioredis';
 
 @Module({
   imports: [
@@ -38,7 +40,13 @@ import { join } from 'path';
       database: process.env.DB_NAME || 'lawyer_db',
       autoLoadEntities: true,
       synchronize: true,
-      entities: [User],
+    }),
+    CacheModule.register({
+      store: redisStore,
+      host: 'localhost',
+      port: 6379,
+      ttl: 120,
+      isGlobal: true,
     }),
     UsersModule,
     CategoriesModule,
@@ -54,6 +62,7 @@ import { join } from 'path';
     TestimonialModule,
     StaffMemberModule,
     TranslationModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],

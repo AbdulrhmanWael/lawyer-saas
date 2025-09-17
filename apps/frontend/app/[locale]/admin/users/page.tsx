@@ -24,7 +24,6 @@ export default function UsersPage() {
 
   const router = useRouter();
 
-  // debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
@@ -34,8 +33,6 @@ export default function UsersPage() {
 
   const fetchUsers = useCallback(async () => {
     const data = await getUsers();
-
-    // simple filter by search on client side (name or email)
     const filtered = debouncedSearch
       ? data.filter(
           (u) =>
@@ -43,8 +40,21 @@ export default function UsersPage() {
             u.email.toLowerCase().includes(debouncedSearch.toLowerCase())
         )
       : data;
+    const formatted = filtered.map((u) => ({
+      ...u,
+      createdAt: new Date(u.createdAt)
+        .toLocaleString("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })
+        .replace(",", " -"),
+    }));
 
-    setUsers(filtered);
+    setUsers(formatted);
   }, [debouncedSearch]);
 
   useEffect(() => {

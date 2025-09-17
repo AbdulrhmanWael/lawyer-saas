@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Menu,
-  Search,
-  ChevronDown,
-  LogOut,
-  User as UserIcon,
-} from "lucide-react";
+import { Menu, ChevronDown, LogOut, User as UserIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -15,23 +9,13 @@ import ThemeToggle from "../../../../components/common/ThemeToggle";
 import LanguageSwitcher from "../../../../components/common/LanguageSwitcher";
 import Image from "next/image";
 import { getUser, User } from "@/services/users";
+import GlobalSearch from "./components/GlobalSearch";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function Header({ userProp }: { userProp?: any }) {
   const t = useTranslations();
   const router = useRouter();
   const { toggleSidebar } = useSidebar();
-
-  const [query, setQuery] = useState("");
-  const onSearchSubmit = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (!query.trim()) return;
-    const res = await fetch(
-      `/api/search/routes?q=${encodeURIComponent(query)}`
-    );
-    const data = await res.json();
-    console.log("search results:", data);
-  };
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -49,7 +33,6 @@ export default function Header({ userProp }: { userProp?: any }) {
     });
     localStorage.removeItem("user");
     document.cookie = "token=; Max-Age=0; path=/";
-
     router.push("/admin/login");
   };
 
@@ -89,15 +72,10 @@ export default function Header({ userProp }: { userProp?: any }) {
         >
           <Menu className="w-5 h-5 text-[var(--color-primary)]" />
         </button>
-        <form onSubmit={onSearchSubmit} className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t("Dashboard.Header.searchPlaceholder")}
-            className="w-full py-2 pl-9 pr-4 rounded-md border border-gray-200 bg-white text-sm focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
-          />
-        </form>
+
+        <div className="flex-1 max-w-md">
+          <GlobalSearch />
+        </div>
       </div>
 
       <div className="flex items-center gap-4">

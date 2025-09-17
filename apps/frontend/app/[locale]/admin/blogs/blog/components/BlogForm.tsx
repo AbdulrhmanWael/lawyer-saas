@@ -67,7 +67,6 @@ export default function BlogForm() {
     },
   });
 
-  // load blog if editing
   useEffect(() => {
     if (isEdit && params.id) {
       getBlog(params.id).then((blog: Blog) => {
@@ -84,7 +83,6 @@ export default function BlogForm() {
     }
   }, [isEdit, params?.id, reset]);
 
-  // load categories
   useEffect(() => {
     getCategories().then(setCategories);
   }, []);
@@ -104,7 +102,6 @@ export default function BlogForm() {
   };
 
   const handleTabSwitch = (lang: string) => {
-    // Save current editor values before switching
     const currentTitle = getValues(`title.${activeLang}`);
     const currentContent = getValues(`content.${activeLang}`);
 
@@ -160,7 +157,7 @@ export default function BlogForm() {
             key={`title-${activeLang}`}
             type="text"
             {...register(`title.${activeLang}`)}
-            className="w-full border rounded px-3 py-2"
+            className="text-input"
           />
           {errors.title?.[activeLang] && (
             <p className="text-red-500 text-sm mt-1">
@@ -263,7 +260,7 @@ export default function BlogForm() {
                 !getValues("published") &&
                 !getValues("inactive")
               ) {
-                setValue("inactive", true); // default to inactive if all off
+                setValue("inactive", true);
               }
             }}
           />

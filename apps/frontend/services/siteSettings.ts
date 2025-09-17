@@ -1,43 +1,36 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  UpdateDateColumn,
-} from 'typeorm';
+import { apiClient } from "@/utils/apiClient";
 
-@Entity()
-export class SiteSettings {
-  @PrimaryGeneratedColumn('uuid')
+export interface SiteSettings {
   id: string;
-
-  @Column({ nullable: true })
-  logoUrl: string;
-
-  @Column({ type: 'jsonb', default: {} })
+  logoUrl?: string | null;
   footer: {
     email?: string;
     phone?: string;
     social?: Record<string, string>;
   };
-
-  @Column({ type: 'jsonb', default: {} })
   colors: {
     light: {
       colorPrimary?: string;
       colorSecondary?: string;
+      colorHeaderBg?: string;
       colorAccent?: string;
       colorBg?: string;
       colorText?: string;
     };
     dark?: {
       colorPrimary?: string;
+      colorHeaderBg?: string;
       colorSecondary?: string;
       colorAccent?: string;
       colorBg?: string;
       colorText?: string;
     };
   };
-
-  @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: string;
 }
+
+export const siteSettingsApi = {
+  get: () => apiClient.get<SiteSettings>("/site-settings"),
+  update: (formData: FormData) =>
+    apiClient.patch<SiteSettings>("/site-settings", formData),
+};

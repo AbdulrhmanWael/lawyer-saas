@@ -8,6 +8,8 @@ import "nprogress/nprogress.css";
 export default function RouteProgressBar() {
   const pathname = usePathname();
 
+  NProgress.configure({ showSpinner: false });
+
   useEffect(() => {
     NProgress.start();
 

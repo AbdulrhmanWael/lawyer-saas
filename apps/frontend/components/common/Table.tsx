@@ -85,12 +85,12 @@ export default function Table<T extends { id?: string | number }>({
   return (
     <div className="overflow-x-auto rounded-md shadow-md bg-[var(--color-bg)]">
       <table className="w-full text-start border-collapse">
-        <thead className="bg-[var(--color-header-bg)]">
+        <thead className="bg-[var(--color-accent)]/15">
           <tr>
             {columns.map((col) => (
               <th
                 key={String(col.accessor)}
-                className="px-4 py-2 text-sm font-medium text-[var(--color-primary)] cursor-pointer select-none"
+                className="px-4 py-2 text-sm font-bold text-[var(--color-primary)] cursor-pointer select-none"
                 onClick={() => handleSort(col.accessor)}
               >
                 <div className="flex items-center justify-between gap-1">
@@ -115,7 +115,7 @@ export default function Table<T extends { id?: string | number }>({
               </th>
             ))}
             {(onEdit || onDelete) && (
-              <th className="px-4 text-sm font-medium py-2">{t("actions")}</th>
+              <th className="px-4 text-sm font-bold py-2">{t("actions")}</th>
             )}
           </tr>
         </thead>

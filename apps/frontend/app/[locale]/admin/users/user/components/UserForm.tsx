@@ -170,7 +170,7 @@ export default function UserForm() {
           <input
             type="text"
             {...register("name")}
-            className="w-full border rounded px-3 py-2"
+            className="text-input"
           />
           {errors.name && (
             <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
@@ -183,7 +183,7 @@ export default function UserForm() {
           <input
             type="email"
             {...register("email")}
-            className="w-full border rounded px-3 py-2"
+            className="text-input"
           />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
@@ -198,7 +198,7 @@ export default function UserForm() {
           <input
             type="password"
             {...register("password")}
-            className="w-full border rounded px-3 py-2"
+            className="text-input"
             placeholder={isEdit ? t("passwordPlaceholder") : ""}
           />
           {errors.password && (
@@ -214,7 +214,7 @@ export default function UserForm() {
           <input
             type="text"
             {...register("roleName")}
-            className="w-full border rounded px-3 py-2"
+            className="text-input"
           />
           {errors.roleName && (
             <p className="text-red-500 text-sm mt-1">
