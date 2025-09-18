@@ -51,7 +51,7 @@ export default function CategorySelect({
       {open && (
         <div className="absolute z-10 mt-1 w-full border rounded bg-[var(--color-bg)] shadow-md max-h-60 overflow-auto">
           {categories.map((cat) => (
-            <button
+            <div
               key={cat.id}
               className="flex w-full justify-between items-center px-3 py-2 hover:bg-[var(--color-accent)]/10 cursor-pointer"
               onClick={() => {
@@ -70,7 +70,7 @@ export default function CategorySelect({
               >
                 {t("delete")}
               </button>
-            </button>
+            </div>
           ))}
           <button
             className="px-3 py-2 text-gray-500 hover:text-gray-700 cursor-pointer"

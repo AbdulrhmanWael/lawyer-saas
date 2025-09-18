@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Home, Users, Settings, BookText } from "lucide-react";
+import { Home, Users, Settings, BookText, PhoneCallIcon } from "lucide-react";
 import { useSidebar } from "../context/SidebarContext";
 import { useEffect, useState } from "react";
 import { siteSettingsApi } from "@/services/siteSettings";
@@ -28,6 +28,7 @@ export default function Sidebar() {
     { label: t("overview"), href: "/admin", icon: Home },
     { label: t("blogs"), href: "/admin/blogs", icon: BookText },
     { label: t("users"), href: "/admin/users", icon: Users },
+    { label: t("contacts"), href: "/admin/contacts", icon: PhoneCallIcon },
     { label: t("settings"), href: "/admin/settings", icon: Settings },
   ];
 
@@ -69,7 +70,6 @@ export default function Sidebar() {
           const pathWithoutLocale = "/" + segments.slice(1).join("/");
 
           const active = pathWithoutLocale === href;
-
 
           return (
             <Link

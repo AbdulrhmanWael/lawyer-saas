@@ -53,14 +53,14 @@ export default function LanguageSwitcher() {
     <div className="relative">
       <button
         onClick={() => setOpen((s) => !s)}
-        className="flex items-center gap-2 px-3 py-2 rounded-md border border-gray-200 bg-white hover:bg-gray-50 transition"
+        className="flex items-center gap-2 px-3 py-2 rounded-md border border-[var(--color-primary)] bg-[var(--color-bg)] hover:bg-[var(--color-bg)]/10 transition"
       >
         <ReactCountryFlag countryCode={currentLang.countryCode} svg style={{ width: "1.2em", height: "1.2em" }} />
         <span className="text-sm">{currentLang.label}</span>
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+        <div className="absolute right-0 mt-2 w-40 bg-[var(--color-bg)] border border-[var(--color-primary)] rounded-md shadow-lg z-50">
           {LANGS.map((l) => (
             <button
               key={l.code}

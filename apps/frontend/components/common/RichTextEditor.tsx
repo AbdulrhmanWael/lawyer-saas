@@ -51,7 +51,7 @@ export default function RichTextEditor({
   return (
     <div className="w-full">
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-2 border border-gray-200 dark:border-gray-700 p-2 bg-gray-50 rounded-t-md">
+      <div className="flex flex-wrap gap-2 border border-[var(--color-primary)] p-2 bg-[var(--color-bg)] rounded-t-md">
         {/* Headings */}
         {[1, 2, 3, 4, 5, 6].map((level) => (
           <button
@@ -66,7 +66,7 @@ export default function RichTextEditor({
             }
             className={`px-2 py-1 rounded ${
               editor.isActive("heading", { level })
-                ? "bg-gray-200 dark:bg-gray-700"
+                ? "bg-[var(--color-primary)]"
                 : ""
             }`}
           >
@@ -177,7 +177,7 @@ export default function RichTextEditor({
       </div>
 
       {/* Editor */}
-      <div className="border border-gray-200 dark:border-gray-700 rounded-b-md bg-white dark:bg-gray-800">
+      <div className="border border-[var(--color-primary)] rounded-b-md bg-[var(--color-bg)]">
         <EditorContent
           editor={editor}
           className="tiptap px-3 py-2 min-h-[200px]"

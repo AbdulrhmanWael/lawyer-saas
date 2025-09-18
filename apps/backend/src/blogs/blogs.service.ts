@@ -8,6 +8,10 @@ import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { ImageService } from 'src/utils/image.service';
 import { BlogResponse } from './dto/blog-response.dto';
+import { BlogView } from './blog-view.entity';
+import { UsersService } from 'src/users/users.service';
+import { Response } from 'express';
+import AuthRequest from 'src/auth/auth.request';
 
 @Injectable()
 export class BlogsService {
@@ -16,7 +20,10 @@ export class BlogsService {
     @InjectRepository(Category)
     private readonly categoriesRepo: Repository<Category>,
     @InjectRepository(User) private readonly usersRepo: Repository<User>,
+    @InjectRepository(BlogView)
+    private readonly blogViewRepo: Repository<BlogView>,
     private readonly imageService: ImageService,
+    private readonly usersService: UsersService,
   ) {}
 
   async findAll(
@@ -72,14 +79,45 @@ export class BlogsService {
       relations: ['author', 'category'],
     });
     if (!blog) throw new NotFoundException(`Blog with ID ${id} not found`);
-    if (locale)
+    if (locale) return this.localizeBlog(blog, locale);
+    else
       return {
         ...blog,
         author: blog.author.name,
-        category: blog.category.name[locale] ?? blog.category.name['EN'],
-        title: blog.title[locale] ?? blog.title['EN'],
-        content: blog.content[locale] ?? blog.content['EN'],
+        category: blog.category,
+        title: blog.title,
+        content: blog.content,
       };
+  }
+
+  async findOneWithViews(
+    id: string,
+    req: AuthRequest,
+    res: Response,
+    locale?: string,
+  ) {
+    const blog = await this.blogsRepo.findOne({
+      where: { id },
+      relations: ['author', 'category'],
+    });
+    if (!blog) throw new NotFoundException(`Blog not found`);
+
+    const user =
+      req.user ?? (await this.usersService.getOrCreateGuest(req, res));
+
+    const existing = await this.blogViewRepo.findOne({
+      where: { blog: { id: blog.id }, viewer: { id: user.id } },
+    });
+
+    if (!existing) {
+      const blogView = this.blogViewRepo.create({ blog, viewer: user });
+      await this.blogViewRepo.save(blogView);
+
+      blog.views++;
+      await this.blogsRepo.save(blog);
+    }
+
+    if (locale) return this.localizeBlog(blog, locale);
     else
       return {
         ...blog,
@@ -123,16 +161,11 @@ export class BlogsService {
       draft: dto.draft ?? true,
       published: dto.published ?? false,
     });
+    author.blogs.push(blog);
+    await this.usersRepo.save(author);
     await this.blogsRepo.save(blog);
 
-    if (locale)
-      return {
-        ...blog,
-        author: blog.author.name,
-        category: blog.category.name[locale] ?? blog.category.name['EN'],
-        title: blog.title[locale] ?? blog.title['EN'],
-        content: blog.content[locale] ?? blog.content['EN'],
-      };
+    if (locale) return this.localizeBlog(blog, locale);
     else
       return {
         ...blog,
@@ -147,10 +180,19 @@ export class BlogsService {
     id: string,
     dto: UpdateBlogDto,
     locale?: string,
-    authorId?: string,
     fileBuffer?: Buffer,
   ): Promise<BlogResponse> {
-    const blog = await this.blogsRepo.preload({ id, ...dto });
+    const existingBlog = await this.blogsRepo.findOne({
+      where: { id },
+      relations: ['author', 'category'],
+    });
+    if (!existingBlog) throw new NotFoundException('Blog not found');
+    const blog = await this.blogsRepo.preload({
+      id,
+      ...dto,
+      author: existingBlog.author,
+      category: existingBlog.category,
+    });
     if (!blog) throw new NotFoundException(`Blog with ID ${id} not found`);
 
     if (dto.categoryId) {
@@ -160,13 +202,6 @@ export class BlogsService {
       if (!category) throw new NotFoundException('Category not found');
       blog.category = category;
     }
-
-    if (authorId) {
-      const author = await this.usersRepo.findOneBy({ id: authorId });
-      if (!author) throw new NotFoundException('Author not found');
-      blog.author = author;
-    }
-
     if (fileBuffer) {
       if (blog.coverImage) await this.imageService.deleteImage(blog.coverImage);
       blog.coverImage = await this.imageService.saveImage(fileBuffer);
@@ -183,17 +218,19 @@ export class BlogsService {
       blog.content =
         typeof dto.content === 'string' ? JSON.parse(dto.content) : dto.content;
     }
+    function parseBoolean(value: boolean | string | undefined): boolean {
+      if (value === undefined) return false; // or preserve existing value
+      return value === true || value === 'true';
+    }
+
+    if (dto.published !== undefined)
+      blog.published = parseBoolean(dto.published);
+    if (dto.draft !== undefined) blog.draft = parseBoolean(dto.draft);
+    if (dto.inactive !== undefined) blog.inactive = parseBoolean(dto.inactive);
 
     await this.blogsRepo.save(blog);
 
-    if (locale)
-      return {
-        ...blog,
-        author: blog.author.name,
-        category: blog.category.name[locale] ?? blog.category.name['EN'],
-        title: blog.title[locale] ?? blog.title['EN'],
-        content: blog.content[locale] ?? blog.content['EN'],
-      };
+    if (locale) return this.localizeBlog(blog, locale);
     else
       return {
         ...blog,
@@ -219,5 +256,24 @@ export class BlogsService {
     blog.draft = !status;
 
     return this.blogsRepo.save(blog);
+  }
+
+  private localizeBlog(blog: Blog, locale?: string) {
+    if (!locale)
+      return {
+        ...blog,
+        author: blog.author.name,
+        category: blog.category,
+        title: blog.title,
+        content: blog.content,
+      };
+
+    return {
+      ...blog,
+      author: blog.author.name,
+      category: blog.category.name[locale] ?? blog.category.name['EN'],
+      title: blog.title[locale] ?? blog.title['EN'],
+      content: blog.content[locale] ?? blog.content['EN'],
+    };
   }
 }

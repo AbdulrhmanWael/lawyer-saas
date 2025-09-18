@@ -28,9 +28,15 @@ export default function Header({ userProp }: { userProp?: any }) {
   const handleLogout = async () => {
     await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, {
       method: "POST",
-      body: JSON.parse(localStorage.getItem("user")!).email,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: JSON.parse(localStorage.getItem("user")!).email,
+      }),
       credentials: "include",
     });
+
     localStorage.removeItem("user");
     document.cookie = "token=; Max-Age=0; path=/";
     router.push("/admin/login");
@@ -64,7 +70,7 @@ export default function Header({ userProp }: { userProp?: any }) {
   }, [userProp]);
 
   return (
-    <header className="h-16 flex items-center justify-between px-4 border-b border-gray-200 bg-[var(--color-bg)] transition-all">
+    <header className="h-16 flex items-center justify-between px-4 border-b border-[var(--color-secondary)]/20 bg-[var(--color-bg)] transition-all">
       <div className="flex items-center gap-4 flex-1">
         <button
           onClick={toggleSidebar}
@@ -104,8 +110,8 @@ export default function Header({ userProp }: { userProp?: any }) {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-              <div className="p-3 border-b border-gray-100">
+            <div className="absolute right-0 mt-2 w-56 bg-[var(--color-bg)] border border-[var(--color-primary)] rounded-md shadow-lg z-50">
+              <div className="p-3 border-b border-[var(--color-primary)]">
                 <div className="text-sm font-medium">{user.name}</div>
                 <div className="text-xs text-gray-500 truncate">
                   {user.email}

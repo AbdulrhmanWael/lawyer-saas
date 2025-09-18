@@ -68,6 +68,18 @@ export default function Table<T extends { id?: string | number }>({
       const value = item[accessor];
       if (value == null) return "-";
 
+      if (typeof value === "boolean") {
+        return (
+          <span
+            className={`px-2 py-1 rounded text-sm font-semibold ${
+              value ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+            }`}
+          >
+            {value ? "True" : "False"}
+          </span>
+        );
+      }
+
       if (typeof value === "object") {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if ("name" in value && typeof (value as any).name === "string") {

@@ -11,22 +11,26 @@ import {
   Request,
   UploadedFile,
   UseInterceptors,
-  //UseGuards,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { User } from 'src/users/user.entity';
-import type { Express } from 'express'; // 👈 important
-//import { JwtAuthGuard } from 'src/auth/jwt-auth/jwt-auth.guard';
+import type { Express, Response } from 'express';
+import type AuthRequest from 'src/auth/auth.request';
+import { JwtAuthGuard } from 'src/auth/jwt-auth/jwt-auth.guard';
+import { Public } from 'src/auth/permissions.decorator';
 
 @Controller('blogs')
-//@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class BlogsController {
   constructor(private readonly blogsService: BlogsService) {}
 
   @Get()
+  @Public()
   findAll(
     @Query('locale') locale?: string,
     @Query('page') page?: number,
@@ -42,6 +46,17 @@ export class BlogsController {
     return this.blogsService.findOne(id, locale);
   }
 
+  @Get('view/:id')
+  @Public()
+  findOneWithViews(
+    @Param('id') id: string,
+    @Request() req: AuthRequest,
+    @Res() res: Response,
+    @Query('locale') locale?: string,
+  ) {
+    return this.blogsService.findOneWithViews(id, req, res, locale);
+  }
+
   @Post()
   @UseInterceptors(FileInterceptor('coverImage'))
   create(
@@ -54,7 +69,6 @@ export class BlogsController {
       dto,
       req.user.id,
       locale,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       file?.buffer ?? undefined,
     );
   }
@@ -64,18 +78,10 @@ export class BlogsController {
   update(
     @Param('id') id: string,
     @Body() dto: UpdateBlogDto,
-    @Request() req: { user: User },
     @Query('locale') locale?: string,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.blogsService.update(
-      id,
-      dto,
-      req.user.id,
-      locale,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-      file?.buffer ?? undefined,
-    );
+    return this.blogsService.update(id, dto, locale, file?.buffer ?? undefined);
   }
 
   @Delete(':id')

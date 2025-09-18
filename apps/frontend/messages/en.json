@@ -1,10 +1,35 @@
 {
   "Dashboard": {
+    "Overview": {
+      "noMessages": "No messages available",
+      "topBlogs": "Top Blogs",
+      "loading": "Loading...",
+      "noBlogs": "No blogs available",
+      "noViews": "No views yet",
+      "views": "views",
+      "blogsTable": "Blogs Table",
+      "title": "Title",
+      "publish": "Publish",
+      "published": "Published",
+      "unpublished": "Unpublished",
+      "traffic": "Website Traffic",
+      "loadingTraffic": "Loading traffic...",
+      "noTraffic": "No traffic yet",
+      "periodToday": "Today",
+      "period3Days": "Last 3 days",
+      "period7Days": "Last 7 days",
+      "periodMonth": "Last month",
+      "periodYear": "Last year",
+      "readThem": "read them now",
+      "unreadMessages": "Unread Messages",
+      "messages": "Messages"
+    },
     "Sidebar": {
       "overview": "Overview",
       "users": "Users",
       "settings": "Settings",
-      "blogs": "Blogs"
+      "blogs": "Blogs",
+      "contacts": "Contacts"
     },
     "Header": {
       "title": "Admin Panel",
@@ -135,6 +160,19 @@
       "confirmPassword": "Confirm New Password",
       "cancel": "Cancel",
       "changePasswordBtn": "Change Password"
+    },
+    "Contacts": {
+      "loadingMessages": "Loading messages...",
+      "messages": "Messages",
+      "noUnread": "No unread messages",
+      "noMessages": "No messages available",
+      "sortAsc": "Oldest First",
+      "sortDesc": "Newest First",
+      "markRead": "Mark as Read",
+      "unread": "Unread Messages",
+      "read": "Read Messages",
+      "markUnread": "Mark as Unread",
+      "delete": "Delete"
     }
   }
 }

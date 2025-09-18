@@ -58,7 +58,7 @@ body {
 .tiptap {
   outline: none;
   color: inherit;
-  background-color: white;
+  background-color: var(--color-bg);
 }
 
 .tiptap p {

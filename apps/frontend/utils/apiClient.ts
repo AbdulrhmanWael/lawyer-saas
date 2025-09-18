@@ -5,7 +5,7 @@ export async function apiFetch<T = any>(
 ): Promise<T> {
   const res = await fetch(input, {
     ...init,
-    credentials: "include",
+    credentials: "include", // sends cookies automatically
     headers: {
       ...(init?.headers || {}),
       Authorization: `Bearer ${getAccessToken()}`,
@@ -24,14 +24,13 @@ export async function apiFetch<T = any>(
     if (refreshed.ok) {
       const data = await refreshed.json();
       document.cookie = `token=${data.access_token}; path=/; SameSite=Lax`;
-
-      return apiFetch<T>(input, init);
+      return apiFetch<T>(input, init); // retry original request
+    } else {
+      throw new Error("Unauthorized");
     }
   }
 
-  if (!res.ok) {
-    throw new Error(`Request failed: ${res.status}`);
-  }
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
 
   return res.json() as Promise<T>;
 }

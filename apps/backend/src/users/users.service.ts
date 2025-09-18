@@ -11,6 +11,7 @@ import { Role } from '../roles/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ImageService } from 'src/utils/image.service';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -33,10 +34,13 @@ export class UsersService {
 
     const user = this.usersRepo.create({
       ...dto,
+      email: dto.email.toLowerCase().trim(),
       password: hashedPassword,
       avatarUrl,
       role,
     });
+    role.users.push(user);
+    await this.rolesRepo.save(role);
     return this.usersRepo.save(user);
   }
 
@@ -47,7 +51,10 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.usersRepo.findOne({ where: { email } });
+    const user = await this.usersRepo.findOne({
+      where: { email: email.trim().toLowerCase() },
+    });
+    return user;
   }
 
   async update(
@@ -67,6 +74,8 @@ export class UsersService {
       });
       if (!role) throw new NotFoundException('Role not found');
       user.role = role;
+      role.users.push(user);
+      await this.rolesRepo.save(role);
     }
 
     if (fileBuffer) {
@@ -75,6 +84,7 @@ export class UsersService {
     }
 
     Object.assign(user, dto);
+
     return this.usersRepo.save(user);
   }
 
@@ -84,7 +94,10 @@ export class UsersService {
   }
 
   async updateRefreshToken(email: string, tokenHash: string | null) {
-    await this.usersRepo.update({ email }, { refreshTokenHash: tokenHash });
+    const user = await this.findByEmail(email);
+    if (!user) return null;
+    user.refreshTokenHash = tokenHash;
+    await this.usersRepo.save(user);
   }
 
   async updatePassword(
@@ -106,19 +119,53 @@ export class UsersService {
     await this.usersRepo.save(user);
   }
 
+  async createGuest(): Promise<User> {
+    const role = await this.rolesRepo.findOne({ where: { name: 'guest' } });
+    if (!role) throw new NotFoundException('Guest role not found');
+    const guest = this.usersRepo.create({
+      name: `Guest_${Date.now()}`,
+      email: `guest_${Date.now()}@example.com`.trim().toLowerCase(),
+      password: '',
+      isGuest: true,
+      role: role,
+    });
+    return this.usersRepo.save(guest);
+  }
+
+  async getOrCreateGuest(req: Request, res: Response): Promise<User> {
+    let guestId = req.cookies['guestId'] as string | undefined;
+
+    if (!guestId) {
+      const guest = await this.createGuest();
+      guestId = guest.id;
+      res.cookie('guestId', guestId, { maxAge: 365 * 24 * 60 * 60 * 1000 });
+      return guest;
+    }
+
+    const existingUser = await this.usersRepo.findOne({
+      where: { id: guestId },
+    });
+    if (!existingUser) {
+      return this.createGuest();
+    }
+
+    return existingUser;
+  }
+
   async seedAdmin(): Promise<void> {
     const existing = await this.findByEmail(process.env.ADMIN_EMAIL!);
     if (!existing) {
       const role = await this.rolesRepo.findOne({ where: { name: 'admin' } });
       if (!role) throw new NotFoundException('Admin role not found');
-
-      await this.create({
-        name: 'Admin',
-        email: process.env.ADMIN_EMAIL!,
-        password: process.env.ADMIN_PASSWORD!,
-        roleName: role.name,
-      });
-
+      role.users.push(
+        await this.create({
+          name: 'Admin',
+          email: process.env.ADMIN_EMAIL!,
+          password: process.env.ADMIN_PASSWORD!,
+          roleName: role.name,
+        }),
+      );
+      await this.rolesRepo.save(role);
       console.log('Seeded admin user successfully');
     }
   }

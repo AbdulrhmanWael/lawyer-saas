@@ -38,4 +38,7 @@ export class User {
 
   @Column({ type: 'text', nullable: true })
   refreshTokenHash: string | null;
+
+  @Column({ default: false })
+  isGuest: boolean;
 }

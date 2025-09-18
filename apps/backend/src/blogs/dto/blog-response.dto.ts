@@ -10,9 +10,13 @@ export class BlogResponse {
 
   published: boolean;
 
+  inactive: boolean;
+
   content: string | Record<string, string>;
 
   author: string;
+
+  views: number;
 
   coverImage?: string;
 

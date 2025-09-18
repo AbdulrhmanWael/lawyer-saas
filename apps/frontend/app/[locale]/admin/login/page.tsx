@@ -59,7 +59,7 @@ export default function LoginPage() {
     <div className="min-h-dvh flex items-center justify-center bg-[var(--color-bg)] text-[var(--color-text)] px-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-[var(--color-bg)] border border-gray-200 rounded-xl shadow-lg/30 p-6"
+        className="w-full max-w-sm bg-[var(--color-bg)] border border-[var(--color-primary)] rounded-xl shadow-lg/30 p-6"
         dir={t("dir")}
       >
         <h1 className="text-2xl font-semibold mb-6 text-center">

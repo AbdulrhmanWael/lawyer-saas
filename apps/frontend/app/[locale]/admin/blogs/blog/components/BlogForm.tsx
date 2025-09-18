@@ -193,7 +193,13 @@ export default function BlogForm() {
           render={({ field }) => (
             <CoverImageInput
               value={field.value}
-              preview={preview}
+              preview={
+                preview?.startsWith("blob")
+                  ? preview
+                  : preview
+                    ? process.env.NEXT_PUBLIC_BACKEND_URL! + preview
+                    : preview
+              }
               onChange={(file) => {
                 field.onChange(file);
                 setPreview(URL.createObjectURL(file));

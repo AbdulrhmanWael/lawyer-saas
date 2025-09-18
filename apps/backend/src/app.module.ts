@@ -22,6 +22,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { CacheModule } from '@nestjs/cache-manager';
 import { SearchModule } from './search/search.module';
+import { PageViewModule } from './page-view/page-view.module';
+import { ContactModule } from './contact/contact.module';
 import * as redisStore from 'cache-manager-ioredis';
 
 @Module({
@@ -63,6 +65,8 @@ import * as redisStore from 'cache-manager-ioredis';
     StaffMemberModule,
     TranslationModule,
     SearchModule,
+    PageViewModule,
+    ContactModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],

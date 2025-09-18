@@ -17,7 +17,7 @@ export default function LanguageTabs({
 }: Readonly<LanguageTabsProps>) {
   return (
     <div
-      className={`flex border-b border-gray-300 dark:border-gray-700 mb-4 ${className}`}
+      className={`flex border-b border-[var(--color-primary)] mb-4 ${className}`}
     >
       {languages.map((lang) => (
         <button

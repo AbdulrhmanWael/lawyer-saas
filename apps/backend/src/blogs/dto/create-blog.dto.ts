@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import { IsOptional, IsUUID, IsBoolean } from 'class-validator';
 
 export class CreateBlogDto {
@@ -7,8 +8,14 @@ export class CreateBlogDto {
   categoryId: string;
   @IsOptional()
   @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
   published?: boolean;
   @IsOptional()
   @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
   draft?: boolean;
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
+  inactive?: boolean;
 }

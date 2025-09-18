@@ -13,50 +13,45 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<User> {
     const user = await this.usersService.findByEmail(email);
-    if (user && (await bcrypt.compare(password, user.password))) {
-      return user;
-    }
+    if (user && (await bcrypt.compare(password, user.password))) return user;
     throw new UnauthorizedException('Invalid credentials');
   }
 
   async login(user: User) {
-    const role = user.role;
-    const permissions = role.permissions;
-
     const payload = {
       sub: user.id,
       email: user.email,
-      role,
-      permissions,
+      role: user.role,
+      permissions: user.role.permissions,
     };
 
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
-    const refreshToken = this.jwtService.sign(
+    const access_token = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refresh_token = this.jwtService.sign(
       { sub: user.id },
       { expiresIn: '7d' },
     );
 
-    const hashed = await bcrypt.hash(refreshToken, 10);
-    await this.usersService.updateRefreshToken(user.id, hashed);
+    const hashed = await bcrypt.hash(refresh_token, 10);
+    await this.usersService.updateRefreshToken(user.email, hashed);
 
-    return {
-      user: {
-        id: user.id,
-        name: user.name,
-        role: user.role,
-        email: user.email,
-        avatarUrl: user.avatarUrl,
-      },
-      access_token: accessToken,
-      refresh_token: refreshToken,
-    };
+    return { user, access_token, refresh_token };
   }
 
-  async refresh(userId: string, refreshToken: string) {
-    const user = await this.usersService.findOne(userId);
-    if (!user?.refreshTokenHash) {
-      throw new UnauthorizedException('No refresh token found');
+  async refreshFromToken(refreshToken: string) {
+    let payload: { sub: string };
+    try {
+      payload = this.jwtService.verify<{ sub: string }>(refreshToken, {
+        secret: process.env.JWT_SECRET,
+      });
+    } catch (err) {
+      console.error(err);
+      throw new UnauthorizedException('Invalid refresh token');
     }
+
+    const user = await this.usersService.findOne(payload.sub);
+    if (!user?.refreshTokenHash)
+      throw new UnauthorizedException('No refresh token found');
+
     const isValid = await bcrypt.compare(refreshToken, user.refreshTokenHash);
     if (!isValid) throw new UnauthorizedException('Invalid refresh token');
 

@@ -32,7 +32,7 @@ export default function CoverImageInput({
     <div
       {...getRootProps()}
       className={`border-[3px] h-[300px] flex justify-center items-center border-dashed rounded-md p-6 text-center cursor-pointer transition
-        ${isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}
+        ${isDragActive ? "border-blue-500 bg-blue-50" : "border-[var(--color-primary)]"}
       `}
     >
       <input {...getInputProps()} />

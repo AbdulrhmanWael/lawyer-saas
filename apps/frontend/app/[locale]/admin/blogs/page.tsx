@@ -80,7 +80,7 @@ export default function BlogsPage() {
           {t("title")}
         </h1>
         <Link
-          className="cursor-pointer px-4 py-2 rounded-lg font-medium transition-colors bg-[var(--color-primary)] text-white hover:bg-opacity-90"
+          className="cursor-pointer px-4 py-2 rounded-lg font-medium transition-colors bg-[var(--color-primary)] text-[var(--color-text)] hover:bg-opacity-90"
           href="blogs/blog"
         >
           {t("create")}
@@ -89,7 +89,7 @@ export default function BlogsPage() {
 
       <div className="flex gap-4 mb-4">
         <select
-          className="py-2 pl-2 pr-4 rounded-md border border-gray-200 bg-white text-sm focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+          className="py-2 pl-2 pr-4 rounded-md border border-[var(--color-primary)] bg-[var(--color-bg)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
           value={selectedCategory ?? ""}
           onChange={(e) => setSelectedCategory(e.target.value || undefined)}
         >
@@ -107,7 +107,7 @@ export default function BlogsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t("searchPlaceholder")}
-            className="w-full py-2 pl-9 pr-4 rounded-md border border-gray-200 bg-white text-sm focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+            className="w-full py-2 pl-9 pr-4 rounded-md border border-[var(--color-primary)] bg-[var(--color-bg)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
           />
         </div>
 

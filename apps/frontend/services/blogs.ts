@@ -9,6 +9,8 @@ export interface Blog {
   content: Record<string, string>;
   draft: boolean;
   published: boolean;
+  inactive: boolean;
+  views: number;
   createdAt: string;
 }
 
@@ -56,17 +58,13 @@ export const getBlog = (id: string, locale?: string) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const createBlog = (blog: any, locale?: string) => {
   const formData = buildFormData(blog);
-  return apiClient.post<Blog>(`/blogs?locale=${locale ?? ""}`, formData, {
-    "Content-Type": "multipart/form-data",
-  });
+  return apiClient.post<Blog>(`/blogs?locale=${locale ?? ""}`, formData);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const updateBlog = (id: string, blog: any, locale?: string) => {
   const formData = buildFormData(blog);
-  return apiClient.put<Blog>(`/blogs/${id}?locale=${locale ?? ""}`, formData, {
-    "Content-Type": "multipart/form-data",
-  });
+  return apiClient.put<Blog>(`/blogs/${id}?locale=${locale ?? ""}`, formData);
 };
 
 export const deleteBlog = (id: string) => apiClient.delete(`/blogs/${id}`);

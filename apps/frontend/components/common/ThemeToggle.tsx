@@ -29,7 +29,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={() => applyTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2 rounded-md hover:bg-[var(--color-accent)]/10 transition"
+      className="p-2 border border-[var(--color-primary)] rounded-md hover:bg-[var(--color-accent)]/10 transition"
     >
       {theme === "dark" ? (
         <Sun className="w-5 h-5 text-yellow-400" />

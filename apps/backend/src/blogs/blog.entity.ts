@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   CreateDateColumn,
+  JoinColumn,
 } from 'typeorm';
 import { Category } from '../categories/category.entity';
 import { User } from '../users/user.entity';
@@ -17,9 +18,11 @@ export class Blog {
   title: Record<string, string>;
 
   @ManyToOne(() => Category, (category) => category.blogs, { eager: true })
+  @JoinColumn({ name: 'categoryId' })
   category: Category;
 
   @ManyToOne(() => User, (user) => user.blogs, { eager: true })
+  @JoinColumn({ name: 'authorId' })
   author: User;
 
   @Column({ nullable: true })
@@ -33,6 +36,12 @@ export class Blog {
 
   @Column({ default: true })
   draft: boolean;
+
+  @Column({ default: false })
+  inactive: boolean;
+
+  @Column({ default: 0 })
+  views: number;
 
   @CreateDateColumn()
   createdAt: Date;
