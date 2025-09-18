@@ -34,7 +34,7 @@ const blogSchema = z.object({
 
 type BlogFormData = z.infer<typeof blogSchema>;
 
-const LANGS = ["EN", "AR", "DE", "RO", "RU", "ZH", "IT", "FR"];
+export const LANGS = ["EN", "AR", "DE", "RO", "RU", "ZH", "IT", "FR"];
 
 export default function BlogForm() {
   const t = useTranslations("Dashboard.BlogForm");

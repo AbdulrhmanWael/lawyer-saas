@@ -25,6 +25,8 @@ import { SearchModule } from './search/search.module';
 import { PageViewModule } from './page-view/page-view.module';
 import { ContactModule } from './contact/contact.module';
 import * as redisStore from 'cache-manager-ioredis';
+import { FaqModule } from './faq/faq.module';
+import { FaqGroupModule } from './faq/faq-group.module';
 
 @Module({
   imports: [
@@ -67,6 +69,8 @@ import * as redisStore from 'cache-manager-ioredis';
     SearchModule,
     PageViewModule,
     ContactModule,
+    FaqModule,
+    FaqGroupModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],

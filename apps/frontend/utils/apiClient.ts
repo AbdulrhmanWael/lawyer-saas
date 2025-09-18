@@ -24,7 +24,7 @@ export async function apiFetch<T = any>(
     if (refreshed.ok) {
       const data = await refreshed.json();
       document.cookie = `token=${data.access_token}; path=/; SameSite=Lax`;
-      return apiFetch<T>(input, init); // retry original request
+      return apiFetch<T>(input, init);
     } else {
       throw new Error("Unauthorized");
     }

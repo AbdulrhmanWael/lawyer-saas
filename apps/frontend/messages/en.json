@@ -1,5 +1,23 @@
 {
   "Dashboard": {
+    "Faqs": {
+      "addGroup": "Add FAQ Group",
+      "editGroup": "Edit FAQ Group",
+      "groupTitle": "Group Title",
+      "create": "Create",
+      "update": "Update",
+      "confirmDeleteGroup": "Are you sure you want to delete this group?",
+      "addFaq": "Add FAQ",
+      "editFaq": "Edit FAQ",
+      "selectGroup": "Select a Group",
+      "question": "Question",
+      "answer": "Answer",
+      "confirmDelete": "Are you sure you want to delete this FAQ?",
+      "noFaqs": "No FAQs in this group",
+      "loading": "Loading...",
+      "error": "An error occurred",
+      "search": "Search FAQs..."
+    },
     "Overview": {
       "noMessages": "No messages available",
       "topBlogs": "Top Blogs",
