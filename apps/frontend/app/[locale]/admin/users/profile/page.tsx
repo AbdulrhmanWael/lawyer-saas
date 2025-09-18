@@ -28,11 +28,21 @@ export default function AdminSettings() {
   });
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const storedUser =
-    typeof window !== "undefined"
-      ? JSON.parse(localStorage.getItem("user") || "null")
-      : null;
+  const [storedUser, setStoredUser] = useState<{
+    id: string;
+    name: string;
+    avatarUrl: string;
+    role: string;
+    email: string;
+    createdAt: string;
+  } | null>(null);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    setStoredUser(user);
+  }, []);
   useEffect(() => {
     if (!storedUser?.id) return;
 
@@ -56,12 +66,12 @@ export default function AdminSettings() {
     };
 
     fetchUser();
-  }, [storedUser.id]);
+  }, [storedUser?.id]);
 
   const handleSaveProfile = async () => {
     try {
       setLoading(true);
-      const updated = await updateUser(storedUser.id!, {
+      const updated = await updateUser(storedUser!.id, {
         name: profile.name,
         email: profile.email,
         password: profile.password || undefined,
@@ -104,7 +114,7 @@ export default function AdminSettings() {
     try {
       setLoading(true);
 
-      const updated = await updateUser(storedUser.id, {
+      const updated = await updateUser(storedUser!.id, {
         name: profile.name,
         email: profile.email,
         roleName: profile.role,
@@ -201,14 +211,14 @@ export default function AdminSettings() {
             <button
               onClick={handleSaveProfile}
               disabled={loading}
-              className="bg-[var(--color-primary)] text-[var(--color-bg)] rounded px-3 py-2 hover:bg-[var(--color-accent)]"
+              className="btn-primary"
             >
               {loading ? t("saving") : t("done")}
             </button>
           ) : (
             <button
               onClick={() => setIsEditingProfile(true)}
-              className="bg-[var(--color-primary)] text-[var(--color-bg)] rounded px-3 py-2 hover:bg-[var(--color-accent)]"
+              className="btn-primary"
             >
               {t("editProfile")}
             </button>
@@ -265,7 +275,7 @@ export default function AdminSettings() {
                 {t("cancel")}
               </button>
               <button
-                className="bg-[var(--color-primary)] text-[var(--color-bg)] rounded px-3 py-2 hover:bg-[var(--color-accent)]"
+                className="btn-primary"
                 onClick={handleChangePassword}
                 disabled={loading}
               >

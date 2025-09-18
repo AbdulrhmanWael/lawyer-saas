@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import {
   LineChart,
   Line,
@@ -14,40 +14,31 @@ import { useTranslations } from "next-intl";
 
 type Traffic = { day: string; count: number };
 
-export default function TrafficChart() {
+export default function TrafficChart({
+  initialData,
+}: {
+  initialData: Traffic[];
+}) {
   const t = useTranslations("Dashboard.Overview");
-  const [traffic, setTraffic] = useState<Traffic[]>([]);
+  const [traffic, setTraffic] = useState(initialData);
   const [period, setPeriod] = useState("7days");
-  const [loading, setLoading] = useState(true);
 
-  const fetchTraffic = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/traffic/summary?period=${period}`
-      );
-      const data: Traffic[] = await res.json();
-      setTraffic(data);
-    } catch (err) {
-      console.error(err);
-      setTraffic([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [period]);
+  const handlePeriodChange = async (newPeriod: string) => {
+    setPeriod(newPeriod);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/traffic/summary?period=${newPeriod}`
+    );
+    const data: Traffic[] = await res.json();
+    setTraffic(data);
+  };
 
-  useEffect(() => {
-    fetchTraffic();
-  }, [period, fetchTraffic]);
-
-  if (loading) return <p className="text-gray-400">{t("loadingTraffic")}</p>;
-
-  if (!traffic.length || Math.max(...traffic.map((t) => t.count)) === 0)
+  if (!traffic.length || Math.max(...traffic.map((t) => t.count)) === 0) {
     return (
       <div className="p-6 bg-[var(--color-bg)] rounded-2xl shadow-lg w-full flex items-center justify-center h-[300px]">
         <p className="text-gray-400 text-center">{t("noTraffic")}</p>
       </div>
     );
+  }
 
   return (
     <div className="p-6 my-4 w-full bg-[var(--color-bg)] rounded-2xl shadow-lg">
@@ -57,7 +48,7 @@ export default function TrafficChart() {
         </h2>
         <select
           value={period}
-          onChange={(e) => setPeriod(e.target.value)}
+          onChange={(e) => handlePeriodChange(e.target.value)}
           className="p-1 border rounded"
         >
           <option value="today">{t("periodToday")}</option>
@@ -98,7 +89,6 @@ export default function TrafficChart() {
             ]}
             labelFormatter={(label) => label}
           />
-
           <Line
             type="monotone"
             dataKey="count"

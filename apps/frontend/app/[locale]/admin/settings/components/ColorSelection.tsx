@@ -32,7 +32,7 @@ export default function ColorsSection({
         <h2 className="text-lg font-semibold">{t("colors")}</h2>
 
         {/* Light/Dark Switcher */}
-        <div className="flex rounded-xl border p-1 bg-[var(--color-accent)]">
+        <div className="flex rounded-xl border p-1">
           {(["light", "dark"] as const).map((m) => (
             <button
               key={m}
@@ -41,8 +41,8 @@ export default function ColorsSection({
               className={clsx(
                 "px-4 py-1 rounded-lg text-sm font-medium transition",
                 mode === m
-                  ? "bg-[var(--color-bg)] shadow text-[var(--color-primary)]"
-                  : "text-[var(--color-secondary)] hover:bg-gray-200"
+                  ? "bg-[var(--color-accent)] shadow text-[var(--color-bg)]"
+                  : "text-[var(--color-secondary)] hover:bg-[var(--color-accent)]/90"
               )}
             >
               {m === "light" ? t("lightMode") : t("darkMode")}

@@ -47,7 +47,8 @@
       "users": "Users",
       "settings": "Settings",
       "blogs": "Blogs",
-      "contacts": "Contacts"
+      "contacts": "Contacts",
+      "faq": "FAQ"
     },
     "Header": {
       "title": "Admin Panel",

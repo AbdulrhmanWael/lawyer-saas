@@ -5,10 +5,10 @@ export async function apiFetch<T = any>(
 ): Promise<T> {
   const res = await fetch(input, {
     ...init,
-    credentials: "include", // sends cookies automatically
+    credentials: "include",
     headers: {
       ...(init?.headers || {}),
-      Authorization: `Bearer ${getAccessToken()}`,
+      Authorization: `Bearer ${await getAccessToken()}`,
     },
   });
 
@@ -35,9 +35,15 @@ export async function apiFetch<T = any>(
   return res.json() as Promise<T>;
 }
 
-function getAccessToken(): string | null {
-  const match = RegExp(/(^| )token=([^;]+)/).exec(document.cookie);
-  return match ? match[2] : null;
+export async function getAccessToken(): Promise<string | null> {
+  if (typeof document !== "undefined") {
+    const match = /(^| )token=([^;]+)/.exec(document.cookie);
+    return match ? match[2] : null;
+  }
+
+  const { cookies } = await import("next/headers");
+  const cookieStore = await cookies();
+  return cookieStore.get("token")?.value ?? null;
 }
 
 export const apiClient = {

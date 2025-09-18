@@ -27,6 +27,7 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(dto.password, 10);
     const role = await this.rolesRepo.findOne({
       where: { name: dto.roleName },
+      relations: ['users'],
     });
     if (!role) throw new NotFoundException('Role not found');
     let avatarUrl: string | undefined;
@@ -71,6 +72,7 @@ export class UsersService {
     if (dto.roleName) {
       const role = await this.rolesRepo.findOne({
         where: { name: dto.roleName },
+        relations: ['users'],
       });
       if (!role) throw new NotFoundException('Role not found');
       user.role = role;
@@ -120,7 +122,10 @@ export class UsersService {
   }
 
   async createGuest(): Promise<User> {
-    const role = await this.rolesRepo.findOne({ where: { name: 'guest' } });
+    const role = await this.rolesRepo.findOne({
+      where: { name: 'guest' },
+      relations: ['users'],
+    });
     if (!role) throw new NotFoundException('Guest role not found');
     const guest = this.usersRepo.create({
       name: `Guest_${Date.now()}`,
@@ -129,6 +134,8 @@ export class UsersService {
       isGuest: true,
       role: role,
     });
+    role.users.push(guest);
+    await this.rolesRepo.save(role);
     return this.usersRepo.save(guest);
   }
 
@@ -155,7 +162,10 @@ export class UsersService {
   async seedAdmin(): Promise<void> {
     const existing = await this.findByEmail(process.env.ADMIN_EMAIL!);
     if (!existing) {
-      const role = await this.rolesRepo.findOne({ where: { name: 'admin' } });
+      const role = await this.rolesRepo.findOne({
+        where: { name: 'admin' },
+        relations: ['users'],
+      });
       if (!role) throw new NotFoundException('Admin role not found');
       role.users.push(
         await this.create({

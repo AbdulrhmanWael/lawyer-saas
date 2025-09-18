@@ -81,7 +81,7 @@ export default function UsersPage() {
           {t("title")}
         </h1>
         <Link
-          className="cursor-pointer px-4 py-2 rounded-lg font-medium transition-colors bg-[var(--color-primary)] text-white hover:bg-opacity-90"
+          className="cursor-pointer px-4 py-2 rounded-lg font-medium transition-colors bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90"
           href="users/user"
         >
           {t("create")}
@@ -102,7 +102,7 @@ export default function UsersPage() {
 
         <button
           onClick={() => fetchUsers()}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors bg-[var(--color-primary)] text-white hover:bg-opacity-90`}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90`}
         >
           {t("searchButton")}
         </button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   BarChart,
   Bar,
@@ -11,7 +11,6 @@ import {
 } from "recharts";
 import { useLocale, useTranslations } from "next-intl";
 import { apiClient } from "@/utils/apiClient";
-import { getBlogs } from "@/services/blogs";
 
 type Blog = {
   id: string;
@@ -21,32 +20,16 @@ type Blog = {
   createdAt: string;
 };
 
-export default function TopBlogsChart() {
+export default function TopBlogsChart({
+  initialData,
+}: {
+  initialData: Blog[];
+}) {
   const t = useTranslations("Dashboard.Overview");
   const locale = useLocale();
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchBlogs = async () => {
-    setLoading(true);
-    try {
-      const res = await getBlogs({ page: 1, limit: 50 });
-      const sorted = res.response
-        .sort((a: Blog, b: Blog) => b.views - a.views)
-        .slice(0, 6);
-
-      setBlogs(sorted);
-    } catch (err) {
-      console.error(err);
-      setBlogs([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
+  const [blogs, setBlogs] = useState(
+    initialData.sort((a, b) => b.views - a.views).slice(0, 6)
+  );
 
   const togglePublish = async (blog: Blog) => {
     try {
@@ -61,14 +44,6 @@ export default function TopBlogsChart() {
   };
 
   const highestViews = blogs.length > 0 ? blogs[0].views : 0;
-
-  if (loading) {
-    return (
-      <div className="p-6 bg-[var(--color-bg)] rounded-2xl shadow-lg flex items-center justify-center h-[300px]">
-        <span className="text-gray-400">{t("loading")}</span>
-      </div>
-    );
-  }
 
   if (blogs.length === 0) {
     return (
@@ -88,9 +63,7 @@ export default function TopBlogsChart() {
 
   return (
     <div
-      className={`mt-6 overflow-x-auto flex ${
-        document.dir === "rtl" ? "flex-row-reverse" : "flex-row"
-      } gap-6`}
+      className={`mt-6 overflow-x-auto flex ${document.dir === "rtl" ? "flex-row-reverse" : "flex-row"} gap-6`}
     >
       <div
         style={{ minWidth: `${blogs.length * 50}px`, flex: 1 }}
@@ -174,7 +147,7 @@ export default function TopBlogsChart() {
               >
                 <td className="px-3 py-2 text-sm">
                   <span
-                    className="block truncate max-w-[10rem]" // truncate long titles with "..."
+                    className="block truncate max-w-[10rem]"
                     title={blog.title[locale] ?? blog.title.EN}
                   >
                     {blog.title[locale] ?? blog.title.EN}

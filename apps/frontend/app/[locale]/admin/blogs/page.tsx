@@ -79,7 +79,7 @@ export default function BlogsPage() {
           {t("title")}
         </h1>
         <Link
-          className="cursor-pointer px-4 py-2 rounded-lg font-medium transition-colors bg-[var(--color-primary)] text-[var(--color-text)] hover:bg-opacity-90"
+          className="cursor-pointer px-4 py-2 rounded-lg font-medium transition-colors bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90"
           href="blogs/blog"
         >
           {t("create")}
@@ -112,7 +112,7 @@ export default function BlogsPage() {
 
         <button
           onClick={() => fetchBlogs()}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors bg-[var(--color-primary)] text-white hover:bg-opacity-90`}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90`}
         >
           {t("searchButton")}
         </button>

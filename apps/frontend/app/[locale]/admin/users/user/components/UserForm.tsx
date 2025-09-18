@@ -214,7 +214,7 @@ export default function UserForm() {
         <button
           type="submit"
           disabled={loading}
-          className={`bg-[var(--color-primary)] text-[var(--color-bg)] rounded px-3 py-2 hover:bg-[var(--color-accent)]`}
+          className={`btn-primary`}
         >
           {loading ? t("loading") : isEdit ? t("update") : t("submit")}
         </button>

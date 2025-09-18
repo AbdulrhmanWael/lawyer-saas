@@ -93,10 +93,6 @@ body {
   background: var(--color-primary) !important;
 }
 
-.text-input {
-  @apply w-full border rounded px-3 py-2;
-}
-
 .PhoneInputCountry,
 .PhoneInputInput {
   margin: 0;
@@ -107,4 +103,20 @@ body {
 }
 .PhoneInputInput {
   border: none;
+}
+
+.text-input {
+  @apply w-full border rounded px-3 py-2;
+}
+
+.btn_primary {
+  @apply bg-[var(--color-primary)] text-[var(--color-bg)] rounded px-3 py-2 hover:bg-[var(--color-accent)];
+}
+
+.btn_secondary {
+  @apply bg-[var(--color-secondary)] text-[var(--color-bg)] rounded px-3 py-2 hover:bg-[var(--color-secondary)]/90;
+}
+
+button {
+  cursor: pointer;
 }
