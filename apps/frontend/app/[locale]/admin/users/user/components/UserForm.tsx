@@ -15,7 +15,6 @@ import {
   UpdateUserDto,
 } from "@/services/users";
 import AvatarInput from "@/components/common/AvatarInput";
-import { Button } from "@/components/ui/forms/Button";
 
 type UserFormData = {
   name: string;
@@ -167,11 +166,7 @@ export default function UserForm() {
         {/* Name */}
         <div>
           <label className="block font-bold text-lg mb-2">{t("name")}</label>
-          <input
-            type="text"
-            {...register("name")}
-            className="text-input"
-          />
+          <input type="text" {...register("name")} className="text-input" />
           {errors.name && (
             <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
           )}
@@ -180,11 +175,7 @@ export default function UserForm() {
         {/* Email */}
         <div>
           <label className="block font-bold text-lg mb-2">{t("email")}</label>
-          <input
-            type="email"
-            {...register("email")}
-            className="text-input"
-          />
+          <input type="email" {...register("email")} className="text-input" />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
           )}
@@ -211,11 +202,7 @@ export default function UserForm() {
         {/* Role */}
         <div>
           <label className="block font-bold text-lg mb-2">{t("role")}</label>
-          <input
-            type="text"
-            {...register("roleName")}
-            className="text-input"
-          />
+          <input type="text" {...register("roleName")} className="text-input" />
           {errors.roleName && (
             <p className="text-red-500 text-sm mt-1">
               {errors.roleName.message}
@@ -224,13 +211,13 @@ export default function UserForm() {
         </div>
 
         {/* Submit */}
-        <Button
+        <button
           type="submit"
           disabled={loading}
-          className="bg-[var(--color-primary)] text-[var(--color-bg)] rounded px-3 py-2 hover:bg-[var(--color-accent)]"
+          className={`bg-[var(--color-primary)] text-[var(--color-bg)] rounded px-3 py-2 hover:bg-[var(--color-accent)]`}
         >
           {loading ? t("loading") : isEdit ? t("update") : t("submit")}
-        </Button>
+        </button>
       </form>
     </div>
   );

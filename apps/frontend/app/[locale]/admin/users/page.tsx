@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 import Modal from "@/components/common/Modal";
-import { Button } from "@/components/ui/forms/Button";
 
 export default function UsersPage() {
   const t = useTranslations("Dashboard.Users");
@@ -101,7 +100,12 @@ export default function UsersPage() {
           />
         </div>
 
-        <Button onClick={() => fetchUsers()}>{t("searchButton")}</Button>
+        <button
+          onClick={() => fetchUsers()}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors bg-[var(--color-primary)] text-white hover:bg-opacity-90`}
+        >
+          {t("searchButton")}
+        </button>
       </div>
 
       {/* Table */}

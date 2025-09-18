@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 import Modal from "@/components/common/Modal";
-import { Button } from "../../../../components/ui/forms/Button";
 
 export default function BlogsPage() {
   const locale = useLocale();
@@ -111,7 +110,12 @@ export default function BlogsPage() {
           />
         </div>
 
-        <Button onClick={() => fetchBlogs()}>{t("searchButton")}</Button>
+        <button
+          onClick={() => fetchBlogs()}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors bg-[var(--color-primary)] text-white hover:bg-opacity-90`}
+        >
+          {t("searchButton")}
+        </button>
       </div>
 
       <Table<Blog>
