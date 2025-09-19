@@ -211,14 +211,14 @@ export default function AdminSettings() {
             <button
               onClick={handleSaveProfile}
               disabled={loading}
-              className="btn-primary"
+              className="btn_primary"
             >
               {loading ? t("saving") : t("done")}
             </button>
           ) : (
             <button
               onClick={() => setIsEditingProfile(true)}
-              className="btn-primary"
+              className="btn_primary"
             >
               {t("editProfile")}
             </button>
@@ -275,7 +275,7 @@ export default function AdminSettings() {
                 {t("cancel")}
               </button>
               <button
-                className="btn-primary"
+                className="btn_primary"
                 onClick={handleChangePassword}
                 disabled={loading}
               >

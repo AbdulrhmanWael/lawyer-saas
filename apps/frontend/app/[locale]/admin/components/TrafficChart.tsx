@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   LineChart,
   Line,
@@ -11,6 +11,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { useTranslations } from "next-intl";
+import { getTraffic } from "@/services/overview";
 
 type Traffic = { day: string; count: number };
 
@@ -23,13 +24,52 @@ export default function TrafficChart({
   const [traffic, setTraffic] = useState(initialData);
   const [period, setPeriod] = useState("7days");
 
-  const handlePeriodChange = async (newPeriod: string) => {
-    setPeriod(newPeriod);
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/traffic/summary?period=${newPeriod}`
+  const eventSourceRef = useRef<EventSource | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getTraffic(period).then((res) => {
+      if (isMounted) setTraffic(res);
+    });
+
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+    }
+
+    const url = new URL(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/page-view/stream`
     );
-    const data: Traffic[] = await res.json();
-    setTraffic(data);
+    url.searchParams.set("period", period);
+
+    const es = new EventSource(url.toString(), {
+      withCredentials: true,
+    });
+
+    es.onmessage = (event) => {
+      try {
+        const parsed: Traffic[] = JSON.parse(event.data);
+        setTraffic(parsed);
+      } catch (err) {
+        console.error("Failed to parse SSE event:", err, event.data);
+      }
+    };
+
+    es.onerror = (err) => {
+      console.error("SSE error:", err);
+      es.close();
+    };
+
+    eventSourceRef.current = es;
+
+    return () => {
+      isMounted = false;
+      es.close();
+    };
+  }, [period]);
+
+  const handlePeriodChange = (newPeriod: string) => {
+    setPeriod(newPeriod);
   };
 
   if (!traffic.length || Math.max(...traffic.map((t) => t.count)) === 0) {

@@ -214,7 +214,7 @@ export default function UserForm() {
         <button
           type="submit"
           disabled={loading}
-          className={`btn-primary`}
+          className={`btn_primary`}
         >
           {loading ? t("loading") : isEdit ? t("update") : t("submit")}
         </button>

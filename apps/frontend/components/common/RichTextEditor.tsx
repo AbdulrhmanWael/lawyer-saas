@@ -5,8 +5,10 @@ import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { TextStyle } from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
+import Image from "@tiptap/extension-image";
 import { useEffect } from "react";
-import '@/styles/editor.css'
+import "@/styles/editor.css";
+import { ImageDownIcon } from "lucide-react";
 
 interface RichTextEditorProps {
   value: string;
@@ -27,6 +29,7 @@ export default function RichTextEditor({
       }),
       TextStyle,
       Color,
+      Image,
       Placeholder.configure({ placeholder: placeholder ?? "Write something…" }),
     ],
     content: value,
@@ -61,7 +64,7 @@ export default function RichTextEditor({
               editor
                 .chain()
                 .focus()
-                .toggleHeading({ level: level as level})
+                .toggleHeading({ level: level as level })
                 .run()
             }
             className={`px-2 py-1 rounded ${
@@ -150,6 +153,29 @@ export default function RichTextEditor({
           }`}
         >
           {"</>"}
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/*";
+            input.onchange = async () => {
+              const file = input.files?.[0];
+              if (!file) return;
+
+              const reader = new FileReader();
+              reader.onload = () => {
+                const base64 = reader.result as string;
+                editor.chain().focus().setImage({ src: base64 }).run();
+              };
+              reader.readAsDataURL(file);
+            };
+            input.click();
+          }}
+          className="px-2 py-1 rounded"
+        >
+          <ImageDownIcon />
         </button>
 
         {/* Colors */}

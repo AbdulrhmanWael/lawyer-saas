@@ -38,7 +38,6 @@ export default function Header({ userProp }: { userProp?: any }) {
     });
 
     localStorage.removeItem("user");
-    document.cookie = "token=; Max-Age=0; path=/";
     router.push("/admin/login");
   };
 

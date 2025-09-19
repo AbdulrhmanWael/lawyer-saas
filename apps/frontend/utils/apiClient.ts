@@ -3,13 +3,26 @@ export async function apiFetch<T = any>(
   input: RequestInfo,
   init?: RequestInit
 ): Promise<T> {
+  const isServer = typeof window === "undefined";
+
+  let headers: HeadersInit = init?.headers || {};
+
+  if (isServer) {
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const cookieString = cookieStore.toString();
+    if (cookieString) {
+      headers = {
+        ...headers,
+        Cookie: cookieString,
+      };
+    }
+  }
+
   const res = await fetch(input, {
     ...init,
+    headers,
     credentials: "include",
-    headers: {
-      ...(init?.headers || {}),
-      Authorization: `Bearer ${await getAccessToken()}`,
-    },
   });
 
   if (res.status === 401) {
@@ -18,12 +31,11 @@ export async function apiFetch<T = any>(
       {
         method: "POST",
         credentials: "include",
+        headers,
       }
     );
 
     if (refreshed.ok) {
-      const data = await refreshed.json();
-      document.cookie = `token=${data.access_token}; path=/; SameSite=Lax`;
       return apiFetch<T>(input, init);
     } else {
       throw new Error("Unauthorized");
@@ -33,17 +45,6 @@ export async function apiFetch<T = any>(
   if (!res.ok) throw new Error(`Request failed: ${res.status}`);
 
   return res.json() as Promise<T>;
-}
-
-export async function getAccessToken(): Promise<string | null> {
-  if (typeof document !== "undefined") {
-    const match = /(^| )token=([^;]+)/.exec(document.cookie);
-    return match ? match[2] : null;
-  }
-
-  const { cookies } = await import("next/headers");
-  const cookieStore = await cookies();
-  return cookieStore.get("token")?.value ?? null;
 }
 
 export const apiClient = {
@@ -89,6 +90,7 @@ export const apiClient = {
           ? headers
           : { "Content-Type": "application/json", ...(headers || {}) },
     }),
+
   delete: <T>(url: string) =>
     apiFetch<T>(`${process.env.NEXT_PUBLIC_BACKEND_URL}${url}`, {
       method: "DELETE",

@@ -3,6 +3,7 @@ import { PageView } from './page-view.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import AuthRequest from 'src/auth/auth.request';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class PageViewService {
@@ -11,6 +12,11 @@ export class PageViewService {
     private readonly pageViewRepo: Repository<PageView>,
   ) {}
 
+  private readonly trafficSubjects = new Map<
+    string,
+    Subject<{ day: string; count: number }[]>
+  >();
+
   async trackView(body: { page?: string }, req: AuthRequest) {
     const ip = req.ip;
     await this.pageViewRepo.save({
@@ -18,10 +24,17 @@ export class PageViewService {
       ip,
       userId: req.user?.id,
     });
+    for (const [period, subject] of this.trafficSubjects.entries()) {
+      const summary = await this.getTrafficSummary(period);
+      subject.next(summary);
+    }
+
     return { success: true };
   }
 
-  async getTrafficSummary(period: string) {
+  async getTrafficSummary(
+    period: string,
+  ): Promise<{ day: string; count: number }[]> {
     const now = new Date();
     let startDate: Date;
 
@@ -58,5 +71,21 @@ export class PageViewService {
       .groupBy('day')
       .orderBy('day', 'ASC')
       .getRawMany();
+  }
+
+  getTrafficStream(
+    period: string,
+  ): Observable<{ day: string; count: number }[]> {
+    if (!this.trafficSubjects.has(period)) {
+      this.trafficSubjects.set(
+        period,
+        new Subject<{ day: string; count: number }[]>(),
+      );
+    }
+    return this.trafficSubjects.get(period)!.asObservable();
+  }
+
+  pushTrafficUpdate(period: string, data: { day: string; count: number }[]) {
+    this.trafficSubjects.get(period)?.next(data);
   }
 }

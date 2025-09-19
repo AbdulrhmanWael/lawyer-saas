@@ -39,8 +39,6 @@ export default function LoginPage() {
       if (!res.ok) throw new Error("Invalid credentials");
 
       const data = await res.json();
-      document.cookie = `token=${data.access_token}; path=/; SameSite=Lax`;
-
       localStorage.setItem("user", JSON.stringify(data.user));
 
       router.push("/admin");
