@@ -1,12 +1,16 @@
+// practice-area.entity.ts
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { StaffMember } from '../staff-member/staff-member.entity';
+import { Exclude } from 'class-transformer';
 
-@Entity()
+@Entity('practice_areas')
 export class PracticeArea {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -20,8 +24,8 @@ export class PracticeArea {
   @Column({ type: 'jsonb', default: {} })
   excerpt: Record<string, string>;
 
-  @Column({ type: 'text', nullable: true })
-  contentHtml: string;
+  @Column({ type: 'jsonb', default: {} })
+  contentHtml: Record<string, string>;
 
   @Column({ nullable: true })
   logoUrl: string;
@@ -35,6 +39,10 @@ export class PracticeArea {
     description?: Record<string, string>;
     canonical?: string;
   };
+
+  @OneToMany(() => StaffMember, (staff) => staff.practiceArea)
+  @Exclude()
+  staffMembers: StaffMember[];
 
   @CreateDateColumn()
   createdAt: Date;

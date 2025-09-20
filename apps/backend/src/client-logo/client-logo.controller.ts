@@ -6,7 +6,11 @@ import {
   Put,
   Param,
   Delete,
+  UploadedFile,
+  UseInterceptors,
+  ParseIntPipe,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ClientLogoService } from './client-logo.service';
 import { ClientLogo } from './client-logo.entity';
 
@@ -20,17 +24,26 @@ export class ClientLogoController {
   }
 
   @Post()
-  create(@Body() data: Partial<ClientLogo>) {
-    return this.logoService.create(data);
+  @UseInterceptors(FileInterceptor('imageFile'))
+  create(
+    @Body() data: Partial<ClientLogo>,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.logoService.create({ ...data, imageFile: file?.buffer });
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() data: Partial<ClientLogo>) {
-    return this.logoService.update(id, data);
+  @UseInterceptors(FileInterceptor('imageFile'))
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: Partial<ClientLogo>,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.logoService.update(id, { ...data, imageFile: file?.buffer });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.logoService.remove(id);
   }
 }

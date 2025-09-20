@@ -9,7 +9,6 @@ interface CoverImageInputProps {
 }
 
 export default function CoverImageInput({
-  value,
   onChange,
   preview,
 }: Readonly<CoverImageInputProps>) {

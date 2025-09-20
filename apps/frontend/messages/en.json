@@ -1,5 +1,43 @@
 {
   "Dashboard": {
+    "CarouselItems": {
+      "carouselSection": "Carousel Section",
+      "item": "Item",
+      "paragraph": "Paragraph",
+      "buttonText": "Button Text",
+      "image": "Image",
+      "newItem": "New Carousel Item",
+      "addItem": "Add Item",
+      "saveItem": "Save Item",
+      "submitCarousel": "Submit Carousel"
+    },
+    "WhyUsSection": {
+      "whyUsSection": "Why Us Section",
+      "title": "Title",
+      "paragraph": "Paragraph",
+      "buttonText": "Button Text",
+      "submitWhyUs": "Save Section",
+      "loading": "Loading...",
+      "createdSuccessfully`": "Created successfully",
+      "updatedSuccessfully`": "Updated successfully"
+    },
+    "TestimonialsSection": {
+      "testimonialsSection": "Testimonials Section",
+      "person": "Person",
+      "quote": "Quote",
+      "rating": "Rating",
+      "image": "Image",
+      "submit": "Submit",
+      "addTestimonial": "Add Testimonial"
+    },
+    "ClientsSection": {
+      "clientsSection": "Clients Section",
+      "name": "Name",
+      "image": "Image",
+      "isActive": "isActive",
+      "submit": "Submit",
+      "addClient": "Add Client"
+    },
     "Faqs": {
       "addGroup": "Add FAQ Group",
       "editGroup": "Edit FAQ Group",
@@ -48,7 +86,10 @@
       "settings": "Settings",
       "blogs": "Blogs",
       "contacts": "Contacts",
-      "faq": "FAQ"
+      "homeConfig": "Home Page",
+      "faq": "FAQ",
+      "practiceAreas": "Practice Areas",
+      "newsletter": "Newsletter"
     },
     "Header": {
       "title": "Admin Panel",
@@ -192,6 +233,71 @@
       "read": "Read Messages",
       "markUnread": "Mark as Unread",
       "delete": "Delete"
+    },
+
+    "PracticeAreas": {
+      "heading": "Practice Areas",
+      "edit": "Edit",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "confirmDeleteTitle": "Are you sure you want to delete this practice area?"
+    },
+    "PracticeAreaForm": {
+      "editHeader": "Edit Practice Area",
+      "title": "Title",
+      "excerpt": "Excerpt",
+      "content": "Content",
+      "coverImage": "Cover Image",
+      "logoImage": "Logo Image",
+      "seoMeta": "SEO Meta",
+      "seoTitle": "SEO Title",
+      "seoDescription": "SEO Description",
+      "seoCanonical": "Canonical URL",
+      "submit": "Save Changes",
+      "languageSwitcher": "Language",
+      "translate": "Copy to all languages",
+      "slug": "Slug",
+      "slugHelp": "Slug is generated from the title and cannot be changed",
+      "removeImage": "Remove Image",
+      "addImage": "Add Image",
+      "required": "This field is required"
+    },
+    "Staff": {
+      "createTitle": "Add New Staff Member",
+      "editTitle": "Edit Staff Member",
+      "staffList": "Our Staff",
+      "name": "Name",
+      "position": "Position",
+      "practiceArea": "Practice Area",
+      "order": "Order",
+      "bio": "Bio",
+      "image": "Profile Image",
+      "save": "Save",
+      "create": "Create",
+      "update": "Update",
+      "selectPracticeArea": "Select Practice Area"
+    },
+    "Newsletter": {
+      "title": "Newsletter Management",
+      "sendTitle": "Send Newsletter",
+      "subject": "Subject",
+      "content": "Content",
+      "send": "Send",
+      "settingsTitle": "Mail Settings",
+      "host": "SMTP Host",
+      "port": "SMTP Port",
+      "user": "SMTP User",
+      "pass": "SMTP Password",
+      "from": "From Email",
+      "save": "Save",
+      "subscribersLink": "Subscribers",
+      "contentPlaceholder": "Write your content...",
+      "subscribers": {
+        "title": "Subscribers",
+        "email": "Email",
+        "active": "Active",
+        "loading": "Loading subscribers..."
+      }
     }
   }
 }

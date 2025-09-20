@@ -6,7 +6,10 @@ import {
   Put,
   Param,
   Delete,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { CarouselItemService } from './carousel-item.service';
 import { CarouselItem } from './carousel-item.entity';
 
@@ -20,13 +23,28 @@ export class CarouselItemController {
   }
 
   @Post()
-  create(@Body() data: Partial<CarouselItem>) {
-    return this.carouselService.create(data);
+  @UseInterceptors(FileInterceptor('image'))
+  create(
+    @Body() data: Partial<CarouselItem>,
+    @UploadedFile() imageFile: Express.Multer.File,
+  ) {
+    return this.carouselService.create({
+      ...data,
+      imageFile: imageFile?.buffer,
+    });
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() data: Partial<CarouselItem>) {
-    return this.carouselService.update(id, data);
+  @UseInterceptors(FileInterceptor('image'))
+  update(
+    @Param('id') id: number,
+    @Body() data: Partial<CarouselItem>,
+    @UploadedFile() imageFile: Express.Multer.File,
+  ) {
+    return this.carouselService.update(id, {
+      ...data,
+      imageFile: imageFile?.buffer,
+    });
   }
 
   @Delete(':id')

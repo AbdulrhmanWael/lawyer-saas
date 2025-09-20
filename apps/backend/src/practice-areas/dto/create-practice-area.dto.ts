@@ -11,7 +11,7 @@ export class CreatePracticeAreaDto {
   excerpt?: Record<string, string>;
 
   @IsOptional()
-  contentHtml?: string;
+  contentHtml?: Record<string, string>;
 
   @IsOptional()
   @IsUrl()

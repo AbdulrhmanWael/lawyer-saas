@@ -2,14 +2,14 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('testimonials')
 export class Testimonial {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   person: string;
 
   @Column({ type: 'text' })
-  quote: string;
+  quote: Record<string, string>;
 
   @Column({ type: 'int', default: 5 })
   rating: number;

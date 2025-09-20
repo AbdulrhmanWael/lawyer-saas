@@ -5,11 +5,8 @@ export class CarouselItem {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  title: string;
-
-  @Column('text', { nullable: true })
-  subtitle: string;
+  @Column({ type: 'jsonb', nullable: true })
+  paragraph: Record<string, string>;
 
   @Column()
   imageUrl: string;

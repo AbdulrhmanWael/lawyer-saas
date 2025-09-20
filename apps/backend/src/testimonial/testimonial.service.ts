@@ -14,7 +14,7 @@ export class TestimonialService {
     return this.repo.find();
   }
 
-  async findOne(id: number): Promise<Testimonial> {
+  async findOne(id: string): Promise<Testimonial> {
     const testimonial = await this.repo.findOne({ where: { id } });
     if (!testimonial) throw new NotFoundException('Testimonial not found');
     return testimonial;
@@ -25,12 +25,12 @@ export class TestimonialService {
     return this.repo.save(testimonial);
   }
 
-  async update(id: number, data: Partial<Testimonial>): Promise<Testimonial> {
+  async update(id: string, data: Partial<Testimonial>): Promise<Testimonial> {
     await this.repo.update(id, data);
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.repo.delete(id);
   }
 }

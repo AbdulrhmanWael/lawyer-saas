@@ -18,6 +18,7 @@ export type TableProps<T extends { id?: string | number }> = {
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
   sortable?: boolean;
+  showActions?: boolean;
 };
 
 export default function Table<T extends { id?: string | number }>({
@@ -27,6 +28,7 @@ export default function Table<T extends { id?: string | number }>({
   onEdit,
   onDelete,
   sortable = true,
+  showActions = true,
 }: Readonly<TableProps<T>>) {
   const t = useTranslations("Dashboard.Blogs.table");
 
@@ -108,25 +110,20 @@ export default function Table<T extends { id?: string | number }>({
                 <div className="flex items-center justify-between gap-1">
                   <span>{col.header}</span>
                   <span className="w-4 h-4 flex items-center justify-center">
-                    {(() => {
-                      let icon;
-                      if (sortBy === col.accessor) {
-                        icon =
-                          sortOrder === "asc" ? (
-                            <ChevronUp className="w-4 h-4" />
-                          ) : (
-                            <ChevronDown className="w-4 h-4" />
-                          );
-                      } else {
-                        icon = <ChevronUp className="w-4 h-4 opacity-0" />;
-                      }
-                      return icon;
-                    })()}
+                    {sortBy === col.accessor ? (
+                      sortOrder === "asc" ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      )
+                    ) : (
+                      <ChevronUp className="w-4 h-4 opacity-0" />
+                    )}
                   </span>
                 </div>
               </th>
             ))}
-            {(onEdit || onDelete) && (
+            {showActions && (onEdit || onDelete) && (
               <th className="px-4 text-sm font-bold py-2">{t("actions")}</th>
             )}
           </tr>
@@ -135,7 +132,9 @@ export default function Table<T extends { id?: string | number }>({
           {paginatedData.length === 0 ? (
             <tr>
               <td
-                colSpan={columns.length + (onEdit || onDelete ? 1 : 0)}
+                colSpan={
+                  columns.length + (showActions && (onEdit || onDelete) ? 1 : 0)
+                }
                 className="text-center py-4"
               >
                 {t("noData")}
@@ -157,7 +156,7 @@ export default function Table<T extends { id?: string | number }>({
                     {getCellValue(item, col.accessor)}
                   </td>
                 ))}
-                {(onEdit || onDelete) && (
+                {showActions && (onEdit || onDelete) && (
                   <td className="justify-center items-center px-4 py-2 flex gap-2 border-t border-[var(--color-border)]">
                     {onEdit && (
                       <button

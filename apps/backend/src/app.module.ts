@@ -16,7 +16,6 @@ import { PracticeAreasModule } from './practice-areas/practice-areas.module';
 import { SiteSettingsModule } from './site-settings/site-settings.module';
 import { TestimonialModule } from './testimonial/testimonial.module';
 import { StaffMemberModule } from './staff-member/staff-member.module';
-import { TranslationModule } from './translation/translation.module';
 import { SeedService } from './seed/seed.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -27,6 +26,8 @@ import { ContactModule } from './contact/contact.module';
 import * as redisStore from 'cache-manager-ioredis';
 import { FaqModule } from './faq/faq.module';
 import { FaqGroupModule } from './faq/faq-group.module';
+import { WhyUsModule } from './why-us/why-us.module';
+import { NewsletterModule } from './newsletter/newsletter.module';
 
 @Module({
   imports: [
@@ -65,12 +66,13 @@ import { FaqGroupModule } from './faq/faq-group.module';
     ClientLogoModule,
     TestimonialModule,
     StaffMemberModule,
-    TranslationModule,
     SearchModule,
     PageViewModule,
     ContactModule,
     FaqModule,
     FaqGroupModule,
+    WhyUsModule,
+    NewsletterModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],

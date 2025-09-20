@@ -105,6 +105,14 @@ body {
   border: none;
 }
 
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 .text-input {
   @apply w-full border rounded px-3 py-2;
 }
