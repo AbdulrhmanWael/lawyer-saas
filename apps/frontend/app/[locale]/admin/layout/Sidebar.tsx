@@ -13,6 +13,7 @@ import {
   TagsIcon,
   ChevronsLeftRightIcon,
   LucideScrollText,
+  LucideSettings2,
 } from "lucide-react";
 import { useSidebar } from "../context/SidebarContext";
 import { useEffect, useState } from "react";
@@ -37,12 +38,25 @@ export default function Sidebar() {
   const routes = [
     { label: t("overview"), href: "/admin", icon: Home },
     { label: t("blogs"), href: "/admin/blogs", icon: BookText },
-    { label: t("users"), href: "/admin/users", icon: Users },
-    { label: t("homeConfig"), href:"/admin/home-config", icon: ChevronsLeftRightIcon},
-    { label: t("practiceAreas"), href:"/admin/practice-areas", icon: TagsIcon},
+    {
+      label: t("homeConfig"),
+      href: "/admin/home-config",
+      icon: ChevronsLeftRightIcon,
+    },
+    {
+      label: t("practiceAreas"),
+      href: "/admin/practice-areas",
+      icon: TagsIcon,
+    },
     { label: t("contacts"), href: "/admin/contacts", icon: PhoneCallIcon },
     { label: t("faq"), href: "/admin/faqs", icon: MessageCircleQuestion },
-    { label: t("newsletter") ,href:"/admin/newsletter", icon: LucideScrollText},
+    {
+      label: t("newsletter"),
+      href: "/admin/newsletter",
+      icon: LucideScrollText,
+    },
+    { label: t("users"), href: "/admin/users", icon: Users },
+    { label: t("roleManagement"), href: "/admin/roles", icon: LucideSettings2 },
     { label: t("settings"), href: "/admin/settings", icon: Settings },
   ];
 

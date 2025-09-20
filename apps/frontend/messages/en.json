@@ -89,7 +89,8 @@
       "homeConfig": "Home Page",
       "faq": "FAQ",
       "practiceAreas": "Practice Areas",
-      "newsletter": "Newsletter"
+      "newsletter": "Newsletter",
+      "roleManagement": "Role Management"
     },
     "Header": {
       "title": "Admin Panel",
@@ -298,6 +299,19 @@
         "active": "Active",
         "loading": "Loading subscribers..."
       }
+    },
+    "Roles": {
+      "title": "Role Management",
+      "createRole": "Create Role",
+      "roleName": "Role Name",
+      "permissions": "Permissions",
+      "save": "Save",
+      "cancel": "Cancel",
+      "editPermissions": "Edit Permissions",
+      "assignedPermissions": "Assigned Permissions",
+      "availablePermissions": "Available Permissions",
+      "update": "Update",
+      "loading": "Loading..."
     }
   }
 }

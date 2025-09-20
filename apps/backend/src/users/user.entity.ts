@@ -26,7 +26,7 @@ export class User {
   @Column({ nullable: true })
   avatarUrl: string;
 
-  @ManyToOne(() => Role, { eager: true })
+  @ManyToOne(() => Role, (role) => role.users, { eager: true })
   @JoinColumn()
   role: Role;
 

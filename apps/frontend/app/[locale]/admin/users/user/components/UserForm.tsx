@@ -5,7 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   createUser,
@@ -13,8 +13,10 @@ import {
   getUser,
   CreateUserDto,
   UpdateUserDto,
+  Role,
 } from "@/services/users";
 import AvatarInput from "@/components/common/AvatarInput";
+import { apiClient } from "@/utils/apiClient";
 
 type UserFormData = {
   name: string;
@@ -32,6 +34,12 @@ export default function UserForm() {
 
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [roles, setRoles] = useState<Role[]>();
+
+  const fetchRoles = useCallback(async () => {
+    const roles = await Promise.resolve(apiClient.get<Role[]>("/roles"));
+    setRoles(roles);
+  }, []);
 
   const userSchema = z.object({
     name: z.string().min(2, "Name is required"),
@@ -63,6 +71,7 @@ export default function UserForm() {
   });
 
   useEffect(() => {
+    fetchRoles();
     if (params.id) {
       (async () => {
         setLoading(true);
@@ -80,7 +89,7 @@ export default function UserForm() {
         setLoading(false);
       })();
     }
-  }, [params.id, reset]);
+  }, [params.id, reset, fetchRoles]);
 
   const onSubmit = async (data: UserFormData) => {
     setLoading(true);
@@ -202,7 +211,13 @@ export default function UserForm() {
         {/* Role */}
         <div>
           <label className="block font-bold text-lg mb-2">{t("role")}</label>
-          <input type="text" {...register("roleName")} className="text-input" />
+          <select {...register("roleName")} className="text-input">
+            {roles?.map((role) => (
+              <option key={role.id} value={role.name}>
+                {role.name}
+              </option>
+            ))}
+          </select>
           {errors.roleName && (
             <p className="text-red-500 text-sm mt-1">
               {errors.roleName.message}
@@ -211,11 +226,7 @@ export default function UserForm() {
         </div>
 
         {/* Submit */}
-        <button
-          type="submit"
-          disabled={loading}
-          className={`btn_primary`}
-        >
+        <button type="submit" disabled={loading} className={`btn_primary`}>
           {loading ? t("loading") : isEdit ? t("update") : t("submit")}
         </button>
       </form>

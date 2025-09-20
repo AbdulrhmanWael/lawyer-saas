@@ -5,6 +5,7 @@ import Sidebar from "./layout/Sidebar";
 import Header from "./layout/Header";
 import "../globals.css";
 import { usePathname } from "next/navigation";
+import { Toaster } from "react-hot-toast";
 
 function AdminShell({ children }: { children: React.ReactNode }) {
   const { isOpen } = useSidebar();
@@ -32,6 +33,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
         {!isAuthPage && <Header />}
         <main className="p-6">{children}</main>
       </div>
+      <Toaster position="top-right" />
     </div>
   );
 }

@@ -65,6 +65,8 @@ export class AuthController {
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const refreshToken = req.cookies['refresh_token'];
+    console.log('called refresh with token: ', refreshToken);
+
     if (!refreshToken)
       throw new UnauthorizedException('No refresh token provided');
 
@@ -88,6 +90,8 @@ export class AuthController {
       maxAge: 15 * 60 * 1000,
     });
 
+    console.log('issued cookie tokens');
+
     return { success: true };
   }
 
@@ -102,11 +106,11 @@ export class AuthController {
     return { message: 'Logged out successfully' };
   }
 
-  // ✅ New endpoint
   @Get('me')
   async me(@Req() req: Request) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const token = req.cookies['token'];
+    console.log('called /auth/me with token: ', token);
     if (!token) throw new UnauthorizedException('Not logged in');
 
     let payload: { sub: string; email: string; role: any };
@@ -121,6 +125,8 @@ export class AuthController {
     }
 
     const user = await this.authService.usersService.findOne(payload.sub);
+
+    console.log('returned user: ', user);
 
     return {
       id: user.id,

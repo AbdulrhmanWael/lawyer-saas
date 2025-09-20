@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function apiFetch<T = any>(
   input: RequestInfo,
@@ -43,6 +45,14 @@ export async function apiFetch<T = any>(
   }
 
   if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+
+  // Show success toast for POST, PUT, PATCH
+  if (
+    init?.method &&
+    ["POST", "PUT", "PATCH"].includes(init.method.toUpperCase())
+  ) {
+    toast.success("Request successful!");
+  }
 
   return res.json() as Promise<T>;
 }

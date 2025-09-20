@@ -1,7 +1,7 @@
+import { useLocale } from "next-intl";
 
-
-export default function LocaleIndex(props: { params: { locale: string } }) {
-  const { locale } = props.params;
+export default function LocaleIndex() {
+  const locale = useLocale();
 
   return (
     <>
