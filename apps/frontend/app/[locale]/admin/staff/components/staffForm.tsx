@@ -52,7 +52,7 @@ export default function StaffForm({
 
   useEffect(() => {
     if (defaultValues) {
-      console.log(defaultValues);
+
       reset({
         bio: defaultValues.bio ?? {},
         ...defaultValues,

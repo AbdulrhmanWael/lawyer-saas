@@ -27,7 +27,6 @@ export default function StaffPage() {
           ...m,
           bio: safeParseBio(m.bio),
         }));
-        console.log(normalized);
         setStaff(normalized);
       } catch (err) {
         console.error("Failed to load staff", err);

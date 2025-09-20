@@ -3,6 +3,7 @@ import { routing } from "./i18n/routing";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { apiFetchEdge } from "./utils/apiFetch";
+
 const intlMiddleware = createMiddleware(routing);
 
 export async function middleware(req: NextRequest) {
@@ -17,13 +18,15 @@ export async function middleware(req: NextRequest) {
   if (isAdminRoute && !isLoginPage) {
     try {
       const user = await apiFetchEdge<{ role: string }>(req, "/auth/me");
-      console.log('called /auth/me returned user: ',user);
-      if (user.role !== "admin") {
+
+      const roles = await apiFetchEdge<{ name: string }[]>(req, "/roles");
+      const allowedRoles = roles.map((r) => r.name);
+
+      if (!allowedRoles.includes(user.role)) {
         const referer = req.headers.get("referer");
         const fallback = `/${locale}`;
         let redirectTo = fallback;
 
-        console.log("redirecting to: ",redirectTo);
         if (referer) {
           const refUrl = new URL(referer, req.url);
           redirectTo = `/${locale}${refUrl.pathname}`;
@@ -33,7 +36,8 @@ export async function middleware(req: NextRequest) {
       }
 
       return res;
-    } catch {
+    } catch (err) {
+      console.error("middleware error:", err);
       return NextResponse.redirect(new URL(`/${locale}/admin/login`, req.url));
     }
   }
