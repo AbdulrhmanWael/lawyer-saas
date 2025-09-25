@@ -13,11 +13,18 @@ export class SiteSettings {
   @Column({ nullable: true })
   logoUrl: string;
 
+  @Column({ nullable: true })
+  metaTitle: string;
+
+  @Column({ nullable: true })
+  metaDescription: string;
+
   @Column({ type: 'jsonb', default: {} })
   footer: {
     email?: string;
     phone?: string;
     social?: Record<string, string>;
+    address?: string;
   };
 
   @Column({ type: 'jsonb', default: {} })

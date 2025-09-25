@@ -74,7 +74,7 @@ export default function DashboardPage() {
         t("ClientsSection.clientsSection"),
         clientsOpen,
         () => setClientsOpen((prev) => !prev),
-        <ClientsSection activeLang={activeLang} />
+        <ClientsSection />
       )}
     </div>
   );

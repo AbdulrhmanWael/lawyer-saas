@@ -1,6 +1,9 @@
 import { apiClient } from "@/utils/apiClient";
 
 export interface CarouselItemPayload {
+  buttonText: Record<string, string>;
+  buttonLink: string;
+  header: Record<string, string>;
   paragraph: Record<string, string>;
   order: number;
   isActive?: boolean;
@@ -9,6 +12,9 @@ export interface CarouselItemPayload {
 
 export interface CarouselItem {
   id: string;
+  buttonText: Record<string, string>;
+  buttonLink: string;
+  header: Record<string, string>;
   paragraph: Record<string, string>;
   order: number;
   isActive: boolean;
@@ -20,7 +26,10 @@ export const carouselClient = {
 
   create: async (payload: CarouselItemPayload) => {
     const formData = new FormData();
+    formData.append("header", JSON.stringify(payload.header));
     formData.append("paragraph", JSON.stringify(payload.paragraph));
+    formData.append("buttonLink", payload.buttonLink);
+    formData.append("buttonText", JSON.stringify(payload.buttonText));
     formData.append("order", String(payload.order));
     if (payload.isActive !== undefined)
       formData.append("isActive", String(payload.isActive));
@@ -31,7 +40,10 @@ export const carouselClient = {
 
   update: async (id: string, payload: CarouselItemPayload) => {
     const formData = new FormData();
+    formData.append("header", JSON.stringify(payload.header));
     formData.append("paragraph", JSON.stringify(payload.paragraph));
+    formData.append("buttonLink", payload.buttonLink);
+    formData.append("buttonText", JSON.stringify(payload.buttonText));
     formData.append("order", String(payload.order));
     if (payload.isActive !== undefined)
       formData.append("isActive", String(payload.isActive));

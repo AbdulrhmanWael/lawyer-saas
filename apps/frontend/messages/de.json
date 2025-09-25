@@ -4,6 +4,7 @@
       "carouselSection": "Karussell Abschnitt",
       "item": "Element",
       "paragraph": "Absatz",
+      "header": "Kopfzeile",
       "buttonText": "Schaltflächentext",
       "image": "Bild",
       "newItem": "Neues Karussell-Element",
@@ -90,7 +91,13 @@
       "faq": "FAQ",
       "practiceAreas": "Praxisbereiche",
       "newsletter": "Newsletter",
-      "roleManagement": "Rollenverwaltung"
+      "roleManagement": "Rollenverwaltung",
+      "addressPlaceholder": "Adresse",
+      "meta": "Meta",
+      "metaTitle": "Meta-Titel",
+      "metaDescription": "Meta-Beschreibung",
+      "metaTitlePlaceholder": "Geben Sie den Titel Ihrer Website ein",
+      "metaDescriptionPlaceholder": "Geben Sie die Beschreibung Ihrer Website ein"
     },
     "Header": {
       "title": "Admin-Panel",
@@ -311,6 +318,123 @@
       "availablePermissions": "Verfügbare Berechtigungen",
       "update": "Aktualisieren",
       "loading": "Laden..."
+    },
+    "ContentEditor": {
+      "placeholder": "Schreibe etwas…",
+      "save": "Speichern",
+      "saving": "Speichert..."
+    }
+  },
+  "Main": {
+    "nav": {
+      "home": "Startseite",
+      "about": "Über uns",
+      "services": "Dienstleistungen",
+      "blogs": "Blogs",
+      "faqs": "FAQs",
+      "contact": "Kontakt"
+    },
+    "footer": {
+      "newsletterHeading": "Bleiben Sie informiert",
+      "newsletterText": "Abonnieren Sie unseren Newsletter für rechtliche Updates, Artikel und Neuigkeiten.",
+      "subscribePlaceholder": "Ihre E-Mail eingeben",
+      "subscribeButton": "Abonnieren",
+      "contactHeading": "Kontaktdaten",
+      "address": "Adresse",
+      "callUs": "Rufen Sie uns an",
+      "email": "E-Mail",
+      "infoHeading": "Informationen",
+      "aboutUs": "Über uns",
+      "ourStaff": "Unser Team",
+      "privacyPolicy": "Datenschutz",
+      "contactUs": "Kontakt",
+      "faq": "FAQ",
+      "blogs": "Blogs",
+      "servicesHeading": "Dienstleistungen",
+      "copyright": "© {year} Alle Rechte vorbehalten."
+    },
+    "Home": {
+      "carousel": {
+        "learnMore": "Mehr erfahren"
+      },
+      "services": {
+        "title": "Unsere Fachgebiete",
+        "learnMore": "Mehr lesen"
+      },
+      "whyUs": {
+        "features": [
+          {
+            "title": "Kundenzufriedenheit",
+            "description": "Wir stellen Ihre Bedürfnisse an erste Stelle und liefern herausragende Ergebnisse."
+          },
+          {
+            "title": "Schnelle Rechtslösungen",
+            "description": "Zeitnahe und effiziente Dienstleistungen zur schnellen Lösung Ihrer Anliegen."
+          },
+          {
+            "title": "Datenschutz zuerst",
+            "description": "Ihre Informationen werden stets sicher und vertraulich behandelt."
+          },
+          {
+            "title": "Expertenteam",
+            "description": "Unsere erfahrenen Fachleute bringen jahrelange rechtliche Erfahrung mit."
+          },
+          {
+            "title": "Integrität & Fairness",
+            "description": "Wir gewährleisten Gerechtigkeit und Fairness in jedem Fall."
+          }
+        ]
+      },
+      "staff": {
+        "title": "Unser Team kennenlernen",
+        "intro": "Unsere engagierten Fachleute stehen Ihnen für vertrauenswürdige Beratung und erstklassigen Service zur Verfügung."
+      },
+      "blogs": {
+        "title": "Neueste Artikel",
+        "intro": "Bleiben Sie informiert mit unseren aktuellen Einblicken und Updates.",
+        "showMore": "Alle Artikel ansehen"
+      },
+      "testimonials": {
+        "title": "Was unsere Kunden sagen",
+        "intro": "Wir sind stolz darauf, das Vertrauen unserer Kunden gewonnen zu haben."
+      },
+      "clients": {
+        "title": "Unsere Kunden",
+        "intro": "Wir fühlen uns geehrt, mit diesen angesehenen Organisationen zusammenzuarbeiten."
+      }
+    },
+    "about": {
+      "title": "Über uns",
+      "description": "Erfahren Sie mehr über unsere Mission, Werte und das Team hinter unserer Arbeit."
+    },
+    "privacyPolicy": {
+      "title": "Datenschutz",
+      "description": "Lesen Sie unsere Datenschutzrichtlinie, um zu verstehen, wie wir Ihre persönlichen Daten verarbeiten und schützen."
+    },
+    "Contact": {
+      "title": "Kontakt",
+      "intro": "Haben Sie Fragen? Kontaktieren Sie uns über das Formular oder direkt.",
+      "name": "Vollständiger Name",
+      "email": "E-Mail-Adresse",
+      "phone": "Telefonnummer",
+      "titleField": "Nachrichtentitel",
+      "details": "Nachrichtendetails",
+      "submit": "Nachricht senden",
+      "loading": "Senden...",
+      "success": "Ihre Nachricht wurde erfolgreich gesendet!",
+      "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+    },
+    "Faq": {
+      "title": "Häufig gestellte Fragen",
+      "intro": "Finden Sie unten Antworten auf die häufigsten Fragen. Noch neugierig? Kontaktieren Sie uns jederzeit.",
+      "searchPlaceholder": "FAQs durchsuchen..."
+    },
+    "Blogs": {
+      "searchTopics": "Themen durchsuchen",
+      "searchPlaceholder": "Nach Artikeln suchen...",
+      "latestArticles": "Neueste Artikel",
+      "loading": "Laden...",
+      "noArticles": "Keine Artikel verfügbar"
     }
   }
 }

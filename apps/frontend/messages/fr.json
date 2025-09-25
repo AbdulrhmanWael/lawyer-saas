@@ -1,0 +1,114 @@
+{
+  "Main": {
+    "nav": {
+      "home": "Accueil",
+      "about": "À propos de nous",
+      "services": "Services",
+      "blogs": "Blogs",
+      "faqs": "FAQ",
+      "contact": "Contactez-nous"
+    },
+    "footer": {
+      "newsletterHeading": "Restez informé",
+      "newsletterText": "Abonnez-vous à notre newsletter pour des mises à jour juridiques, des articles et des actualités.",
+      "subscribePlaceholder": "Entrez votre email",
+      "subscribeButton": "S'abonner",
+      "contactHeading": "Coordonnées",
+      "address": "Adresse",
+      "callUs": "Appelez-nous",
+      "email": "Email",
+      "infoHeading": "Informations",
+      "aboutUs": "À propos de nous",
+      "ourStaff": "Notre équipe",
+      "privacyPolicy": "Politique de confidentialité",
+      "contactUs": "Contactez-nous",
+      "faq": "FAQ",
+      "blogs": "Blogs",
+      "servicesHeading": "Services",
+      "copyright": "© {year} Tous droits réservés."
+    },
+    "Home": {
+      "carousel": {
+        "learnMore": "En savoir plus"
+      },
+      "services": {
+        "title": "Nos domaines de pratique",
+        "learnMore": "Lire la suite"
+      },
+      "whyUs": {
+        "features": [
+          {
+            "title": "Satisfaction client",
+            "description": "Nous plaçons vos besoins en priorité et offrons des résultats exceptionnels."
+          },
+          {
+            "title": "Solutions juridiques rapides",
+            "description": "Des services rapides et efficaces pour résoudre vos préoccupations rapidement."
+          },
+          {
+            "title": "Confidentialité avant tout",
+            "description": "Vos informations sont toujours sécurisées et confidentielles."
+          },
+          {
+            "title": "Équipe d'experts",
+            "description": "Nos professionnels qualifiés apportent des années d'expérience juridique."
+          },
+          {
+            "title": "Intégrité et équité",
+            "description": "Nous assurons justice et équité dans chaque dossier que nous traitons."
+          }
+        ]
+      },
+      "staff": {
+        "title": "Rencontrez notre équipe",
+        "intro": "Nos professionnels dévoués sont là pour vous offrir des conseils fiables et un service exceptionnel."
+      },
+      "blogs": {
+        "title": "Derniers articles",
+        "intro": "Restez informé avec nos dernières analyses et mises à jour.",
+        "showMore": "Voir tous les articles"
+      },
+      "testimonials": {
+        "title": "Ce que disent nos clients",
+        "intro": "Nous sommes fiers d'avoir gagné la confiance de nos clients."
+      },
+      "clients": {
+        "title": "Nos clients",
+        "intro": "Nous sommes honorés de travailler avec ces organisations réputées."
+      }
+    },
+    "about": {
+      "title": "À propos de nous",
+      "description": "En savoir plus sur notre mission, nos valeurs et l'équipe derrière notre travail."
+    },
+    "privacyPolicy": {
+      "title": "Politique de confidentialité",
+      "description": "Lisez notre politique de confidentialité pour comprendre comment nous traitons et protégeons vos données personnelles."
+    },
+    "Contact": {
+      "title": "Contactez-nous",
+      "intro": "Des questions ? Contactez-nous en remplissant le formulaire ou directement.",
+      "name": "Nom complet",
+      "email": "Adresse e-mail",
+      "phone": "Numéro de téléphone",
+      "titleField": "Objet du message",
+      "details": "Détails du message",
+      "submit": "Envoyer le message",
+      "loading": "Envoi...",
+      "success": "Votre message a été envoyé avec succès !",
+      "error": "Une erreur s'est produite. Veuillez réessayer."
+    },
+    "Faq": {
+      "title": "Questions fréquentes",
+      "intro": "Trouvez ci-dessous les réponses aux questions les plus courantes. Toujours curieux ? Contactez-nous à tout moment.",
+      "searchPlaceholder": "Rechercher dans les FAQ..."
+    },
+    "Blogs": {
+      "searchTopics": "Rechercher des sujets",
+      "searchPlaceholder": "Rechercher des articles...",
+      "latestArticles": "Derniers articles",
+      "loading": "Chargement...",
+      "noArticles": "Aucun article disponible"
+    }
+  }
+}

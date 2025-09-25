@@ -6,7 +6,16 @@ export class CarouselItem {
   id: number;
 
   @Column({ type: 'jsonb', nullable: true })
+  header: Record<string, string>;
+
+  @Column({ type: 'jsonb', nullable: true })
   paragraph: Record<string, string>;
+
+  @Column({ type: 'jsonb', nullable: true, default: {} })
+  buttonText: Record<string, string>;
+
+  @Column({ nullable: true, default: '' })
+  buttonLink: string;
 
   @Column()
   imageUrl: string;

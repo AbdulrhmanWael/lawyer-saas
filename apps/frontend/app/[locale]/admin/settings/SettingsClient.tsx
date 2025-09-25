@@ -14,16 +14,19 @@ import {
   FaFacebook,
   FaWhatsapp,
   FaInstagram,
-  FaTwitter,
   FaLinkedin,
 } from "react-icons/fa";
-import { Mail, Phone } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
+import { Mail, MapPin, Phone } from "lucide-react";
 import ColorsSection from "./components/ColorSelection";
 import { ApplyThemeVariables } from "./components/ApplyThemeVariables";
 import toast, { Toaster } from "react-hot-toast";
+import { useSiteData } from "../../context/SiteContext";
 
 const SiteSettingsSchema = z.object({
   logoUrl: z.string().nullable().optional(),
+  metaTitle: z.string().nullable().optional(),
+  metaDescription: z.string().nullable().optional(),
   footer: z.object({
     email: z.email("invalidEmail").optional(),
     phone: z
@@ -33,6 +36,7 @@ const SiteSettingsSchema = z.object({
       })
       .optional(),
     social: z.record(z.string(), z.string().url("invalidUrl")).optional(),
+    address: z.string().optional(),
   }),
   colors: z.object({
     light: z.object({
@@ -63,7 +67,7 @@ const socialIcons: Record<string, { icon: JSX.Element; placeholder: string }> =
     facebook: { icon: <FaFacebook />, placeholder: "Facebook URL" },
     whatsapp: { icon: <FaWhatsapp />, placeholder: "WhatsApp link" },
     instagram: { icon: <FaInstagram />, placeholder: "Instagram URL" },
-    twitter: { icon: <FaTwitter />, placeholder: "X (Twitter) URL" },
+    twitter: { icon: <FaXTwitter />, placeholder: "X (Twitter) URL" },
     linkedin: { icon: <FaLinkedin />, placeholder: "LinkedIn URL" },
   };
 
@@ -73,6 +77,7 @@ export default function SettingsClient({
   initialSettings: SettingsFormData;
 }) {
   const t = useTranslations("Dashboard.settings");
+  const { refreshSiteSettings } = useSiteData();
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [showSocialOptions, setShowSocialOptions] = useState(false);
 
@@ -99,6 +104,7 @@ export default function SettingsClient({
 
       form.reset(normalized);
       toast.success(t("settingsSaved"));
+      await refreshSiteSettings();
     } catch (err) {
       console.error(err);
       toast.error(t("settingsSaveError"));
@@ -129,6 +135,57 @@ export default function SettingsClient({
           />
         </section>
 
+        {/* Meta */}
+        <section className="space-y-3">
+          <h2 className="text-lg font-semibold">{t("meta")}</h2>
+          <div className="flex items-center gap-x-2">
+            <label className="w-full">
+              {t("metaTitle")}
+              <Controller
+                name="metaTitle"
+                control={form.control}
+                render={({ field }) => (
+                  <input
+                    type="text"
+                    placeholder={t("metaTitlePlaceholder")}
+                    {...field}
+                    value={field.value ?? ""}
+                    className="w-full border rounded p-2"
+                  />
+                )}
+              />
+            </label>
+          </div>
+          {form.formState.errors.metaTitle && (
+            <p className="text-red-500 text-xs">
+              {t(form.formState.errors.metaTitle.message!)}
+            </p>
+          )}
+          <div className="flex items-center gap-x-2">
+            <label className="w-full">
+              {t("metaDescription")}
+              <Controller
+                name="metaDescription"
+                control={form.control}
+                render={({ field }) => (
+                  <input
+                    type="text"
+                    placeholder={t("metaDescriptionPlaceholder")}
+                    {...field}
+                    value={field.value ?? ""}
+                    className="w-full border rounded p-2"
+                  />
+                )}
+              />
+            </label>
+          </div>
+          {form.formState.errors.metaDescription && (
+            <p className="text-red-500 text-xs">
+              {t(form.formState.errors.metaDescription.message!)}
+            </p>
+          )}
+        </section>
+
         {/* Contact */}
         <section className="space-y-3">
           <h2 className="text-lg font-semibold">{t("contact")}</h2>
@@ -151,6 +208,27 @@ export default function SettingsClient({
           {form.formState.errors.footer?.email && (
             <p className="text-red-500 text-xs">
               {t(form.formState.errors.footer.email.message!)}
+            </p>
+          )}
+
+          <div className="flex items-center gap-x-2">
+            <MapPin size={25} />
+            <Controller
+              name="footer.address"
+              control={form.control}
+              render={({ field }) => (
+                <input
+                  type="text"
+                  placeholder={t("addressPlaceholder")}
+                  {...field}
+                  className="w-full border rounded p-2"
+                />
+              )}
+            />
+          </div>
+          {form.formState.errors.footer?.address && (
+            <p className="text-red-500 text-xs">
+              {t(form.formState.errors.footer.address.message!)}
             </p>
           )}
 

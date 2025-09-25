@@ -4,9 +4,11 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import "./globals.css";
 import RouteProgressBar from "./providers";
+import { SiteProvider } from "./context/SiteContext";
 
 type Props = {
   children: React.ReactNode;
+  main: React.ReactNode;
   params: Promise<{ locale: string }>;
 };
 
@@ -23,7 +25,7 @@ export function generateStaticParams() {
   ];
 }
 
-export default async function LocaleLayout({ children, params }: Props) {
+export default async function LocaleLayout({ children, main, params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
@@ -43,7 +45,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <RouteProgressBar />
-          {children}
+        <SiteProvider>{main || children}</SiteProvider>
         </NextIntlClientProvider>
       </body>
     </html>

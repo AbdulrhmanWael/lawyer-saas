@@ -3,10 +3,13 @@ import { apiClient } from "@/utils/apiClient";
 export interface SiteSettings {
   id: string;
   logoUrl?: string | null;
+  metaTitle?:string | null;
+  metaDescription?:string | null;
   footer: {
     email?: string;
     phone?: string;
     social?: Record<string, string>;
+    address?: string;
   };
   colors: {
     light: {

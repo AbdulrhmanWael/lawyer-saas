@@ -12,6 +12,7 @@ import {
   PracticeArea,
   practiceAreaService,
 } from "@/services/practiceAreaService";
+import { translateText } from "@/utils/translate";
 type defaultValueProps = Partial<StaffFormData> & {
   imageUrl?: string;
 };
@@ -30,6 +31,7 @@ export default function StaffForm({
   const t = useTranslations("Dashboard.Staff");
   const locale = useLocale().toUpperCase();
   const [practiceAreas, setPracticeAreas] = useState<PracticeArea[]>([]);
+  const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
     practiceAreaService.getAll().then(setPracticeAreas);
@@ -40,6 +42,7 @@ export default function StaffForm({
     handleSubmit,
     formState: { errors },
     setValue,
+    getValues,
     watch,
     reset,
   } = useForm<StaffFormData>({
@@ -49,10 +52,35 @@ export default function StaffForm({
       ...defaultValues,
     },
   });
+  const handleTranslateBio = async () => {
+    const sourceText = bio[activeLang];
+    if (!sourceText) return;
+
+    setTranslating(true);
+
+    try {
+      const newBio: Record<string, string> = { ...bio };
+
+      for (const lang of LANGS.filter((l) => l !== activeLang)) {
+        if (newBio[lang]) {
+          const translated = await translateText(
+            sourceText,
+            activeLang.toLowerCase(),
+            lang.toLowerCase()
+          );
+          newBio[lang] = translated;
+        }
+      }
+      setValue("bio", newBio);
+    } catch (err) {
+      console.error("Bio translation failed:", err);
+    } finally {
+      setTranslating(false);
+    }
+  };
 
   useEffect(() => {
     if (defaultValues) {
-
       reset({
         bio: defaultValues.bio ?? {},
         ...defaultValues,
@@ -132,12 +160,51 @@ export default function StaffForm({
           onChange={setActiveLang}
         />
         <textarea
+          key={`bio-${activeLang}`}
           className="text-input min-h-[250px]"
           value={bio[activeLang] || ""}
           onChange={(e) =>
             setValue("bio", { ...bio, [activeLang]: e.target.value })
           }
         />
+        <button
+          type="button"
+          onClick={handleTranslateBio}
+          disabled={translating}
+          className={`mt-2 px-4 py-2 rounded text-white ${
+            translating
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-[var(--color-accent)]"
+          }`}
+        >
+          {translating ? (
+            <>
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+              {t("translating")}
+            </>
+          ) : (
+            t("translate")
+          )}
+        </button>
         {errors.bio && (
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           <p className="text-sm text-red-500">{errors.bio.message as any}</p>

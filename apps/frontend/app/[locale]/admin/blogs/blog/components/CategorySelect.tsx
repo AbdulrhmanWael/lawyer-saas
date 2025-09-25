@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Category } from "@/services/categories";
-
 interface CategorySelectProps {
   categories: Category[];
   activeLang: string;
@@ -33,6 +32,7 @@ export default function CategorySelect({
     <div className="relative w-full">
       {/* Field */}
       <button
+        type="button"
         className="w-full border rounded px-3 py-2 flex justify-between items-center cursor-pointer bg-[var(--color-bg)]"
         onClick={() => setOpen((prev) => !prev)}
       >

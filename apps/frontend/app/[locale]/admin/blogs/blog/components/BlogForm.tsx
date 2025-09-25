@@ -21,6 +21,14 @@ import CoverImageInput from "@/components/common/DropzoneImage";
 import CategorySelect from "./CategorySelect";
 import ToggleSwitch from "@/components/common/ToggleSwitch";
 import LanguageTabs from "@/components/common/LanguageTabs";
+import {
+  runWithThrottle,
+  sanitizeDoc,
+  translateText,
+  translateTiptapJSON,
+} from "@/utils/translate";
+import { htmlToJSON, jsonToHTML } from "@/utils/tipTapConverter";
+
 
 const blogSchema = z.object({
   title: z.record(z.string(), z.string().min(1, "Title is required")),
@@ -39,6 +47,7 @@ export const LANGS = ["EN", "AR", "DE", "RO", "RU", "ZH", "IT", "FR"];
 export default function BlogForm() {
   const t = useTranslations("Dashboard.BlogForm");
   const router = useRouter();
+  const [translating, setTranslating] = useState(false);
   const params = useParams<{ id?: string }>();
   const isEdit = !!params?.id;
 
@@ -70,14 +79,24 @@ export default function BlogForm() {
   useEffect(() => {
     if (isEdit && params.id) {
       getBlog(params.id).then((blog: Blog) => {
+        const contentAsJSON: Record<string, string> = {};
+        LANGS.forEach((lang) => {
+          if (blog.content?.[lang]) {
+            contentAsJSON[lang] = htmlToJSON(blog.content[lang]);
+          } else {
+            contentAsJSON[lang] = htmlToJSON("<p></p>");
+          }
+        });
+
         reset({
           title: blog.title,
           categoryId: blog.category.id,
           coverImage: blog.coverImage,
-          content: blog.content,
+          content: contentAsJSON,
           draft: blog.draft,
           published: blog.published,
         });
+
         if (blog.coverImage) setPreview(blog.coverImage);
       });
     }
@@ -113,12 +132,20 @@ export default function BlogForm() {
     });
     setActiveLang(lang);
   };
-
   const onSubmit = async (data: BlogFormData) => {
+    const contentAsHTML: Record<string, string> = {};
+    LANGS.forEach((lang) => {
+      if (data.content?.[lang]) {
+        contentAsHTML[lang] = jsonToHTML(data.content[lang]);
+      } else {
+        contentAsHTML[lang] = "<p></p>";
+      }
+    });
+
     const payload = {
       ...data,
       title: JSON.stringify(data.title),
-      content: JSON.stringify(data.content),
+      content: JSON.stringify(contentAsHTML),
     };
 
     if (isEdit && params.id) {
@@ -217,17 +244,25 @@ export default function BlogForm() {
             key={`content-${activeLang}`}
             name={`content.${activeLang}`}
             control={control}
-            render={({ field }) => (
-              <RichTextEditor
-                key={`editor-${activeLang}`}
-                value={field.value ?? ""}
-                onChange={(val) => {
-                  field.onChange(val);
-                  setValue(`content.${activeLang}`, val, { shouldDirty: true });
-                }}
-              />
-            )}
+            render={({ field }) => {
+              const parsedValue = field.value
+                ? JSON.parse(field.value)
+                : { type: "doc", content: [] };
+              return (
+                <RichTextEditor
+                  key={`editor-${activeLang}`}
+                  value={parsedValue}
+                  onChange={(val) => {
+                    field.onChange(val);
+                    setValue(`content.${activeLang}`, val, {
+                      shouldDirty: true,
+                    });
+                  }}
+                />
+              );
+            }}
           />
+
           {errors.content?.[activeLang] && (
             <p className="text-red-500 text-sm mt-1">
               {errors.content[activeLang]?.message}
@@ -238,17 +273,84 @@ export default function BlogForm() {
         {/* Translate button */}
         <button
           type="button"
-          className="px-4 py-2 rounded bg-[var(--color-accent)] text-white"
-          onClick={() => {
-            const title = getValues("title")[activeLang];
-            const content = getValues("content")[activeLang];
-            LANGS.filter((l) => l !== activeLang).forEach((lang) => {
-              setValue(`title.${lang}`, title);
-              setValue(`content.${lang}`, content);
-            });
+          className={`px-4 py-2 rounded text-white flex items-center justify-center gap-2 ${
+            translating
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-[var(--color-accent)]"
+          }`}
+          disabled={translating}
+          onClick={async () => {
+            setTranslating(true);
+            try {
+              const tasks = LANGS.filter((l) => l !== activeLang).map(
+                (lang) => async () => {
+                  const title = getValues("title")[activeLang];
+                  const contentJSON = getValues("content")[activeLang];
+                  const parsed = contentJSON ? JSON.parse(contentJSON) : null;
+
+                  const [translatedTitle, translatedContent] =
+                    await Promise.all([
+                      translateText(
+                        title,
+                        activeLang.toLowerCase(),
+                        lang.toLowerCase()
+                      ),
+                      parsed
+                        ? translateTiptapJSON(
+                            parsed,
+                            activeLang.toLowerCase(),
+                            lang.toLowerCase()
+                          )
+                        : null,
+                    ]);
+
+                  setValue(`title.${lang}`, translatedTitle, {
+                    shouldDirty: true,
+                  });
+
+                  if (translatedContent) {
+                    const sanitized = sanitizeDoc(translatedContent);
+                    setValue(`content.${lang}`, JSON.stringify(sanitized), {
+                      shouldDirty: true,
+                      shouldTouch: true,
+                    });
+                  }
+                }
+              );
+
+              await runWithThrottle(tasks);
+            } finally {
+              setTranslating(false);
+            }
           }}
         >
-          {t("translate")}
+          {translating ? (
+            <>
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+              {t("translating")}
+            </>
+          ) : (
+            t("translate")
+          )}
         </button>
 
         {/* Toggles */}

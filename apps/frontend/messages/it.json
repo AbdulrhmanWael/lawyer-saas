@@ -6,6 +6,7 @@
       "paragraph": "Paragrafo",
       "buttonText": "Testo del Pulsante",
       "image": "Immagine",
+      "header": "Intestazione",
       "newItem": "Nuovo Elemento Carousel",
       "addItem": "Aggiungi Elemento",
       "saveItem": "Salva Elemento",
@@ -90,7 +91,13 @@
       "faq": "FAQ",
       "practiceAreas": "Aree di Competenza",
       "newsletter": "Newsletter",
-      "roleManagement": "Gestione Ruoli"
+      "roleManagement": "Gestione Ruoli",
+      "addressPlaceholder": "Indirizzo",
+      "meta": "Meta",
+      "metaTitle": "Titolo Meta",
+      "metaDescription": "Descrizione Meta",
+      "metaTitlePlaceholder": "Inserisci il titolo del tuo sito web",
+      "metaDescriptionPlaceholder": "Inserisci la descrizione del tuo sito web"
     },
     "Header": {
       "title": "Pannello Admin",
@@ -311,6 +318,123 @@
       "availablePermissions": "Permessi Disponibili",
       "update": "Aggiorna",
       "loading": "Caricamento..."
+    },
+    "ContentEditor": {
+      "placeholder": "Scrivi qualcosa…",
+      "save": "Salva",
+      "saving": "Salvataggio in corso..."
+    }
+  },
+  "Main": {
+    "nav": {
+      "home": "Home",
+      "about": "Chi siamo",
+      "services": "Servizi",
+      "blogs": "Blog",
+      "faqs": "Domande frequenti",
+      "contact": "Contattaci"
+    },
+    "footer": {
+      "newsletterHeading": "Rimani aggiornato",
+      "newsletterText": "Iscriviti alla nostra newsletter per aggiornamenti legali, articoli e notizie.",
+      "subscribePlaceholder": "Inserisci la tua email",
+      "subscribeButton": "Iscriviti",
+      "contactHeading": "Dettagli di contatto",
+      "address": "Indirizzo",
+      "callUs": "Chiamaci",
+      "email": "Email",
+      "infoHeading": "Informazioni",
+      "aboutUs": "Chi siamo",
+      "ourStaff": "Il nostro team",
+      "privacyPolicy": "Informativa sulla privacy",
+      "contactUs": "Contattaci",
+      "faq": "FAQ",
+      "blogs": "Blog",
+      "servicesHeading": "Servizi",
+      "copyright": "© {year} Tutti i diritti riservati."
+    },
+    "Home": {
+      "carousel": {
+        "learnMore": "Scopri di più"
+      },
+      "services": {
+        "title": "Le nostre aree di pratica",
+        "learnMore": "Leggi di più"
+      },
+      "whyUs": {
+        "features": [
+          {
+            "title": "Soddisfazione del cliente",
+            "description": "Diamo priorità alle tue esigenze e offriamo risultati eccezionali."
+          },
+          {
+            "title": "Soluzioni legali rapide",
+            "description": "Servizi tempestivi ed efficienti per risolvere rapidamente le tue preoccupazioni."
+          },
+          {
+            "title": "Privacy prima di tutto",
+            "description": "Le tue informazioni sono sempre sicure e riservate."
+          },
+          {
+            "title": "Team di esperti",
+            "description": "I nostri professionisti qualificati apportano anni di esperienza legale."
+          },
+          {
+            "title": "Integrità e correttezza",
+            "description": "Garantiamo giustizia ed equità in ogni caso che gestiamo."
+          }
+        ]
+      },
+      "staff": {
+        "title": "Incontra il nostro team",
+        "intro": "I nostri professionisti dedicati sono qui per offrirti guida affidabile e servizio eccezionale."
+      },
+      "blogs": {
+        "title": "Ultimi articoli",
+        "intro": "Rimani informato con le nostre ultime analisi e aggiornamenti.",
+        "showMore": "Visualizza tutti gli articoli"
+      },
+      "testimonials": {
+        "title": "Cosa dicono i nostri clienti",
+        "intro": "Siamo orgogliosi di aver guadagnato la fiducia dei nostri clienti."
+      },
+      "clients": {
+        "title": "I nostri clienti",
+        "intro": "Siamo onorati di lavorare con queste organizzazioni rinomate."
+      }
+    },
+    "about": {
+      "title": "Chi siamo",
+      "description": "Scopri di più sulla nostra missione, valori e sul team che supporta il nostro lavoro."
+    },
+    "privacyPolicy": {
+      "title": "Informativa sulla privacy",
+      "description": "Leggi la nostra informativa sulla privacy per capire come gestiamo e proteggiamo i tuoi dati personali."
+    },
+    "Contact": {
+      "title": "Contattaci",
+      "intro": "Hai domande? Contattaci compilando il modulo o direttamente.",
+      "name": "Nome completo",
+      "email": "Indirizzo email",
+      "phone": "Numero di telefono",
+      "titleField": "Oggetto del messaggio",
+      "details": "Dettagli del messaggio",
+      "submit": "Invia messaggio",
+      "loading": "Invio in corso...",
+      "success": "Il tuo messaggio è stato inviato con successo!",
+      "error": "Si è verificato un errore. Riprova."
+    },
+    "Faq": {
+      "title": "Domande frequenti",
+      "intro": "Trova le risposte alle domande più comuni qui sotto. Ancora curioso? Contattaci in qualsiasi momento.",
+      "searchPlaceholder": "Cerca nelle FAQ..."
+    },
+    "Blogs": {
+      "searchTopics": "Cerca argomenti",
+      "searchPlaceholder": "Cerca articoli...",
+      "latestArticles": "Ultimi articoli",
+      "loading": "Caricamento in corso...",
+      "noArticles": "Nessun articolo disponibile"
     }
   }
 }

@@ -8,6 +8,8 @@ import {
   testimonialClient,
   TestimonialPayload,
 } from "@/services/testimonialsService";
+import { LANGS } from "../../blogs/blog/components/BlogForm";
+import { translateText } from "@/utils/translate";
 
 interface Testimonial {
   id: string;
@@ -27,6 +29,7 @@ export default function TestimonialsSection({ activeLang }: Props) {
   const [editing, setEditing] = useState<
     (Partial<Testimonial> & { imageFile?: File }) | null
   >(null);
+  const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -55,9 +58,7 @@ export default function TestimonialsSection({ activeLang }: Props) {
     let parsedQuote: Record<string, string> = {};
     try {
       if (typeof item.quote === "string") {
-        // parse once
         const firstParse = JSON.parse(item.quote);
-        // if the result is still a string, parse again
         parsedQuote =
           typeof firstParse === "string" ? JSON.parse(firstParse) : firstParse;
       } else {
@@ -109,6 +110,38 @@ export default function TestimonialsSection({ activeLang }: Props) {
     }
   };
 
+  const handleTranslate = async () => {
+    if (!editing) return;
+    setTranslating(true);
+
+    try {
+      const sourceText = editing.quote?.[activeLang.toUpperCase()];
+      if (!sourceText) return;
+
+      for (const lang of LANGS.filter((l) => l !== activeLang.toUpperCase())) {
+        if (!editing.quote?.[lang]) {
+          const translated = await translateText(
+            sourceText,
+            activeLang.toLowerCase(),
+            lang.toLowerCase()
+          );
+          setEditing((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  quote: { ...prev.quote, [lang]: translated },
+                }
+              : prev
+          );
+        }
+      }
+    } catch (err) {
+      console.error("Translation failed:", err);
+    } finally {
+      setTranslating(false);
+    }
+  };
+
   return (
     <section className="mb-10">
       <h2 className="text-xl font-bold mb-4">{t("testimonialsSection")}</h2>
@@ -117,6 +150,7 @@ export default function TestimonialsSection({ activeLang }: Props) {
         <div className="p-4 border rounded bg-[var(--color-bg)] flex flex-col gap-2">
           <label>{t("person")}</label>
           <input
+            key={`p-${activeLang}`}
             type="text"
             value={editing.person}
             onChange={(e) => setEditing({ ...editing, person: e.target.value })}
@@ -125,6 +159,7 @@ export default function TestimonialsSection({ activeLang }: Props) {
 
           <label>{t("quote")}</label>
           <textarea
+            key={`q-${activeLang}`}
             value={editing.quote?.[activeLang.toUpperCase()] || ""}
             onChange={(e) =>
               setEditing({
@@ -163,12 +198,52 @@ export default function TestimonialsSection({ activeLang }: Props) {
             onChange={(file) => setEditing({ ...editing, imageFile: file })}
           />
 
-          <button
-            onClick={handleSave}
-            className="mt-2 px-4 py-2 rounded bg-[var(--color-primary)] text-white"
-          >
-            {t("submit")}
-          </button>
+          <div className="flex gap-3 mt-3">
+            <button
+              onClick={handleSave}
+              className="px-4 py-2 rounded bg-[var(--color-primary)] text-white"
+            >
+              {t("submit")}
+            </button>
+            <button
+              type="button"
+              onClick={handleTranslate}
+              disabled={translating}
+              className={`px-4 py-2 rounded text-white ${
+                translating
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[var(--color-accent)]"
+              }`}
+            >
+              {translating ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
+                  </svg>
+                  {t("translating")}
+                </>
+              ) : (
+                t("translate")
+              )}
+            </button>
+          </div>
         </div>
       ) : (
         <button

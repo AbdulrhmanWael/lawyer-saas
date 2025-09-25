@@ -40,7 +40,8 @@ export class ClientLogoService {
         data.imageUrl = await this.imageService.saveImage(data.imageFile);
       }
       data.isActive = this.parseBoolean(data.isActive);
-      await this.repo.update(id, data);
+      const { imageUrl, name, isActive } = data;
+      await this.repo.update(id, { imageUrl, name, isActive });
       return this.repo.findOneOrFail({ where: { id } });
     } catch (err) {
       console.error('Error updating client logo', err);

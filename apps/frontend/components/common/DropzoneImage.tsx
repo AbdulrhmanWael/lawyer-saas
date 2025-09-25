@@ -36,7 +36,7 @@ export default function CoverImageInput({
     >
       <input {...getInputProps()} />
       {preview ? (
-        <div className="relative w-48 h-[300px] mx-auto">
+        <div className="relative w-full h-[300px]">
           <Image
             src={
               typeof preview === "string"
@@ -49,7 +49,9 @@ export default function CoverImageInput({
           />
         </div>
       ) : (
-        <p className="font-bold text-l text-[var(--color-text)]">Drop an image here or click to upload</p>
+        <p className="font-bold text-l text-[var(--color-text)]">
+          Drop an image here or click to upload
+        </p>
       )}
     </div>
   );

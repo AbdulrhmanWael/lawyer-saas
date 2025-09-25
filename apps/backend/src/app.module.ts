@@ -30,6 +30,8 @@ import { FaqGroupModule } from './faq/faq-group.module';
 import { WhyUsModule } from './why-us/why-us.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { JwtModule } from '@nestjs/jwt';
+import { PrivacyPolicyModule } from './privacy-policy/privacy-policy.module';
+import { AboutUsModule } from './about-us/about-us.module';
 
 @Module({
   imports: [
@@ -79,6 +81,8 @@ import { JwtModule } from '@nestjs/jwt';
     FaqGroupModule,
     WhyUsModule,
     NewsletterModule,
+    PrivacyPolicyModule,
+    AboutUsModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Faq } from './faq.entity';
 import { FaqGroup } from './faq-group.entity';
 import { FaqDto } from './dto/FaqDto';
@@ -34,14 +34,13 @@ export class FaqService {
       answer: f.answer,
     }));
   }
-
   async search(query: string): Promise<FaqDto[]> {
-    const faqs = await this.faqRepo.find({
-      where: [
-        { question: ILike(`%${query}%`) },
-        { answer: ILike(`%${query}%`) },
-      ],
-    });
+    const faqs = await this.faqRepo
+      .createQueryBuilder('faq')
+      .where(`faq.question::text ILIKE :q`, { q: `%${query}%` })
+      .orWhere(`faq.answer::text ILIKE :q`, { q: `%${query}%` })
+      .getMany();
+
     return faqs.map((f) => ({
       id: f.id,
       question: f.question,

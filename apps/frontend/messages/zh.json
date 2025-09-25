@@ -6,6 +6,7 @@
       "paragraph": "段落",
       "buttonText": "按钮文字",
       "image": "图片",
+      "header": "页眉",
       "newItem": "新轮播项目",
       "addItem": "添加项目",
       "saveItem": "保存项目",
@@ -90,7 +91,13 @@
       "faq": "FAQ",
       "practiceAreas": "业务领域",
       "newsletter": "通讯",
-      "roleManagement": "角色管理"
+      "roleManagement": "角色管理",
+      "addressPlaceholder": "地址",
+      "meta": "元信息",
+      "metaTitle": "Meta标题",
+      "metaDescription": "Meta描述",
+      "metaTitlePlaceholder": "输入您的网站标题",
+      "metaDescriptionPlaceholder": "输入您的网站描述"
     },
     "Header": {
       "title": "管理面板",
@@ -311,6 +318,123 @@
       "availablePermissions": "可用权限",
       "update": "更新",
       "loading": "加载中..."
+    },
+    "ContentEditor": {
+      "placeholder": "写点东西…",
+      "save": "保存",
+      "saving": "保存中…"
+    }
+  },
+  "Main": {
+    "nav": {
+      "home": "首页",
+      "about": "关于我们",
+      "services": "服务",
+      "blogs": "博客",
+      "faqs": "常见问题",
+      "contact": "联系我们"
+    },
+    "footer": {
+      "newsletterHeading": "保持更新",
+      "newsletterText": "订阅我们的新闻通讯，获取法律更新、文章和新闻。",
+      "subscribePlaceholder": "输入您的邮箱",
+      "subscribeButton": "订阅",
+      "contactHeading": "联系方式",
+      "address": "地址",
+      "callUs": "致电我们",
+      "email": "邮箱",
+      "infoHeading": "信息",
+      "aboutUs": "关于我们",
+      "ourStaff": "我们的团队",
+      "privacyPolicy": "隐私政策",
+      "contactUs": "联系我们",
+      "faq": "常见问题",
+      "blogs": "博客",
+      "servicesHeading": "服务",
+      "copyright": "© {year} 版权所有。"
+    },
+    "Home": {
+      "carousel": {
+        "learnMore": "了解更多"
+      },
+      "services": {
+        "title": "我们的执业领域",
+        "learnMore": "阅读更多"
+      },
+      "whyUs": {
+        "features": [
+          {
+            "title": "客户满意",
+            "description": "我们优先考虑您的需求，提供卓越成果。"
+          },
+          {
+            "title": "快速法律解决方案",
+            "description": "及时高效的服务，快速解决您的问题。"
+          },
+          {
+            "title": "隐私优先",
+            "description": "您的信息始终安全保密。"
+          },
+          {
+            "title": "专家团队",
+            "description": "我们经验丰富的专业人员拥有多年的法律经验。"
+          },
+          {
+            "title": "诚信与公平",
+            "description": "我们确保每个案件都公正公平。"
+          }
+        ]
+      },
+      "staff": {
+        "title": "认识我们的团队",
+        "intro": "我们敬业的专业人员随时为您提供可信赖的指导和卓越服务。"
+      },
+      "blogs": {
+        "title": "最新文章",
+        "intro": "通过我们的最新见解和更新保持信息同步。",
+        "showMore": "查看所有文章"
+      },
+      "testimonials": {
+        "title": "客户评价",
+        "intro": "我们为赢得客户的信任感到自豪。"
+      },
+      "clients": {
+        "title": "我们的客户",
+        "intro": "我们很荣幸能与这些知名机构合作。"
+      }
+    },
+    "about": {
+      "title": "关于我们",
+      "description": "了解我们的使命、价值观以及支持我们工作的团队。"
+    },
+    "privacyPolicy": {
+      "title": "隐私政策",
+      "description": "阅读我们的隐私政策，了解我们如何处理和保护您的个人数据。"
+    },
+    "Contact": {
+      "title": "联系我们",
+      "intro": "有问题吗？通过填写表格或直接联系与我们沟通。",
+      "name": "姓名",
+      "email": "邮箱地址",
+      "phone": "电话号码",
+      "titleField": "消息标题",
+      "details": "消息内容",
+      "submit": "发送消息",
+      "loading": "发送中...",
+      "success": "您的消息已成功发送！",
+      "error": "发生错误，请重试。"
+    },
+    "Faq": {
+      "title": "常见问题",
+      "intro": "在下面找到最常见问题的答案。仍有疑问？随时联系我们。",
+      "searchPlaceholder": "搜索常见问题..."
+    },
+    "Blogs": {
+      "searchTopics": "搜索主题",
+      "searchPlaceholder": "搜索文章...",
+      "latestArticles": "最新文章",
+      "loading": "加载中...",
+      "noArticles": "暂无文章"
     }
   }
 }

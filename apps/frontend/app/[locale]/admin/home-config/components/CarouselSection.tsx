@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { Plus, Trash2, ArrowUpDown } from "lucide-react";
-import CoverImageInput from "@/components/common/DropzoneImage";
+import { ArrowUpDown, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
+import CarouselItemForm, { CarouselFormData } from "./CarouselForm";
 import {
   carouselClient,
   CarouselItem,
@@ -14,15 +14,12 @@ import {
 interface Props {
   activeLang: string;
 }
-interface EditableCarouselItem extends Partial<CarouselItem> {
-  imageFile?: File;
-}
 
 export default function CarouselSection({ activeLang }: Props) {
   const t = useTranslations("Dashboard.CarouselItems");
   const [items, setItems] = useState<CarouselItem[]>([]);
-  const [newItem, setNewItem] = useState<EditableCarouselItem | null>(null);
   const [loading, setLoading] = useState(false);
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -34,7 +31,17 @@ export default function CarouselSection({ activeLang }: Props) {
             typeof item.paragraph === "string"
               ? JSON.parse(item.paragraph)
               : item.paragraph,
+          header:
+            typeof item.header === "string"
+              ? JSON.parse(item.header)
+              : item.header,
+          buttonText:
+            typeof item.buttonText === "string"
+              ? JSON.parse(item.buttonText)
+              : item.buttonText,
         }));
+        console.log(parsed);
+
         setItems(parsed);
       } catch (err) {
         console.error("Failed to load carousel items", err);
@@ -44,33 +51,28 @@ export default function CarouselSection({ activeLang }: Props) {
   }, []);
 
   const getImageUrl = (path?: string) => {
-    if (!path) return null;
-    return path.startsWith("http")
-      ? path
-      : `${process.env.NEXT_PUBLIC_BACKEND_URL}${path}`;
+    if (!path) return undefined;
+    if (path.startsWith("blob:") || path.startsWith("data:")) return path;
+    if (path.startsWith("http")) return path;
+    return `${process.env.NEXT_PUBLIC_BACKEND_URL}${path}`;
   };
 
-  const addItem = () =>
-    setNewItem({
-      paragraph: {},
+  const handleCreate = async (data: CarouselFormData) => {
+    const payload: CarouselItemPayload = {
+      buttonText: data.buttonText,
+      buttonLink: data.buttonLink,
+      header: data.header,
+      paragraph: data.paragraph,
       order: items.length,
       isActive: true,
-    });
-
-  const saveItem = async () => {
-    if (!newItem) return;
-    const payload: CarouselItemPayload = {
-      paragraph: newItem.paragraph || {},
-      order: newItem.order || 0,
-      isActive: newItem.isActive ?? true,
-      image: newItem.imageFile,
+      image: data.imageFile,
     };
 
     try {
       setLoading(true);
       const created = await carouselClient.create(payload);
       setItems((prev) => [...prev, created]);
-      setNewItem(null);
+      setAdding(false);
     } catch (err) {
       console.error("Failed to save carousel item", err);
       alert("Error saving carousel item");
@@ -79,7 +81,33 @@ export default function CarouselSection({ activeLang }: Props) {
     }
   };
 
-  const deleteItem = async (id: string) => {
+  const handleUpdate = async (id: string, data: CarouselFormData) => {
+    const payload: CarouselItemPayload = {
+      buttonText: data.buttonText,
+      buttonLink: data.buttonLink,
+      header: data.header,
+      paragraph: data.paragraph,
+      order: items.find((i) => i.id === id)?.order || 0,
+      isActive: true,
+      image: data.imageFile,
+    };
+
+    try {
+      setLoading(true);
+      const updated = await carouselClient.update(id, payload);
+
+      setItems((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, ...updated } : item))
+      );
+    } catch (err) {
+      console.error("Failed to update carousel item", err);
+      alert("Error updating carousel item");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
     if (!confirm(t("confirmDelete"))) return;
     try {
       await carouselClient.delete(id);
@@ -103,14 +131,11 @@ export default function CarouselSection({ activeLang }: Props) {
     <section className="mb-10">
       <h2 className="text-xl font-bold mb-4">{t("carouselSection")}</h2>
 
+      {/* Existing Items */}
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="carousel">
           {(provided) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              className="space-y-4"
-            >
+            <div {...provided.droppableProps} ref={provided.innerRef}>
               {items.map((item, index) => (
                 <Draggable
                   key={String(item.id)}
@@ -122,61 +147,24 @@ export default function CarouselSection({ activeLang }: Props) {
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className="p-4 border rounded shadow-sm bg-[var(--color-bg)] flex flex-col gap-2"
                     >
-                      <div className="flex justify-between items-center">
-                        <strong>
-                          {t("item")} #{index + 1}
-                        </strong>
-                        <div className="flex gap-2">
-                          <button onClick={() => deleteItem(item.id)}>
-                            <Trash2 className="w-4 h-4 text-red-500" />
-                          </button>
-                          <span className="cursor-grab">
-                            <ArrowUpDown className="w-4 h-4" />
-                          </span>
-                        </div>
-                      </div>
-
-                      <label>{t("paragraph")}</label>
-                      <textarea
-                        value={item.paragraph[activeLang] || ""}
-                        onChange={(e) =>
-                          setItems((prev) =>
-                            prev.map((ci) =>
-                              ci.id === item.id
-                                ? {
-                                    ...ci,
-                                    paragraph: {
-                                      ...ci.paragraph,
-                                      [activeLang]: e.target.value,
-                                    },
-                                  }
-                                : ci
-                            )
-                          )
-                        }
-                        className="w-full border border-[var(--color-accent)] rounded p-2"
+                      <CarouselItemForm
+                        activeLang={activeLang}
+                        index={index}
+                        defaultValues={{
+                          header: item.header,
+                          paragraph: item.paragraph,
+                          buttonLink: item.buttonLink,
+                          buttonText: item.buttonText,
+                        }}
+                        initialPreview={getImageUrl(item.imageUrl)}
+                        onSubmit={(data) => handleUpdate(item.id, data)}
+                        onDelete={() => handleDelete(item.id)}
+                        loading={loading}
                       />
-
-                      <label>{t("image")}</label>
-                      <CoverImageInput
-                        value={item.imageUrl}
-                        preview={getImageUrl(item.imageUrl)}
-                        onChange={(file) =>
-                          setItems((prev) =>
-                            prev.map((ci) =>
-                              ci.id === item.id
-                                ? {
-                                    ...ci,
-                                    imageFile: file,
-                                    imageUrl: URL.createObjectURL(file),
-                                  }
-                                : ci
-                            )
-                          )
-                        }
-                      />
+                      <span className="cursor-grab flex justify-end">
+                        <ArrowUpDown className="w-4 h-4" />
+                      </span>
                     </div>
                   )}
                 </Draggable>
@@ -187,46 +175,16 @@ export default function CarouselSection({ activeLang }: Props) {
         </Droppable>
       </DragDropContext>
 
-      {newItem ? (
-        <div className="p-4 border rounded shadow-sm bg-[var(--color-bg)] mt-4 flex flex-col gap-2">
-          <strong>{t("newItem")}</strong>
-          <label>{t("paragraph")}</label>
-          <textarea
-            value={newItem.paragraph?.[activeLang] || ""}
-            onChange={(e) =>
-              setNewItem({
-                ...newItem,
-                paragraph: {
-                  ...newItem.paragraph,
-                  [activeLang]: e.target.value,
-                },
-              })
-            }
-            className="w-full border border-[var(--color-accent)] rounded p-2"
-          />
-          <label>{t("image")}</label>
-          <CoverImageInput
-            value={newItem.imageUrl}
-            preview={getImageUrl(newItem.imageUrl)}
-            onChange={(file) =>
-              setNewItem({
-                ...newItem,
-                imageFile: file,
-                imageUrl: URL.createObjectURL(file),
-              })
-            }
-          />
-          <button
-            onClick={saveItem}
-            disabled={loading}
-            className="px-4 py-2 rounded bg-[var(--color-primary)] text-white mt-2"
-          >
-            {loading ? "Saving..." : t("saveItem")}
-          </button>
-        </div>
+      {/* Add New Item */}
+      {adding ? (
+        <CarouselItemForm
+          activeLang={activeLang}
+          onSubmit={handleCreate}
+          loading={loading}
+        />
       ) : (
         <button
-          onClick={addItem}
+          onClick={() => setAdding(true)}
           className="mt-4 px-4 py-2 rounded bg-[var(--color-accent)] text-white flex items-center gap-2"
         >
           <Plus className="w-4 h-4" /> {t("addItem")}

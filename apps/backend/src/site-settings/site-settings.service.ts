@@ -51,6 +51,14 @@ export class SiteSettingsService {
       settings.colors = { ...parsedData.colors };
     }
 
+    if (parsedData.metaTitle) {
+      settings.metaTitle = parsedData.metaTitle;
+    }
+
+    if (parsedData.metaDescription) {
+      settings.metaDescription = parsedData.metaDescription;
+    }
+
     if (parsedData.logoUrl) {
       settings.logoUrl = parsedData.logoUrl;
     }

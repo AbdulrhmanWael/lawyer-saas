@@ -11,7 +11,10 @@ import {
   BadRequestException,
   UseGuards,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FilesInterceptor,
+} from '@nestjs/platform-express';
 import { PracticeAreasService } from './practice-areas.service';
 import { CreatePracticeAreaDto } from './dto/create-practice-area.dto';
 import { UpdatePracticeAreaDto } from './dto/update-practice-area.dto';
@@ -43,6 +46,12 @@ export class PracticeAreasController {
     }
   }
 
+  @Get(':slug')
+  @Public()
+  async findBySlug(@Param('slug') slug: string): Promise<PracticeArea> {
+    return this.service.findBySlug(slug);
+  }
+
   @Get()
   @Public()
   findAll(): Promise<PracticeArea[]> {
@@ -56,26 +65,26 @@ export class PracticeAreasController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('images', 2))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'logo', maxCount: 1 },
+      { name: 'coverImage', maxCount: 1 },
+    ]),
+  )
   async update(
     @Param('id') id: string,
     @Body() dto: UpdatePracticeAreaDto,
-    @UploadedFiles() files?: Express.Multer.File[],
+    @UploadedFiles()
+    files?: {
+      logo?: Express.Multer.File[];
+      coverImage?: Express.Multer.File[];
+    },
   ): Promise<PracticeArea> {
-    try {
-      const logoFile = files?.find((f) => f.fieldname === 'logo');
-      const coverFile = files?.find((f) => f.fieldname === 'coverImage');
-      return await this.service.update(
-        id,
-        dto,
-        logoFile?.buffer,
-        coverFile?.buffer,
-      );
-    } catch (err) {
-      throw new BadRequestException(err);
-    }
+    const logoFile = files?.logo?.[0];
+    const coverFile = files?.coverImage?.[0];
+    console.log(files);
+    return this.service.update(id, dto, logoFile?.buffer, coverFile?.buffer);
   }
-
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<void> {
     try {

@@ -30,6 +30,7 @@ export class BlogsController {
   constructor(private readonly blogsService: BlogsService) {}
 
   @Get()
+  @Public()
   findAll(
     @Query('locale') locale?: string,
     @Query('page') page?: number,

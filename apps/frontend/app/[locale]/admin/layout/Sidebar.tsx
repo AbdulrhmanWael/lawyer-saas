@@ -14,6 +14,9 @@ import {
   ChevronsLeftRightIcon,
   LucideScrollText,
   LucideSettings2,
+  UserPlus2,
+  Info,
+  Shield,
 } from "lucide-react";
 import { useSidebar } from "../context/SidebarContext";
 import { useEffect, useState } from "react";
@@ -36,13 +39,12 @@ export default function Sidebar() {
   }, []);
 
   const routes = [
-    { label: t("overview"), href: "/admin", icon: Home },
-    { label: t("blogs"), href: "/admin/blogs", icon: BookText },
     {
       label: t("homeConfig"),
-      href: "/admin/home-config",
+      href: "/admin",
       icon: ChevronsLeftRightIcon,
     },
+    { label: t("blogs"), href: "/admin/blogs", icon: BookText },
     {
       label: t("practiceAreas"),
       href: "/admin/practice-areas",
@@ -56,7 +58,10 @@ export default function Sidebar() {
       icon: LucideScrollText,
     },
     { label: t("users"), href: "/admin/users", icon: Users },
+    { label: t("staff"), href: "/admin/staff", icon: UserPlus2 },
     { label: t("roleManagement"), href: "/admin/roles", icon: LucideSettings2 },
+    { label: t("aboutUs"), href: "/admin/about-us", icon: Info },
+    { label: t("privacyPolicy"), href: "/admin/privacy-policy", icon: Shield },
     { label: t("settings"), href: "/admin/settings", icon: Settings },
   ];
 
@@ -91,8 +96,16 @@ export default function Sidebar() {
         )}
       </div>
 
-      {/* Navigation */}
-      <nav className="mt-4 flex flex-col space-y-2">
+      {/* Navigation - scrollable, scrollbar hidden */}
+      <nav
+        className="
+          mt-4
+          flex flex-col space-y-2
+          overflow-y-auto scrollbar-hide
+          max-h-[calc(100vh-4rem)]
+          px-2 py-3
+        "
+      >
         {routes.map(({ label, href, icon: Icon }) => {
           const segments = pathname.split("/").filter(Boolean);
           const pathWithoutLocale = "/" + segments.slice(1).join("/");
@@ -104,18 +117,16 @@ export default function Sidebar() {
               key={href}
               href={href}
               className={`
-        flex items-center font-bold gap-3 px-5 py-4 rounded-md mx-2 transition-colors
-        ${
-          active
-            ? "bg-[var(--color-primary)] text-white"
-            : "text-[var(--color-text)] hover:bg-[var(--color-accent)]/10"
-        }
-      `}
+                flex items-center font-bold gap-3 px-5 py-4 rounded-md mx-2 transition-colors
+                ${
+                  active
+                    ? "bg-[var(--color-primary)] text-white"
+                    : "text-[var(--color-text)] hover:bg-[var(--color-accent)]/10"
+                }
+              `}
             >
               <Icon
-                className={`w-5 h-5 ${
-                  active ? "text-white" : "text-[var(--color-primary)]"
-                }`}
+                className={`w-5 h-5 ${active ? "text-white" : "text-[var(--color-primary)]"}`}
               />
               {isOpen && (
                 <span

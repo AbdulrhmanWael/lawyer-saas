@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getBlogs, deleteBlog, Blog } from "@/services/blogs";
+import { getBlogs, deleteBlog } from "@/services/blogs";
 import { getCategories, Category } from "@/services/categories";
 import Table from "@/components/common/Table";
 import Link from "next/link";
@@ -14,7 +14,15 @@ export default function BlogsPage() {
   const locale = useLocale();
   const t = useTranslations("Dashboard.Blogs");
 
-  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [blogs, setBlogs] = useState<
+    {
+      title: string;
+      id: string;
+      category: string;
+      published: boolean;
+      author: string;
+    }[]
+  >([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [blog, setBlog] = useState<{
@@ -43,11 +51,18 @@ export default function BlogsPage() {
     });
 
     if (Array.isArray(data.response)) {
-      setBlogs(data.response);
+      setBlogs(
+        data.response.map((blog) => ({
+          ...blog,
+          title: blog.title[locale.toUpperCase()] || blog.title.EN,
+          category:
+            blog.category.name[locale.toUpperCase()] || blog.category.name.EN,
+        }))
+      );
     } else {
       setBlogs(data.response || []);
     }
-  }, [debouncedSearch, selectedCategory]);
+  }, [locale, debouncedSearch, selectedCategory]);
 
   const fetchCategories = async () => {
     const cats = await getCategories();
@@ -118,7 +133,13 @@ export default function BlogsPage() {
         </button>
       </div>
 
-      <Table<Blog>
+      <Table<{
+        title: string;
+        id: string;
+        category: string;
+        published: boolean;
+        author: string;
+      }>
         columns={[
           { header: t("table.title"), accessor: "title" },
           { header: t("table.category"), accessor: "category" },
@@ -127,7 +148,7 @@ export default function BlogsPage() {
         ]}
         data={blogs}
         onEdit={(b) => router.push(`blogs/blog/${b.id}`)}
-        onDelete={(b) => confirmDelete(b.id, b.title.EN)}
+        onDelete={(b) => confirmDelete(b.id, b.title)}
         limit={10}
       />
       <Modal

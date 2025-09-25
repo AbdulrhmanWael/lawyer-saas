@@ -37,6 +37,13 @@ export class PracticeAreasService {
     if (!pa) throw new NotFoundException('PracticeArea not found');
     return pa;
   }
+  async findBySlug(slug: string): Promise<PracticeArea> {
+    const practiceArea = await this.repo.findOne({ where: { slug } });
+    if (!practiceArea) {
+      throw new NotFoundException(`Practice area not found: ${slug}`);
+    }
+    return practiceArea;
+  }
 
   async update(
     id: string,
@@ -45,6 +52,8 @@ export class PracticeAreasService {
     coverBuffer?: Buffer,
   ): Promise<PracticeArea> {
     const pa = await this.findOne(id);
+
+    console.log(coverBuffer);
 
     if (logoBuffer) {
       if (pa.logoUrl) await this.imageService.deleteImage(pa.logoUrl);
@@ -55,9 +64,14 @@ export class PracticeAreasService {
       if (pa.coverImageUrl)
         await this.imageService.deleteImage(pa.coverImageUrl);
       pa.coverImageUrl = await this.imageService.saveImage(coverBuffer);
+      console.log(pa.coverImageUrl);
     }
 
-    Object.assign(pa, dto);
+    Object.assign(pa, {
+      ...dto,
+      coverImageUrl: pa.coverImageUrl,
+      logoUrl: pa.logoUrl,
+    });
     return this.repo.save(pa);
   }
 

@@ -9,6 +9,10 @@ export const getCategories = async (): Promise<Category[]> => {
   return apiClient.get<Category[]>("/categories");
 };
 
+export const getCategory = async(id:string):Promise<Category>=>{
+  return apiClient.get<Category>(`/categories/${id}`);
+}
+
 export const createCategory = async (
   name: Record<string, string>
 ): Promise<Category> => {

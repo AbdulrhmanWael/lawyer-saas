@@ -22,6 +22,10 @@ export const practiceAreaService = {
 
   getOne: (id: string) => apiClient.get<PracticeArea>(`/practice-areas/${id}`),
 
+  getBySlug: async (slug: string): Promise<PracticeArea> => {
+    return apiClient.get(`/practice-areas/${slug}`);
+  },
+
   create: (
     data: Omit<PracticeArea, "id" | "createdAt" | "updatedAt">,
     logoFile?: File,

@@ -11,11 +11,13 @@ import {
 } from "../../../../services/newsletterService";
 import { useTranslations } from "next-intl";
 import RichTextEditor from "@/components/common/RichTextEditor";
-import Link from 'next/link';
+import Link from "next/link";
+import { jsonToHTML } from "@/utils/tipTapConverter";
+import { JSONContent } from "@tiptap/react";
 
 const newsletterSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
-  content: z.string().min(1, "Content is required"),
+  content: z.any(),
 });
 
 const settingsSchema = z.object({
@@ -23,7 +25,7 @@ const settingsSchema = z.object({
   port: z.number(),
   user: z.string().min(1),
   pass: z.string().min(1),
-  from: z.string().email(),
+  from: z.email(),
 });
 
 export default function NewsletterPage() {
@@ -57,7 +59,13 @@ export default function NewsletterPage() {
   }, [resetSettings]);
 
   const onSendNewsletter = async (data: SendNewsletterDto) => {
-    await newsletterApi.send(data);
+    const htmlContent = jsonToHTML(JSON.stringify(data.content));
+
+    await newsletterApi.send({
+      ...data,
+      content: htmlContent,
+    });
+
     resetNewsletter();
   };
 
@@ -104,12 +112,20 @@ export default function NewsletterPage() {
             name="content"
             render={({ field }) => (
               <RichTextEditor
-                value={field.value || ""}
-                onChange={field.onChange}
+                value={field.value as unknown as JSONContent}
+                onChange={(val: string) => {
+                  try {
+                    const parsed = JSON.parse(val);
+                    field.onChange(parsed);
+                  } catch {
+                    field.onChange(val);
+                  }
+                }}
                 placeholder={t("contentPlaceholder")}
               />
             )}
           />
+
           {newsletterErrors.content && (
             <p className="text-[var(--form-error)] text-sm">
               {newsletterErrors.content.message}

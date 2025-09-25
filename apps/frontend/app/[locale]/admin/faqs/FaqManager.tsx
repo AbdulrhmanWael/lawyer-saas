@@ -7,6 +7,7 @@ import { faqService, Faq, FaqGroup, TranslatableString } from "@/services/faq";
 import { LANGS } from "../blogs/blog/components/BlogForm";
 import { Trash2, Edit2 } from "lucide-react";
 import LanguageTabs from "@/components/common/LanguageTabs";
+import { runWithThrottle, translateText } from "@/utils/translate";
 
 interface FaqForm {
   question: TranslatableString;
@@ -28,12 +29,15 @@ export default function FaqManager({
   const [activeLang, setActiveLang] = useState(LANGS[0]);
   const [editingFaq, setEditingFaq] = useState<Faq | null>(null);
   const [editingGroup, setEditingGroup] = useState<FaqGroup | null>(null);
+  const [translatingFaq, setTranslatingFaq] = useState(false);
+  const [translatingGroup, setTranslatingGroup] = useState(false);
 
   const {
     register,
     handleSubmit,
     reset,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm<FaqForm>({ defaultValues: { question: {}, answer: {} } });
 
@@ -42,6 +46,7 @@ export default function FaqManager({
     handleSubmit: handleSubmitGroup,
     reset: resetGroup,
     setValue: setGroupValue,
+    getValues: getGroupValues,
     formState: { errors: groupErrors },
   } = useForm<FaqGroupForm>({ defaultValues: { title: {} } });
 
@@ -113,6 +118,60 @@ export default function FaqManager({
     refreshGroups();
   };
 
+  const handleTranslateFaq = async () => {
+    setTranslatingFaq(true);
+    try {
+      const currentQ = getValues(`question.${activeLang}`) || "";
+      const currentA = getValues(`answer.${activeLang}`) || "";
+
+      const tasks = LANGS.filter((l) => l !== activeLang).map(
+        (lang) => async () => {
+          const [translatedQ, translatedA] = await Promise.all([
+            translateText(
+              currentQ,
+              activeLang.toLowerCase(),
+              lang.toLowerCase()
+            ),
+            translateText(
+              currentA,
+              activeLang.toLowerCase(),
+              lang.toLowerCase()
+            ),
+          ]);
+
+          setValue(`question.${lang}`, translatedQ, { shouldDirty: true });
+          setValue(`answer.${lang}`, translatedA, { shouldDirty: true });
+        }
+      );
+
+      await runWithThrottle(tasks);
+    } finally {
+      setTranslatingFaq(false);
+    }
+  };
+
+  const handleTranslateGroup = async () => {
+    setTranslatingGroup(true);
+    try {
+      const currentTitle = getGroupValues(`title.${activeLang}`) || "";
+
+      const tasks = LANGS.filter((l) => l !== activeLang).map(
+        (lang) => async () => {
+          const translated = await translateText(
+            currentTitle,
+            activeLang.toLowerCase(),
+            lang.toLowerCase()
+          );
+          setGroupValue(`title.${lang}`, translated, { shouldDirty: true });
+        }
+      );
+
+      await runWithThrottle(tasks);
+    } finally {
+      setTranslatingGroup(false);
+    }
+  };
+
   return (
     <div className="p-6 space-y-8">
       {/* FAQ Group Form */}
@@ -128,6 +187,7 @@ export default function FaqManager({
           />
           <div>
             <input
+              key={activeLang}
               type="text"
               {...registerGroup(`title.${activeLang}`)}
               className="text-input w-full"
@@ -139,12 +199,23 @@ export default function FaqManager({
               </p>
             )}
           </div>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-[var(--color-primary)] text-white rounded"
-          >
-            {editingGroup ? t("update") : t("create")}
-          </button>
+
+          <div className="flex gap-x-5">
+            <button
+              type="submit"
+              className="px-4 py-2 bg-[var(--color-primary)] text-white rounded"
+            >
+              {editingGroup ? t("update") : t("create")}
+            </button>
+            <button
+              type="button"
+              disabled={translatingGroup}
+              onClick={handleTranslateGroup}
+              className="px-4 py-2 bg-[var(--color-accent)] text-white rounded disabled:opacity-50"
+            >
+              {translatingGroup ? t("translating") : t("translate")}
+            </button>
+          </div>
         </form>
       </div>
 
@@ -160,7 +231,11 @@ export default function FaqManager({
             onChange={setActiveLang}
           />
           <div>
-            <select {...register("groupId")} className="text-input w-full">
+            <select
+              key={activeLang}
+              {...register("groupId")}
+              className="text-input w-full"
+            >
               <option value="">{t("selectGroup")}</option>
               {groups.map((g) => (
                 <option key={g.id} value={g.id}>
@@ -172,6 +247,7 @@ export default function FaqManager({
           <div>
             <label>{t("question")}</label>
             <input
+              key={activeLang}
               type="text"
               {...register(`question.${activeLang}`)}
               className="text-input w-full"
@@ -180,16 +256,27 @@ export default function FaqManager({
           <div>
             <label>{t("answer")}</label>
             <textarea
+              key={activeLang}
               {...register(`answer.${activeLang}`)}
               className="text-input w-full resize-none"
             />
           </div>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-[var(--color-accent)] text-white rounded"
-          >
-            {editingFaq ? t("update") : t("create")}
-          </button>
+          <div className="flex gap-x-5">
+            <button
+              type="submit"
+              className="px-4 py-2 bg-[var(--color-primary)] text-white rounded"
+            >
+              {editingFaq ? t("update") : t("create")}
+            </button>
+            <button
+              type="button"
+              disabled={translatingFaq}
+              onClick={handleTranslateFaq}
+              className="px-4 py-2 bg-[var(--color-accent)] text-white rounded disabled:opacity-50"
+            >
+              {translatingFaq ? t("translating") : t("translate")}
+            </button>
+          </div>
         </form>
       </div>
 

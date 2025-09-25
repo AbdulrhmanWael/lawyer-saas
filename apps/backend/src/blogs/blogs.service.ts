@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindManyOptions, FindOptionsWhere, ILike } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Blog } from './blog.entity';
 import { User } from 'src/users/user.entity';
 import { Category } from 'src/categories/category.entity';
@@ -31,46 +31,64 @@ export class BlogsService {
     limit?: number,
     categoryId?: string,
     search?: string,
-    locale: string = 'EN',
+    locale?: string,
   ): Promise<{
     response: BlogResponse[];
     total: number;
     page?: number;
     limit?: number;
   }> {
-    const where: FindOptionsWhere<Blog> = {};
+    const qb = this.blogsRepo
+      .createQueryBuilder('blog')
+      .leftJoinAndSelect('blog.author', 'author')
+      .leftJoinAndSelect('blog.category', 'category');
 
-    if (categoryId) where.category = { id: categoryId };
-
-    if (search) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      where.title = { [locale]: ILike(`%${search}%`) } as any;
+    if (categoryId) {
+      qb.andWhere('category.id = :categoryId', { categoryId });
     }
 
-    const options: FindManyOptions<Blog> = {
-      where,
-      order: { createdAt: 'DESC' },
-      relations: ['author', 'category'],
-    };
+    if (search && locale) {
+      qb.andWhere(`blog.title ->> :locale ILIKE :search`, {
+        locale,
+        search: `%${search}%`,
+      });
+    }
+
+    qb.orderBy('blog.createdAt', 'DESC');
 
     if (page && limit) {
-      options.skip = (page - 1) * limit;
-      options.take = limit;
+      qb.skip((page - 1) * limit);
+      qb.take(limit);
     }
 
-    const [data, total] = await this.blogsRepo.findAndCount(options);
-    return {
-      response: data.map((blog) => ({
-        ...blog,
-        author: blog.author.name,
-        category: blog.category.name[locale] ?? blog.category.name['EN'],
-        title: blog.title[locale] ?? blog.title['EN'],
-        content: blog.content[locale] ?? blog.content['EN'],
-      })),
-      total,
-      ...(page && { page }),
-      ...(limit && { limit }),
-    };
+    const [data, total] = await qb.getManyAndCount();
+
+    if (locale)
+      return {
+        response: data.map((blog) => ({
+          ...blog,
+          author: blog.author.name,
+          category: blog.category.name[locale] ?? blog.category.name['EN'],
+          title: blog.title[locale] ?? blog.title['EN'],
+          content: blog.content[locale] ?? blog.content['EN'],
+        })),
+        total,
+        ...(page && { page }),
+        ...(limit && { limit }),
+      };
+    else
+      return {
+        response: data.map((blog) => ({
+          ...blog,
+          author: blog.author?.name || '',
+          category: blog.category,
+          title: blog.title,
+          content: blog.content,
+        })),
+        total,
+        ...(page && { page }),
+        ...(limit && { limit }),
+      };
   }
 
   async findOne(id: string, locale?: string): Promise<BlogResponse> {
@@ -83,7 +101,7 @@ export class BlogsService {
     else
       return {
         ...blog,
-        author: blog.author.name,
+        author: blog.author?.name || '',
         category: blog.category,
         title: blog.title,
         content: blog.content,
@@ -161,6 +179,13 @@ export class BlogsService {
       draft: dto.draft ?? true,
       published: dto.published ?? false,
     });
+
+    if (dto.published !== undefined)
+      blog.published = this.parseBoolean(dto.published);
+    if (dto.draft !== undefined) blog.draft = this.parseBoolean(dto.draft);
+    if (dto.inactive !== undefined)
+      blog.inactive = this.parseBoolean(dto.inactive);
+    if (!author.blogs) author.blogs = new Array<Blog>();
     author.blogs.push(blog);
     await this.usersRepo.save(author);
     await this.blogsRepo.save(blog);
@@ -218,15 +243,12 @@ export class BlogsService {
       blog.content =
         typeof dto.content === 'string' ? JSON.parse(dto.content) : dto.content;
     }
-    function parseBoolean(value: boolean | string | undefined): boolean {
-      if (value === undefined) return false; // or preserve existing value
-      return value === true || value === 'true';
-    }
 
     if (dto.published !== undefined)
-      blog.published = parseBoolean(dto.published);
-    if (dto.draft !== undefined) blog.draft = parseBoolean(dto.draft);
-    if (dto.inactive !== undefined) blog.inactive = parseBoolean(dto.inactive);
+      blog.published = this.parseBoolean(dto.published);
+    if (dto.draft !== undefined) blog.draft = this.parseBoolean(dto.draft);
+    if (dto.inactive !== undefined)
+      blog.inactive = this.parseBoolean(dto.inactive);
 
     await this.blogsRepo.save(blog);
 
@@ -234,7 +256,7 @@ export class BlogsService {
     else
       return {
         ...blog,
-        author: blog.author.name,
+        author: blog.author?.name || '',
         category: blog.category,
         title: blog.title,
         content: blog.content,
@@ -256,6 +278,11 @@ export class BlogsService {
     blog.draft = !status;
 
     return this.blogsRepo.save(blog);
+  }
+
+  private parseBoolean(value: boolean | string | undefined): boolean {
+    if (value === undefined) return false; // or preserve existing value
+    return value === true || value === 'true';
   }
 
   private localizeBlog(blog: Blog, locale?: string) {

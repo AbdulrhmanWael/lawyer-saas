@@ -10,6 +10,7 @@ import {
 } from "@/services/practiceAreaService";
 import { useLocale, useTranslations } from "next-intl";
 import { usePracticeAreas } from "../context/PracticeAreaContext";
+import { normalizeField } from "./edit/[slug]/PracticeAreaForm";
 
 interface Props {
   practiceAreas: PracticeArea[];
@@ -44,41 +45,54 @@ export default function PracticeAreasTable({ practiceAreas }: Props) {
       </h1>
 
       <div className="flex flex-col gap-4">
-        {practiceAreas.map((pa) => (
-          <div
-            key={pa.id}
-            className="flex justify-between items-start gap-4 p-4 border border-[var(--color-accent)] rounded-md shadow-sm bg-[var(--color-bg)]"
-            dir={isRTL ? "rtl" : "ltr"}
-          >
-            <div className="flex flex-col gap-1 max-w-[80%]">
-              <h2 className="text-lg font-semibold text-[var(--color-primary)]">
-                {pa.title?.[locale.toUpperCase()] || pa.title?.EN || ""}
-              </h2>
-              <p className="text-sm text-[var(--color-secondary)]">
-                {pa.excerpt?.[locale.toUpperCase()] || pa.excerpt?.EN || ""}
-              </p>
-            </div>
+        {practiceAreas.map((pa) => {
+          const normalizedTitle = normalizeField(pa.title);
+          const normalizedExcerpt = normalizeField(pa.excerpt);
 
-            <div className={`flex gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
-              <button
-                onClick={() => {
-                  setSelectedPracticeArea(pa);
-                  router.push(`/admin/practice-areas/edit/${pa.slug}`);
-                }}
-                className="px-3 py-2 rounded bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent)]/90 flex items-center gap-1"
-              >
-                <Edit className="w-4 h-4" /> {t("edit")}
-              </button>
+          return (
+            <div
+              key={pa.id}
+              className="flex justify-between items-start gap-4 p-4 border border-[var(--color-accent)] rounded-md shadow-sm bg-[var(--color-bg)]"
+              dir={isRTL ? "rtl" : "ltr"}
+            >
+              <div className="flex flex-col gap-1 max-w-[80%]">
+                <h2 className="text-lg font-semibold text-[var(--color-primary)]">
+                  {normalizedTitle?.[locale.toUpperCase()] ||
+                    normalizedTitle?.EN ||
+                    ""}
+                </h2>
+                <p className="text-sm text-[var(--color-secondary)]">
+                  {normalizedExcerpt?.[locale.toUpperCase()] ||
+                    normalizedExcerpt?.EN ||
+                    ""}
+                </p>
+              </div>
 
-              <button
-                onClick={() => handleDelete(pa.id)}
-                className="px-3 py-2 rounded bg-[var(--form-error)] text-white hover:bg-[var(--form-error)]/90 flex items-center gap-1"
-              >
-                <Trash2 className="w-4 h-4" /> {t("delete")}
-              </button>
+              <div className={`flex gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
+                <button
+                  onClick={() => {
+                    setSelectedPracticeArea({
+                      ...pa,
+                      title: normalizedTitle,
+                      excerpt: normalizedExcerpt,
+                    });
+                    router.push(`/admin/practice-areas/edit/${pa.slug}`);
+                  }}
+                  className="px-3 py-2 rounded bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent)]/90 flex items-center gap-1"
+                >
+                  <Edit className="w-4 h-4" /> {t("edit")}
+                </button>
+
+                <button
+                  onClick={() => handleDelete(pa.id)}
+                  className="px-3 py-2 rounded bg-[var(--form-error)] text-white hover:bg-[var(--form-error)]/90 flex items-center gap-1"
+                >
+                  <Trash2 className="w-4 h-4" /> {t("delete")}
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <Modal

@@ -6,6 +6,7 @@
       "paragraph": "Paragraf",
       "buttonText": "Text Buton",
       "image": "Imagine",
+      "header": "Antet",
       "newItem": "Element Nou Carousel",
       "addItem": "Adaugă Element",
       "saveItem": "Salvează Element",
@@ -90,7 +91,13 @@
       "faq": "FAQ",
       "practiceAreas": "Domenii de Practică",
       "newsletter": "Newsletter",
-      "roleManagement":"Gestionarea Rolurilor"
+      "roleManagement": "Gestionarea Rolurilor",
+      "addressPlaceholder": "Adresă",
+      "meta": "Meta",
+      "metaTitle": "Titlu Meta",
+      "metaDescription": "Descriere Meta",
+      "metaTitlePlaceholder": "Introduceți titlul site-ului dvs.",
+      "metaDescriptionPlaceholder": "Introduceți descrierea site-ului dvs."
     },
     "Header": {
       "title": "Panou Admin",
@@ -311,6 +318,123 @@
       "availablePermissions": "Permisiuni Disponibile",
       "update": "Actualizează",
       "loading": "Se încarcă..."
+    },
+    "ContentEditor": {
+      "placeholder": "Scrie ceva…",
+      "save": "Salvează",
+      "saving": "Se salvează..."
+    }
+  },
+  "Main": {
+    "nav": {
+      "home": "Acasă",
+      "about": "Despre noi",
+      "services": "Servicii",
+      "blogs": "Bloguri",
+      "faqs": "Întrebări frecvente",
+      "contact": "Contactați-ne"
+    },
+    "footer": {
+      "newsletterHeading": "Rămâi la curent",
+      "newsletterText": "Abonează-te la newsletter-ul nostru pentru actualizări legale, articole și știri.",
+      "subscribePlaceholder": "Introduceți adresa de email",
+      "subscribeButton": "Abonează-te",
+      "contactHeading": "Detalii de contact",
+      "address": "Adresă",
+      "callUs": "Sună-ne",
+      "email": "Email",
+      "infoHeading": "Informații",
+      "aboutUs": "Despre noi",
+      "ourStaff": "Echipa noastră",
+      "privacyPolicy": "Politica de confidențialitate",
+      "contactUs": "Contactați-ne",
+      "faq": "Întrebări frecvente",
+      "blogs": "Bloguri",
+      "servicesHeading": "Servicii",
+      "copyright": "© {year} Toate drepturile rezervate."
+    },
+    "Home": {
+      "carousel": {
+        "learnMore": "Află mai multe"
+      },
+      "services": {
+        "title": "Domeniile noastre de practică",
+        "learnMore": "Citește mai mult"
+      },
+      "whyUs": {
+        "features": [
+          {
+            "title": "Satisfacția clienților",
+            "description": "Prioritizăm nevoile tale și oferim rezultate excepționale."
+          },
+          {
+            "title": "Soluții juridice rapide",
+            "description": "Servicii eficiente și rapide pentru a-ți rezolva problemele rapid."
+          },
+          {
+            "title": "Confidențialitate pe primul loc",
+            "description": "Informațiile tale sunt întotdeauna păstrate în siguranță și confidențialitate."
+          },
+          {
+            "title": "Echipă de experți",
+            "description": "Profesioniștii noștri calificați aduc ani de experiență juridică."
+          },
+          {
+            "title": "Integritate și corectitudine",
+            "description": "Asigurăm justiție și echitate în fiecare caz."
+          }
+        ]
+      },
+      "staff": {
+        "title": "Cunoaște echipa noastră",
+        "intro": "Profesioniștii noștri dedicați sunt aici pentru a-ți oferi ghidare de încredere și servicii excepționale."
+      },
+      "blogs": {
+        "title": "Cele mai recente articole",
+        "intro": "Rămâi informat cu cele mai noi perspective și actualizări.",
+        "showMore": "Vezi toate articolele"
+      },
+      "testimonials": {
+        "title": "Ce spun clienții noștri",
+        "intro": "Suntem mândri că am câștigat încrederea clienților noștri."
+      },
+      "clients": {
+        "title": "Clienții noștri",
+        "intro": "Ne onorează să lucrăm cu aceste organizații de prestigiu."
+      }
+    },
+    "about": {
+      "title": "Despre noi",
+      "description": "Află mai multe despre misiunea, valorile și echipa din spatele muncii noastre."
+    },
+    "privacyPolicy": {
+      "title": "Politica de confidențialitate",
+      "description": "Citește politica noastră de confidențialitate pentru a înțelege cum gestionăm și protejăm datele tale personale."
+    },
+    "Contact": {
+      "title": "Contactați-ne",
+      "intro": "Ai întrebări? Contactează-ne completând formularul sau direct.",
+      "name": "Nume complet",
+      "email": "Adresă de email",
+      "phone": "Număr de telefon",
+      "titleField": "Titlul mesajului",
+      "details": "Detalii mesaj",
+      "submit": "Trimite mesaj",
+      "loading": "Se trimite...",
+      "success": "Mesajul tău a fost trimis cu succes!",
+      "error": "Ceva nu a mers bine. Te rugăm să încerci din nou."
+    },
+    "Faq": {
+      "title": "Întrebări frecvente",
+      "intro": "Găsește răspunsuri la cele mai comune întrebări mai jos. Încă curios? Contactează-ne oricând.",
+      "searchPlaceholder": "Caută întrebări..."
+    },
+    "Blogs": {
+      "searchTopics": "Caută subiecte",
+      "searchPlaceholder": "Caută articole...",
+      "latestArticles": "Cele mai recente articole",
+      "loading": "Se încarcă...",
+      "noArticles": "Nu există articole disponibile"
     }
   }
 }

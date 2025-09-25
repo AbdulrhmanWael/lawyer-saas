@@ -1,9 +1,14 @@
 {
   "Dashboard": {
+    "HomePage": {
+      "translate": "Translate",
+      "translating": "Translating..."
+    },
     "CarouselItems": {
       "carouselSection": "Carousel Section",
       "item": "Item",
       "paragraph": "Paragraph",
+      "header": "Header",
       "buttonText": "Button Text",
       "image": "Image",
       "newItem": "New Carousel Item",
@@ -19,7 +24,9 @@
       "submitWhyUs": "Save Section",
       "loading": "Loading...",
       "createdSuccessfully`": "Created successfully",
-      "updatedSuccessfully`": "Updated successfully"
+      "updatedSuccessfully`": "Updated successfully",
+      "translate": "Translate",
+      "translating": "Translating..."
     },
     "TestimonialsSection": {
       "testimonialsSection": "Testimonials Section",
@@ -28,7 +35,9 @@
       "rating": "Rating",
       "image": "Image",
       "submit": "Submit",
-      "addTestimonial": "Add Testimonial"
+      "addTestimonial": "Add Testimonial",
+      "translate": "Translate",
+      "translating": "Translating..."
     },
     "ClientsSection": {
       "clientsSection": "Clients Section",
@@ -54,7 +63,9 @@
       "noFaqs": "No FAQs in this group",
       "loading": "Loading...",
       "error": "An error occurred",
-      "search": "Search FAQs..."
+      "search": "Search FAQs...",
+      "translate": "Translate",
+      "translating": "Translating..."
     },
     "Overview": {
       "noMessages": "No messages available",
@@ -90,7 +101,10 @@
       "faq": "FAQ",
       "practiceAreas": "Practice Areas",
       "newsletter": "Newsletter",
-      "roleManagement": "Role Management"
+      "roleManagement": "Role Management",
+      "staff": "Staff",
+      "aboutUs": "About Us",
+      "privacyPolicy": "Privacy Policy"
     },
     "Header": {
       "title": "Admin Panel",
@@ -137,6 +151,7 @@
       "dropImageHere": "Drop an image here or click to upload",
       "content": "Content",
       "translate": "Translate",
+      "translating": "Translating...",
       "draft": "Draft",
       "published": "Published",
       "inactive": "Inactive",
@@ -189,6 +204,12 @@
       "logo": "Logo",
       "contact": "Contact Info",
       "emailPlaceholder": "Email",
+      "addressPlaceholder": "Address",
+      "meta": "Meta",
+      "metaTitle": "Meta Title",
+      "metaDescription": "Meta Description",
+      "metaTitlePlaceholder": "Enter your website's title",
+      "metaDescriptionPlaceholder": "Enter your website's Description",
       "socials": "Socials",
       "addSocial": "+ Add Social",
       "save": "Save Changes",
@@ -256,7 +277,8 @@
       "seoCanonical": "Canonical URL",
       "submit": "Save Changes",
       "languageSwitcher": "Language",
-      "translate": "Copy to all languages",
+      "translate": "Translate",
+      "translating": "Translating...",
       "slug": "Slug",
       "slugHelp": "Slug is generated from the title and cannot be changed",
       "removeImage": "Remove Image",
@@ -276,6 +298,8 @@
       "save": "Save",
       "create": "Create",
       "update": "Update",
+      "translate": "Translate",
+      "translating": "Translating...",
       "selectPracticeArea": "Select Practice Area"
     },
     "Newsletter": {
@@ -312,6 +336,126 @@
       "availablePermissions": "Available Permissions",
       "update": "Update",
       "loading": "Loading..."
+    },
+    "ContentEditor": {
+      "placeholder": "Write something…",
+      "save": "Save",
+      "saving": "Saving...",
+      "translate": "Translate",
+      "translating": "Translating..."
+    }
+  },
+  "Main": {
+    "nav": {
+      "home": "Home",
+      "about": "About Us",
+      "services": "Services",
+      "blogs": "Blogs",
+      "faqs": "FAQs",
+      "contact": "Contact Us"
+    },
+    "footer": {
+      "newsletterHeading": "Stay Updated",
+      "newsletterText": "Subscribe to our newsletter for legal updates, articles, and news.",
+      "subscribePlaceholder": "Enter your email",
+      "subscribeButton": "Subscribe",
+      "contactHeading": "Contact Details",
+      "address": "Address",
+      "callUs": "Call Us",
+      "email": "Email",
+      "infoHeading": "Information",
+      "aboutUs": "About Us",
+      "ourStaff": "Our Staff",
+      "privacyPolicy": "Privacy Policy",
+      "contactUs": "Contact Us",
+      "faq": "FAQ",
+      "blogs": "Blogs",
+      "servicesHeading": "Services",
+      "copyright": "© {year} All rights reserved."
+    },
+    "Home": {
+      "carousel": {
+        "learnMore": "Learn More"
+      },
+      "services": {
+        "title": "Our Practice Areas",
+        "learnMore": "Read More"
+      },
+      "whyUs": {
+        "features": [
+          {
+            "title": "Customer Satisfaction",
+            "description": "We prioritize your needs and deliver exceptional results."
+          },
+          {
+            "title": "Quick Legal Solutions",
+            "description": "Timely and efficient services to resolve your concerns fast."
+          },
+          {
+            "title": "Privacy First",
+            "description": "Your information is always kept secure and confidential."
+          },
+          {
+            "title": "Expert Team",
+            "description": "Our skilled professionals bring years of legal experience."
+          },
+          {
+            "title": "Integrity & Fairness",
+            "description": "We ensure justice and fairness in every case we handle."
+          }
+        ]
+      },
+      "staff": {
+        "title": "Meet Our Team",
+        "intro": "Our dedicated professionals are here to provide you with trusted guidance and exceptional service."
+      },
+      "blogs": {
+        "title": "Latest Articles",
+        "intro": "Stay informed with our latest insights and updates.",
+        "showMore": "View All Articles"
+      },
+      "testimonials": {
+        "title": "What Our Clients Say",
+        "intro": "We are proud to have earned the trust of our clients."
+      },
+      "clients": {
+        "title": "Our Clients",
+        "intro": "We are honored to work with these esteemed organizations."
+      }
+    },
+    "about": {
+      "title": "About Us",
+      "description": "Learn more about our mission, values, and the team behind our work."
+    },
+    "privacyPolicy": {
+      "title": "Privacy Policy",
+      "description": "Read our privacy policy to understand how we handle and protect your personal data."
+    },
+    "Contact": {
+      "title": "Contact Us",
+      "intro": "Have questions? Get in touch with us by filling out the form or reaching us directly.",
+      "name": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "titleField": "Message Title",
+      "details": "Message Details",
+      "submit": "Send Message",
+      "loading": "Sending...",
+      "success": "Your message has been sent successfully!",
+      "error": "Something went wrong. Please try again."
+    },
+    "Faq": {
+      "title": "Frequently Asked Questions",
+      "intro": "Find answers to the most common questions below. Still curious? Contact us anytime.",
+      "searchPlaceholder": "Search FAQs..."
+    },
+    "Blogs": {
+      "searchTopics": "Search Topics",
+      "searchPlaceholder": "Search for articles...",
+      "latestArticles": "Latest Articles",
+      "loading": "Loading...",
+      "noArticles": "No articles available",
+      "continueReading": "Continue Reading"
     }
   }
 }

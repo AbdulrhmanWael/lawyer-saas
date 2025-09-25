@@ -1,6 +1,6 @@
 "use client";
 
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { TextStyle } from "@tiptap/extension-text-style";
@@ -11,7 +11,7 @@ import "@/styles/editor.css";
 import { ImageDownIcon } from "lucide-react";
 
 interface RichTextEditorProps {
-  value: string;
+  value: JSONContent;
   onChange: (val: string) => void;
   placeholder?: string;
 }
@@ -35,12 +35,16 @@ export default function RichTextEditor({
     content: value,
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      onChange(JSON.stringify(editor.getJSON()));
     },
   });
 
   useEffect(() => {
-    if (editor && value !== editor.getHTML()) {
+    if (
+      editor &&
+      value &&
+      JSON.stringify(value) !== JSON.stringify(editor.getJSON())
+    ) {
       editor.commands.setContent(value);
     }
   }, [value, editor]);

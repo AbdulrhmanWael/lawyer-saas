@@ -17,22 +17,31 @@ function AdminShell({ children }: { children: React.ReactNode }) {
 
   const sidebarWidth = isAuthPage ? 0 : isOpen ? expandedWidth : collapsedWidth;
 
-  const dir =
-    typeof document !== "undefined" ? document.documentElement.dir : "ltr";
-
   return (
-    <div>
-      {!isAuthPage && <Sidebar />}
+    <div className="flex min-h-screen relative">
+      {!isAuthPage && (
+        <div
+          style={{
+            width: `${sidebarWidth}px`,
+            transition: "width 300ms ease",
+          }}
+          className="fixed inset-y-0 inset-inline-start-0 z-40" // logical: left for LTR, right for RTL
+        >
+          <Sidebar />
+        </div>
+      )}
+
       <div
         style={{
-          [dir === "rtl" ? "marginRight" : "marginLeft"]: `${sidebarWidth}px`,
+          marginInlineStart: `${sidebarWidth}px`, // logical margin
           transition: "margin 300ms ease",
         }}
-        className="min-h-screen"
+        className="flex-1 flex flex-col"
       >
         {!isAuthPage && <Header />}
         <main className="p-6">{children}</main>
       </div>
+
       <Toaster position="top-right" />
     </div>
   );
