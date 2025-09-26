@@ -133,7 +133,7 @@ export default function Header() {
               {t("blogs")}
             </Link>
             <Link
-              href="/faqs"
+              href="/faq"
               className="hover:text-[var(--color-accent)] transition"
             >
               {t("faqs")}

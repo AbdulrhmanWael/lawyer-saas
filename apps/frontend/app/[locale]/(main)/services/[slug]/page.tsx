@@ -1,27 +1,8 @@
-"use client";
-
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import type { PracticeArea } from "@/services/practiceAreaService";
-import { practiceAreaService } from "@/services/practiceAreaService";
-import Head from "next/head";
-import { useLocale, useTranslations } from "next-intl";
+import { getBlog, getBlogs, Blog } from "@/services/blogs";
 import Link from "next/link";
-import { TocList } from "../../blogs/[category]/[id]/TocItemComponent";
-
-function normalizeField<T = Record<string, string>>(
-  field: string | T | null | undefined
-): T {
-  if (!field) return {} as T;
-  if (typeof field === "string") {
-    try {
-      return JSON.parse(field) as T;
-    } catch {
-      return {} as T;
-    }
-  }
-  return field as T;
-}
+import { notFound } from "next/navigation";
+import { getLocale } from "next-intl/server";
+import { TocList } from '../../blogs/[category]/[id]/TocItemComponent';
 
 const slugify = (text: string) =>
   text
@@ -59,105 +40,62 @@ function buildTocTree(flatToc: TocItem[]): TocItem[] {
   return root;
 }
 
-// --- Component ---
-export default function ServicePage() {
-  const t = useTranslations("Main.nav");
-  const { slug } = useParams<{ slug: string }>();
-  const locale = useLocale().toUpperCase();
-  const [service, setService] = useState<PracticeArea | null>(null);
-  const [loading, setLoading] = useState(true);
+export const revalidate = 60;
 
-  const [toc, setToc] = useState<TocItem[]>([]);
-  const [parsedContent, setParsedContent] = useState<string>("");
+export default async function BlogDetailPage({
+  params,
+}: {
+  params: { id: string; locale: string };
+}) {
+  const locale = (await getLocale()).toUpperCase();
+  const blog = await getBlog(params.id);
+  if (!blog) return notFound();
+  let content = blog.content?.[locale] || blog.content?.EN || "";
+  const headingRegex = /<h([1-6])[^>]*>(.*?)<\/h\1>/gi;
+  const newToc: TocItem[] = [];
+  const counters: number[] = [];
+  let match: RegExpExecArray | null;
 
-  useEffect(() => {
-    if (!slug) return;
+  while ((match = headingRegex.exec(content)) !== null) {
+    const level = parseInt(match[1], 10);
+    const text = match[2].replace(/<[^>]+>/g, "");
+    const id = slugify(text);
 
-    (async () => {
-      try {
-        setLoading(true);
-        const data = await practiceAreaService.getBySlug(slug);
+    counters.length = level;
+    counters[level - 1] = (counters[level - 1] || 0) + 1;
+    const number = counters.slice(0, level).join("-");
 
-        const normalized: PracticeArea = {
-          ...data,
-          title: normalizeField(data.title),
-          excerpt: normalizeField(data.excerpt),
-          contentHtml: normalizeField(data.contentHtml),
-          seoMeta: normalizeField(data.seoMeta),
-        };
+    content = content.replace(match[0], (h) =>
+      h.replace(/<h[1-6]/, `<h${level} id="${id}"`)
+    );
 
-        setService(normalized);
+    newToc.push({ id, text, level, number });
+  }
 
-        // --- Build TOC from contentHtml ---
-        const container = document.createElement("div");
-        container.innerHTML = normalized.contentHtml?.[locale] || "";
+  const toc = buildTocTree(newToc);
 
-        const headings = Array.from(
-          container.querySelectorAll("h1, h2, h3, h4, h5, h6")
-        );
-
-        const newToc: TocItem[] = [];
-        const counters: number[] = [];
-
-        headings.forEach((h) => {
-          const text = h.textContent || "";
-          const slug = slugify(text);
-          h.setAttribute("id", slug);
-
-          const level = parseInt(h.tagName.substring(1), 10);
-          counters.length = level;
-          counters[level - 1] = (counters[level - 1] || 0) + 1;
-          const number = counters.slice(0, level).join("-");
-
-          newToc.push({ id: slug, text, level, number });
-        });
-
-        setToc(buildTocTree(newToc));
-        setParsedContent(container.innerHTML);
-      } catch {
-        setService(null);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [slug, locale]);
-
-  if (loading) return <p>Loading...</p>;
-  if (!service) return <p>Service not found</p>;
-
-  const meta = service.seoMeta;
-  const pageTitle =
-    meta?.title?.[locale] || service.title?.[locale] || "Service";
-  const pageDescription =
-    meta?.description?.[locale] || service.excerpt?.[locale] || "";
-  const canonical = meta?.canonical || `/services/${service.slug}`;
+  const relatedBlogs: Blog[] = (
+    await getBlogs({ categoryId: blog.category.id, limit: 3 })
+  ).response.filter((b) => b.id !== blog.id);
 
   return (
     <>
-      {/* SEO Meta */}
-      <Head>
-        <title>{pageTitle}</title>
-        {pageDescription && (
-          <meta name="description" content={pageDescription} />
-        )}
-        <link rel="canonical" href={canonical} />
-      </Head>
-
-      <article className="max-w-5xl mx-auto px-4 py-12">
-        {/* Cover Image */}
-        {service.coverImageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={process.env.NEXT_PUBLIC_BACKEND_URL + service.coverImageUrl}
-            alt={service.title?.[locale]}
-            className="w-full h-64 md:h-96 object-cover rounded-2xl mb-8"
-          />
-        )}
+      <article className="max-w-4xl mx-auto border border-gray-300 mb-0 rounded-2xl px-7 py-7">
+        {/* Category */}
+        <span className="bg-[var(--color-primary)] text-[var(--color-bg)] text-xs px-3 py-2 rounded-full">
+          {blog.category.name[locale] || blog.category.name.EN}
+        </span>
 
         {/* Title */}
-        <h1 className="text-3xl font-bold text-[var(--color-heading)] mb-6">
-          {service.title?.[locale]}
+        <h1 className="text-3xl font-bold mt-4 mb-2 text-[var(--color-heading)]">
+          {blog.title[locale] || blog.title.EN}
         </h1>
+
+        {/* Author + Date */}
+        <p className="text-sm text-gray-500 mb-6">
+          {blog.author} ·{" "}
+          {new Date(blog.createdAt).toLocaleDateString(params.locale)}
+        </p>
 
         {/* Table of Contents */}
         {toc.length > 0 && (
@@ -167,24 +105,40 @@ export default function ServicePage() {
           </div>
         )}
 
-        {/* Content */}
-        {parsedContent && (
+        {/* Blog Content */}
+        {content && (
           <div
-            className="prose prose-lg max-w-none"
-            dangerouslySetInnerHTML={{ __html: parsedContent }}
+            className="prose prose-lg"
+            dangerouslySetInnerHTML={{ __html: content }}
           />
         )}
-
-        {/* CTA */}
-        <div className="flex justify-center items-center mt-8">
-          <Link
-            href="/contact"
-            className="px-6 py-3 rounded bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90"
-          >
-            {t("contact")}
-          </Link>
-        </div>
       </article>
+
+      {/* Related Blogs */}
+      {relatedBlogs.length > 0 && (
+        <div className="border border-gray-300 rounded-2xl p-7 mt-16">
+          <h2 className="text-xl font-bold mb-6">More from this category</h2>
+          <div className="grid gap-6 md:grid-cols-3">
+            {relatedBlogs.map((b) => (
+              <Link key={b.id} href={`/blogs/${b.id}`}>
+                <div className="cursor-pointer border mb-2 border-gray-300 rounded-lg overflow-hidden hover:shadow-md hover:scale-105 duration-150 transition-all">
+                  {b.coverImage && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={process.env.NEXT_PUBLIC_BACKEND_URL + b.coverImage}
+                      alt={b.title[locale] || b.title.EN}
+                      className="w-full h-32 object-cover"
+                    />
+                  )}
+                  <p className="p-2 font-medium">
+                    {b.title[locale] || b.title.EN}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </>
   );
 }

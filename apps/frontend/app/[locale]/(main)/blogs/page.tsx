@@ -1,50 +1,63 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import { getBlogs, Blog } from "@/services/blogs";
 import { getCategories, Category } from "@/services/categories";
-import { motion } from "framer-motion";
-import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
 import { slugify } from "@/utils/slugify";
 import Image from "next/image";
+import Link from "next/link";
+import messagesEn from "@/messages/en.json";
+import messagesAr from "@/messages/ar.json";
+import messagesDe from "@/messages/de.json";
+import messagesFr from "@/messages/fr.json";
+import messagesIt from "@/messages/it.json";
+import messagesRo from "@/messages/ro.json";
+import messagesRu from "@/messages/ru.json";
+import messagesZh from "@/messages/zh.json";
 
-export default function BlogsPage() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [blogsByCategory, setBlogsByCategory] = useState<
-    Record<string, Blog[]>
-  >({});
-  const locale = useLocale().toUpperCase();
-  const t = useTranslations("Main.Blogs");
+type Props = {
+  params: { locale: string };
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const messagesMap: Record<string, any> = {
+  en: messagesEn,
+  ar: messagesAr,
+  de: messagesDe,
+  fr: messagesFr,
+  it: messagesIt,
+  ro: messagesRo,
+  ru: messagesRu,
+  zh: messagesZh,
+};
+
+export const revalidate = 60;
+
+export default async function BlogsPage({ params }: Props) {
+  const locale = params.locale.toUpperCase();
+  const messages = messagesMap[params.locale] || messagesMap["en"];
+  const t = (key: keyof typeof messages["Main"]["Blogs"]) =>
+    messages["Main"]["Blogs"][key];
 
   const isRTL = ["AR", "HE", "FA"].includes(locale);
 
-  useEffect(() => {
-    getCategories().then((cats) => {
-      setCategories(cats);
+  // Fetch categories + blogs server-side
+  const categories: Category[] = await getCategories();
+  const blogsByCategory: Record<string, Blog[]> = {};
 
-      cats.forEach((cat) => {
-        getBlogs({ categoryId: cat.id }).then((res) => {
-          setBlogsByCategory((prev) => ({ ...prev, [cat.id]: res.response }));
-        });
-      });
-    });
-  }, [locale]);
+  for (const cat of categories) {
+    const res = await getBlogs({ categoryId: cat.id });
+    blogsByCategory[cat.id] = res.response;
+  }
 
   return (
     <div className="space-y-8">
-      {categories.map((cat, idx) => {
+      {categories.map((cat) => {
         const blogs = blogsByCategory[cat.id] || [];
         if (blogs.length === 0) return null;
 
         const [firstBlog, ...restBlogs] = blogs;
 
         return (
-          <motion.div
+          <div
             key={cat.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.1 }}
             className="bg-[var(--color-bg)] rounded-2xl border border-gray-300 p-8"
           >
             {/* Category Title */}
@@ -126,7 +139,7 @@ export default function BlogsPage() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
         );
       })}
     </div>

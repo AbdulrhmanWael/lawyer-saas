@@ -16,7 +16,7 @@ import {
   FaInstagram,
   FaLinkedin,
 } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
+import { FaFacebookMessenger, FaXTwitter } from "react-icons/fa6";
 import { Mail, MapPin, Phone } from "lucide-react";
 import ColorsSection from "./components/ColorSelection";
 import { ApplyThemeVariables } from "./components/ApplyThemeVariables";
@@ -65,6 +65,7 @@ export type SettingsFormData = z.infer<typeof SiteSettingsSchema>;
 const socialIcons: Record<string, { icon: JSX.Element; placeholder: string }> =
   {
     facebook: { icon: <FaFacebook />, placeholder: "Facebook URL" },
+    messenger: { icon: <FaFacebookMessenger />, placeholder: "Messenger URL" },
     whatsapp: { icon: <FaWhatsapp />, placeholder: "WhatsApp link" },
     instagram: { icon: <FaInstagram />, placeholder: "Instagram URL" },
     twitter: { icon: <FaXTwitter />, placeholder: "X (Twitter) URL" },

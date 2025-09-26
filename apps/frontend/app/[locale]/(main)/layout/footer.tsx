@@ -65,25 +65,6 @@ export default function Footer() {
       role="contentinfo"
       className="relative bg-[var(--color-primary)] text-[var(--color-bg)] mt-16 bg-[url('/footer-bg.webp')] bg-cover bg-no-repeat bg-center"
     >
-      {/* Background Image
-      <div className="absolute flex justify-center items-center inset-0 overflow-hidden">
-        {siteSettings?.logoUrl ? (
-          <Image
-            aria-hidden="true"
-            className="grayscale-100 opacity-25"
-            src={process.env.NEXT_PUBLIC_BACKEND_URL + siteSettings?.logoUrl}
-            alt={`${siteSettings?.metaTitle} Logo`}
-            width={500}
-            height={500}
-            loading="lazy"
-          />
-        ) : (
-          <h2 className="text-xl font-bold text-[var(--color-primary)] mb-4 grayscale-100 opacity-25">
-            Law Firm
-          </h2>
-        )}
-      </div> */}
-
       <div className="relative container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-6 py-16">
         {/* Column 1 - Logo + Newsletter */}
         <div className="space-y-5">
@@ -174,11 +155,6 @@ export default function Footer() {
             <li>
               <Link href="/about" className="hover:text-[var(--color-accent)]">
                 {t("aboutUs")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/staff" className="hover:text-[var(--color-accent)]">
-                {t("ourStaff")}
               </Link>
             </li>
             <li>
