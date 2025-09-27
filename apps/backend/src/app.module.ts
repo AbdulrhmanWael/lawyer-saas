@@ -51,8 +51,9 @@ import { AboutUsModule } from './about-us/about-us.module';
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASS || 'password',
       database: process.env.DB_NAME || 'lawyer_db',
+      ssl: { rejectUnauthorized: false },
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     CacheModule.register({
       store: redisStore,

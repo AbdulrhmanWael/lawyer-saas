@@ -1,15 +1,24 @@
 import { routing } from "@/i18n/routing";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getLocale, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import "./globals.css";
 import RouteProgressBar from "./providers";
 import { SiteProvider } from "./context/SiteContext";
+import { Metadata } from "next";
 
 type Props = {
   children: React.ReactNode;
-  main: React.ReactNode;
-  params: Promise<{ locale: string }>;
+};
+const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/site-settings");
+const siteSettings = await res.json();
+export const metadata: Metadata = {
+  title: siteSettings.metaTitle,
+  icons: {
+    icon: siteSettings.logoUrl
+      ? process.env.NEXT_PUBLIC_BACKEND_URL + siteSettings.logoUrl
+      : "/favicon.ico",
+  },
 };
 
 export function generateStaticParams() {
@@ -25,8 +34,8 @@ export function generateStaticParams() {
   ];
 }
 
-export default async function LocaleLayout({ children, main, params }: Props) {
-  const { locale } = await params;
+export default async function LocaleLayout({ children }: Props) {
+  const locale = await getLocale();
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
@@ -45,7 +54,7 @@ export default async function LocaleLayout({ children, main, params }: Props) {
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <RouteProgressBar />
-        <SiteProvider>{main || children}</SiteProvider>
+          <SiteProvider>{children}</SiteProvider>
         </NextIntlClientProvider>
       </body>
     </html>

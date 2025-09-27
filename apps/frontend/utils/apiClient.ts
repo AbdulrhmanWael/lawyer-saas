@@ -46,7 +46,6 @@ export async function apiFetch<T = any>(
 
   if (!res.ok) throw new Error(`Request failed: ${res.status}`);
 
-  // Show success toast for POST, PUT, PATCH
   if (
     init?.method &&
     ["POST", "PUT", "PATCH"].includes(init.method.toUpperCase())
