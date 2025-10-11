@@ -42,6 +42,7 @@ export class BlogsController {
   }
 
   @Get(':id')
+  @Public()
   findOne(@Param('id') id: string, @Query('locale') locale?: string) {
     return this.blogsService.findOne(id, locale);
   }
