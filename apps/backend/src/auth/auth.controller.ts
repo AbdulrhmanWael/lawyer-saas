@@ -50,6 +50,12 @@ export class AuthController {
         process.env.NODE_ENV === 'production' ? '.lex-virtus.com' : undefined,
       maxAge: 15 * 60 * 1000,
     });
+    if (process.env.NODE_ENV === 'production') {
+      res.header('Set-Cookie', [
+        `token=${access_token}; Path=/; Domain=.lex-virtus.com; Secure; HttpOnly; SameSite=None; Partitioned; Max-Age=900`,
+        `refresh_token=${refresh_token}; Path=/; Domain=.lex-virtus.com; Secure; HttpOnly; SameSite=None; Partitioned; Max-Age=${7 * 24 * 60 * 60}`,
+      ]);
+    }
 
     return {
       user: {
@@ -96,6 +102,12 @@ export class AuthController {
         process.env.NODE_ENV === 'production' ? '.lex-virtus.com' : undefined,
       maxAge: 15 * 60 * 1000,
     });
+    if (process.env.NODE_ENV === 'production') {
+      res.header('Set-Cookie', [
+        `token=${access_token}; Path=/; Domain=.lex-virtus.com; Secure; HttpOnly; SameSite=None; Partitioned; Max-Age=900`,
+        `refresh_token=${newRefreshToken}; Path=/; Domain=.lex-virtus.com; Secure; HttpOnly; SameSite=None; Partitioned; Max-Age=${7 * 24 * 60 * 60}`,
+      ]);
+    }
 
     return { success: true };
   }
