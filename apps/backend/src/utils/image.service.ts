@@ -18,7 +18,16 @@ export class ImageService {
   // eslint-disable-next-line @typescript-eslint/require-await
   async deleteImage(filePath: string) {
     if (!filePath) return;
-    const fullPath = path.join(process.cwd(), filePath.replace(/^\//, ''));
-    if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+
+    try {
+      const fullPath = path.join(process.cwd(), filePath.replace(/^\//, ''));
+
+      const stats = await fs.promises.stat(fullPath).catch(() => null);
+      if (!stats?.isFile()) return;
+
+      await fs.promises.unlink(fullPath);
+    } catch (err) {
+      console.error('Error deleting image:', err);
+    }
   }
 }
