@@ -31,30 +31,26 @@ export class AuthController {
       refresh_token,
     } = await this.authService.login(user);
 
-    res.cookie('refresh_token', refresh_token, {
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
-      domain:
-        process.env.NODE_ENV === 'production' ? '.lex-virtus.com' : undefined,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    res.cookie('token', access_token, {
-      httpOnly: true,
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
-      domain:
-        process.env.NODE_ENV === 'production' ? '.lex-virtus.com' : undefined,
-      maxAge: 15 * 60 * 1000,
-    });
     if (process.env.NODE_ENV === 'production') {
-      res.header('Set-Cookie', [
+      res.setHeader('Set-Cookie', [
         `token=${access_token}; Path=/; Domain=.lex-virtus.com; Secure; HttpOnly; SameSite=None; Partitioned; Max-Age=900`,
         `refresh_token=${refresh_token}; Path=/; Domain=.lex-virtus.com; Secure; HttpOnly; SameSite=None; Partitioned; Max-Age=${7 * 24 * 60 * 60}`,
       ]);
+    } else {
+      res.cookie('token', access_token, {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: false,
+        path: '/',
+        maxAge: 15 * 60 * 1000,
+      });
+      res.cookie('refresh_token', refresh_token, {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: false,
+        path: '/',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
     }
 
     return {
