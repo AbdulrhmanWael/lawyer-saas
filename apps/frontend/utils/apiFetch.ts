@@ -8,8 +8,12 @@ export async function apiFetchEdge<T = unknown>(
   let cookieHeader = req.headers.get("cookie") || "";
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}${url}`, {
-    headers: { cookie: cookieHeader },
+    headers: {
+      cookie: cookieHeader,
+      "Content-Type": "application/json",
+    },
     credentials: "include",
+    mode: "cors",
   });
 
   if (res.status === 401 && !triedRefresh) {
@@ -19,35 +23,34 @@ export async function apiFetchEdge<T = unknown>(
         method: "POST",
         headers: { cookie: cookieHeader },
         credentials: "include",
+        mode: "cors",
       }
     );
 
     if (!refreshRes.ok) throw new Error("Unauthorized");
 
-    const setCookies = refreshRes.headers.getSetCookie?.()
-      ?? refreshRes.headers.get("set-cookie")?.split(/,(?=[^;]+=[^;]+)/)
-      ?? [];
+    const setCookies =
+      refreshRes.headers.get("set-cookie")?.split(/,(?=[^;]+=[^;]+)/) ?? [];
 
-    const cookies = setCookies
-      .map(c => c.split(";")[0])
-      .join("; ");
-
-    cookieHeader = cookies;
+    const newCookies = setCookies.map((c) => c.split(";")[0]).join("; ");
+    cookieHeader = newCookies;
 
     const retryRes = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}${url}`,
       {
-        headers: { cookie: cookieHeader },
+        headers: {
+          cookie: cookieHeader,
+          "Content-Type": "application/json",
+        },
         credentials: "include",
+        mode: "cors",
       }
     );
 
     if (!retryRes.ok) throw new Error(`Retry failed: ${retryRes.status}`);
-
     return retryRes.json() as Promise<T>;
   }
 
   if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-
   return res.json() as Promise<T>;
 }

@@ -4,17 +4,16 @@ import * as dotenv from 'dotenv';
 import { SeedService } from './seed/seed.service';
 import cookieParser from 'cookie-parser';
 
+dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
   await app.get(SeedService).run();
   app.enableCors({
-    origin: process.env.FRONTEND_URL,
+    origin: [process.env.FRONTEND_URL, process.env.FRONTEND_URL2],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
   await app.listen(process.env.PORT ?? 4000);
 }
 bootstrap().catch((err) => console.error(err));
-
-dotenv.config();
