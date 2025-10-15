@@ -38,7 +38,7 @@ export default function ServicesGrid() {
               >
                 {/* Logo if available */}
                 {logoUrl && (
-                  <div className="w-16 h-16 mx-auto mb-4 relative">
+                  <div className="w-28 h-28 mx-auto mb-4 relative">
                     <Image
                       src={process.env.NEXT_PUBLIC_BACKEND_URL + logoUrl}
                       alt={service.title[locale]}
@@ -54,7 +54,11 @@ export default function ServicesGrid() {
                 </h3>
 
                 {/* Excerpt */}
-                <p className="text-sm text-gray-50 mb-4 line-clamp-4 text-center">
+                <p
+                  className={`text-sm text-gray-50 mb-4 line-clamp-4 text-center ${
+                    locale === "ar" ? "text-right" : "text-left"
+                  }`}
+                >
                   {service.excerpt?.[locale]}
                 </p>
 

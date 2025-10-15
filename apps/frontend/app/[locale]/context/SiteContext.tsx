@@ -7,6 +7,8 @@ import {
   useState,
   ReactNode,
   useMemo,
+  useRef,
+  useCallback,
 } from "react";
 import {
   practiceAreaService,
@@ -35,6 +37,9 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   const [practiceAreas, setPracticeAreas] = useState<PracticeArea[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // 🧠 Track whether theme was already applied by SSR or script
+  const themeAppliedRef = useRef(false);
+
   const normalizePracticeArea = (pa: PracticeArea): PracticeArea => ({
     ...pa,
     title: normalizeField(pa.title),
@@ -43,18 +48,31 @@ export function SiteProvider({ children }: { children: ReactNode }) {
     seoMeta: normalizeField(pa.seoMeta),
   });
 
-  const fetchSiteSettings = async () => {
+  const applyThemeSafely = (data: SiteSettings) => {
+    if (!data) return;
+    if (themeAppliedRef.current) {
+      applyThemeColors(data);
+    } else {
+      themeAppliedRef.current = true;
+    }
+    try {
+      document.cookie = `siteSettings=${encodeURIComponent(
+        JSON.stringify(data)
+      )}; path=/; max-age=86400;`;
+    } catch (err) {
+      console.warn("Failed to store siteSettings cookie:", err);
+    }
+  };
+
+  const fetchSiteSettings = useCallback(async () => {
     try {
       const data = await siteSettingsApi.get();
       setSettings(data || null);
-
-      if (data) {
-        applyThemeColors(data); // apply CSS variables whenever settings change
-      }
+      if (data) applyThemeSafely(data);
     } catch (err) {
       console.error("Failed to fetch site settings", err);
     }
-  };
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -65,11 +83,8 @@ export function SiteProvider({ children }: { children: ReactNode }) {
         ]);
 
         setSettings(settingsData || null);
-        setPracticeAreas(services.map(normalizePracticeArea)); // 👈 normalize here
-
-        if (settingsData) {
-          applyThemeColors(settingsData);
-        }
+        setPracticeAreas(services.map(normalizePracticeArea));
+        if (settingsData) applyThemeSafely(settingsData);
       } catch (err) {
         console.error("Failed to fetch site data", err);
       } finally {
@@ -86,7 +101,7 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       loading,
       refreshSiteSettings: fetchSiteSettings,
     }),
-    [settings, practiceAreas, loading]
+    [settings, practiceAreas, loading, fetchSiteSettings]
   );
 
   return (

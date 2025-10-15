@@ -1,6 +1,6 @@
 "use client";
 import { Sun, Moon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { setCookie, getCookie } from "../../utils/cookies";
 import { useSiteData } from "@/app/[locale]/context/SiteContext";
 import { applyThemeColors } from "@/utils/applyThemeColors";
@@ -12,29 +12,31 @@ export default function ThemeToggle() {
   const THEME_KEY = "theme";
   const COOKIE_THEME = "theme_pref";
 
+  const applyTheme = useCallback(
+    (mode: "light" | "dark") => {
+      const html = document.documentElement;
+
+      if (mode === "dark") html.setAttribute("data-theme", "dark");
+      else html.removeAttribute("data-theme");
+
+      localStorage.setItem(THEME_KEY, mode);
+      setCookie(COOKIE_THEME, mode);
+      setTheme(mode);
+
+      if (siteSettings) {
+        applyThemeColors(siteSettings, mode);
+      }
+    },
+    [siteSettings]
+  );
+
   useEffect(() => {
     const saved =
       (localStorage.getItem(THEME_KEY) as "light" | "dark") ||
       (getCookie(COOKIE_THEME) as "light" | "dark") ||
       "light";
     applyTheme(saved);
-  }, []);
-
-  function applyTheme(mode: "light" | "dark") {
-    const html = document.documentElement;
-
-    if (mode === "dark") html.setAttribute("data-theme", "dark");
-    else html.removeAttribute("data-theme");
-
-    localStorage.setItem(THEME_KEY, mode);
-    setCookie(COOKIE_THEME, mode);
-    setTheme(mode);
-
-    // 👇 Reapply colors dynamically
-    if (siteSettings) {
-      applyThemeColors(siteSettings, mode);
-    }
-  }
+  }, [applyTheme]);
 
   return (
     <button

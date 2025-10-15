@@ -69,7 +69,7 @@ export default function HeroCarousel() {
   if (!items.length) return null;
 
   return (
-    <section className="relative w-full h-[80vh] overflow-hidden bg-[var(--color-bg)]">
+    <section className="relative w-full h-[80vh] overflow-hidden text-center bg-[var(--color-bg)]">
       {/* Images */}
       <div className="absolute inset-0">
         <AnimatePresence>
@@ -90,7 +90,7 @@ export default function HeroCarousel() {
       <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
 
       {/* Text */}
-      <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
+      <div className="absolute inset-0 flex flex-col justify-center items-center px-4">
         <motion.div
           key={items[active].id + "-text"}
           initial={{ opacity: 0, y: -30 }}
@@ -104,10 +104,12 @@ export default function HeroCarousel() {
           </h1>
 
           <motion.p
-            className="max-w-2xl text-lg md:text-xl text-gray-200"
-            initial={{ x: locale === "AR" ? 40 : -40, opacity: 0 }}
+            className={`max-w-2xl text-lg md:text-xl text-gray-200 ${
+              locale === "ar" ? "text-right" : "text-left"
+            }`}
+            initial={{ x: locale === "ar" ? 40 : -40, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: locale === "AR" ? -20 : 20, opacity: 0 }}
+            exit={{ x: locale === "ar" ? -20 : 20, opacity: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             {items[active].paragraph?.[locale]}

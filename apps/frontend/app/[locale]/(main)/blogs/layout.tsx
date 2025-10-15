@@ -7,6 +7,7 @@ import { Search } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import debounce from "lodash.debounce";
 import Link from "next/link";
+import { slugify } from "@/utils/slugify";
 
 export default function BlogsLayout({
   children,
@@ -67,8 +68,14 @@ export default function BlogsLayout({
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
-              <button className="bg-[var(--color-primary)] font-semibold text-[var(--color-bg)] px-3 py-2" type="submit" onClick={(e)=>{e.preventDefault()}}>
-                <Search/>
+              <button
+                className="bg-[var(--color-primary)] font-semibold text-[var(--color-bg)] px-3 py-2"
+                type="submit"
+                onClick={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <Search />
               </button>
             </form>
           </div>
@@ -114,7 +121,7 @@ export default function BlogsLayout({
                       />
                     )}
                     <Link
-                      href={`/blogs/${blog.id}`}
+                      href={`/blogs/${slugify(blog.category.name.EN)}/${blog.id}`}
                       className="font-medium text-sm text-[var(--color-heading)] line-clamp-2"
                     >
                       {blog.title[locale]}

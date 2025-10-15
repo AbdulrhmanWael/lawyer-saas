@@ -32,6 +32,7 @@ import { NewsletterModule } from './newsletter/newsletter.module';
 import { JwtModule } from '@nestjs/jwt';
 import { PrivacyPolicyModule } from './privacy-policy/privacy-policy.module';
 import { AboutUsModule } from './about-us/about-us.module';
+import { NavItemsModule } from './nav-items/nav-items.module';
 
 @Module({
   imports: [
@@ -80,6 +81,7 @@ import { AboutUsModule } from './about-us/about-us.module';
     NewsletterModule,
     PrivacyPolicyModule,
     AboutUsModule,
+    NavItemsModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],

@@ -1,5 +1,21 @@
 {
   "Dashboard": {
+    "NavItemsSection": {
+      "navItemsSection": "Navigation Items",
+      "label": "Label",
+      "url": "URL",
+      "order": "Order",
+      "active": "Active",
+      "save": "Save",
+      "delete": "Delete",
+      "cancel":"Cancel",
+      "addSubItem":"Add Sub Item",
+      "addNew": "Add New Item",
+      "add": "Add",
+      "translate": "Translate",
+      "translating": "Translating...",
+      "loading": "Loading..."
+    },
     "HomePage": {
       "translate": "Translate",
       "translating": "Translating..."

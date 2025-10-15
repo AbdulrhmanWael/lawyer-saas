@@ -8,6 +8,7 @@ import WhyUsSection from "./home-config/components/WhyUsSection";
 import TestimonialsSection from "./home-config/components/TestimonialsSection";
 import ClientsSection from "./home-config/components/ClientsSection";
 import { useTranslations } from "next-intl";
+import NavItemsSection from "./home-config/components/NavItemsSection";
 
 export default function DashboardPage() {
   const t = useTranslations("Dashboard");
@@ -17,6 +18,7 @@ export default function DashboardPage() {
   const [whyUsOpen, setWhyUsOpen] = useState(false);
   const [testimonialsOpen, setTestimonialsOpen] = useState(false);
   const [clientsOpen, setClientsOpen] = useState(false);
+  const [navItemsOpen, setNavItemsOpen] = useState(false);
 
   const renderDropdown = (
     title: string,
@@ -75,6 +77,13 @@ export default function DashboardPage() {
         clientsOpen,
         () => setClientsOpen((prev) => !prev),
         <ClientsSection />
+      )}
+
+      {renderDropdown(
+        t("NavItemsSection.navItemsSection"),
+        navItemsOpen,
+        () => setNavItemsOpen((prev) => !prev),
+        <NavItemsSection activeLang={activeLang} />
       )}
     </div>
   );

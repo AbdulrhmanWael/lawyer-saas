@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { TocList } from "./TocItemComponent";
+import BlogSkeleton from "@/components/BlogSkeleton";
 
 const slugify = (text: string) =>
   text
@@ -104,7 +105,7 @@ export default function BlogDetailPage() {
     });
   }, [id, locale]);
 
-  if (!blog) return <p>Loading...</p>;
+  if (!blog) return <BlogSkeleton />;
 
   return (
     <>

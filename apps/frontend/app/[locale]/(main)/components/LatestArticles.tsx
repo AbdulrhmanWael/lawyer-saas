@@ -5,6 +5,7 @@ import { getBlogs, Blog } from "@/services/blogs";
 import { motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
+import { slugify } from "@/utils/slugify";
 
 export default function LatestArticlesSection() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -46,7 +47,7 @@ export default function LatestArticlesSection() {
             transition={{ duration: 0.6, delay: idx * 0.1 }}
           >
             <Link
-              href={`/blogs/${blog.id}`}
+              href={`/blogs/${slugify(blog.category.name.EN)}/${blog.id}`}
               className="block bg-[var(--color-bg)]/90 rounded-2xl shadow-lg hover:shadow-xl p-6 transition"
             >
               {blog.coverImage && (
