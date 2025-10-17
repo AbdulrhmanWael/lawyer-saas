@@ -83,10 +83,11 @@ export default function Header() {
   };
 
   const menuTree = buildTree(navItems);
-  console.log(navItems);
-
-  console.log(menuTree);
-
+  if (!siteSettings) {
+    return (
+      <header className="sticky top-0 z-50 bg-[var(--color-bg)] border-b border-[var(--form-border)] shadow-sm"></header>
+    );
+  }
   return (
     <>
       {/* Top Header */}
