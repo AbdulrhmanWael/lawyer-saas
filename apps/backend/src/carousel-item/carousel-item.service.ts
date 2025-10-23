@@ -23,7 +23,9 @@ export class CarouselItemService {
       if (data.imageFile) {
         data.imageUrl = await this.imageService.saveImage(data.imageFile);
       }
-      const item = this.repo.create(data);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { imageFile, ...createData } = data;
+      const item = this.repo.create(createData);
       return this.repo.save(item);
     } catch (err) {
       console.error('Error creating carousel item', err);
@@ -39,7 +41,9 @@ export class CarouselItemService {
       if (data.imageFile) {
         data.imageUrl = await this.imageService.saveImage(data.imageFile);
       }
-      await this.repo.update(id, data);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { imageFile, ...updateData } = data;
+      await this.repo.update(id, updateData);
       return this.repo.findOneOrFail({ where: { id } });
     } catch (err) {
       console.error('Error updating carousel item', err);

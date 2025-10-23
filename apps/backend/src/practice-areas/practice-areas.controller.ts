@@ -82,7 +82,6 @@ export class PracticeAreasController {
   ): Promise<PracticeArea> {
     const logoFile = files?.logo?.[0];
     const coverFile = files?.coverImage?.[0];
-    console.log(files);
     return this.service.update(id, dto, logoFile?.buffer, coverFile?.buffer);
   }
   @Delete(':id')

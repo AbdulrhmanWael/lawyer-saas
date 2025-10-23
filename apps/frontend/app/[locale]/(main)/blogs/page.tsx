@@ -11,10 +11,7 @@ import messagesIt from "@/messages/it.json";
 import messagesRo from "@/messages/ro.json";
 import messagesRu from "@/messages/ru.json";
 import messagesZh from "@/messages/zh.json";
-
-type Props = {
-  params: { locale: string };
-};
+import { getLocale } from "next-intl/server";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const messagesMap: Record<string, any> = {
@@ -30,9 +27,9 @@ export const messagesMap: Record<string, any> = {
 
 export const revalidate = 60;
 
-export default async function BlogsPage({ params }: Props) {
-  const locale = params.locale.toUpperCase();
-  const messages = messagesMap[params.locale] || messagesMap["en"];
+export default async function BlogsPage() {
+  const locale = (await getLocale()).toUpperCase()
+  const messages = messagesMap[locale.toLowerCase()] || messagesMap["en"];
   const t = (key: keyof typeof messages["Main"]["Blogs"]) =>
     messages["Main"]["Blogs"][key];
 

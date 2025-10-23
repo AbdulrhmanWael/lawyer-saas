@@ -396,3 +396,34 @@ button {
 .animate-floatPulse {
   animation: floatPulse 4s infinite ease-in-out;
 }
+
+.social-links{
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  border-radius: 50%;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.social-facebook {
+  background: #1877f2;
+}
+
+.social-whatsapp {
+  background: #25d366;
+}
+.social-linkedin {
+  background-color: #0077b5;
+}
+
+.social-instagram {
+  background-color: #8134af;
+}
+
+.social-twitter {
+  background-color: white;
+}

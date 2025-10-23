@@ -40,7 +40,6 @@ export default function CarouselSection({ activeLang }: Props) {
               ? JSON.parse(item.buttonText)
               : item.buttonText,
         }));
-        console.log(parsed);
 
         setItems(parsed);
       } catch (err) {

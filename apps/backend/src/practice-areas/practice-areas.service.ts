@@ -53,8 +53,6 @@ export class PracticeAreasService {
   ): Promise<PracticeArea> {
     const pa = await this.findOne(id);
 
-    console.log(coverBuffer);
-
     if (logoBuffer) {
       if (pa.logoUrl) await this.imageService.deleteImage(pa.logoUrl);
       pa.logoUrl = await this.imageService.saveImage(logoBuffer);
@@ -64,7 +62,6 @@ export class PracticeAreasService {
       if (pa.coverImageUrl)
         await this.imageService.deleteImage(pa.coverImageUrl);
       pa.coverImageUrl = await this.imageService.saveImage(coverBuffer);
-      console.log(pa.coverImageUrl);
     }
 
     Object.assign(pa, {

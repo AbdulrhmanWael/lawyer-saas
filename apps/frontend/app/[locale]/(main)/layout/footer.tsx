@@ -39,23 +39,23 @@ export default function Footer() {
     { icon: JSX.Element; placeholder: string }
   > = {
     facebook: {
-      icon: <FaFacebook className="text-[#1877F2]" />,
+      icon: <FaFacebook className="" />,
       placeholder: "Facebook URL",
     },
     whatsapp: {
-      icon: <FaWhatsapp className="text-[#25D366]" />,
+      icon: <FaWhatsapp className="" />,
       placeholder: "WhatsApp link",
     },
     instagram: {
-      icon: <FaInstagram className="text-[#E4405F]" />,
+      icon: <FaInstagram className="" />,
       placeholder: "Instagram URL",
     },
     twitter: {
-      icon: <FaXTwitter className="text-black dark:text-white" />,
+      icon: <FaXTwitter className="" />,
       placeholder: "X (Twitter) URL",
     },
     linkedin: {
-      icon: <FaLinkedin className="text-[#0077B5]" />,
+      icon: <FaLinkedin className="" />,
       placeholder: "LinkedIn URL",
     },
   };
@@ -224,7 +224,7 @@ export default function Footer() {
                 key={key}
                 href={value}
                 target="_blank"
-                className="text-3xl"
+                className={`social-links social-${key}`}
                 aria-label={key.charAt(0).toUpperCase() + key.slice(1)}
               >
                 {socialIcons[key].icon}

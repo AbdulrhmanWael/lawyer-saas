@@ -111,7 +111,7 @@ export default function BlogDetailPage() {
     <>
       <article className="max-w-4xl mx-auto border border-gray-300 mb-0 rounded-2xl px-7 py-7">
         {/* Category */}
-        <span className="bg-[var(--color-primary)] text-[var(--color-bg)] text-xs px-3 py-2 rounded-full">
+        <span className="bg-[var(--color-primary)] text-[var(--color-bg)] text-sm px-4 font-bold py-2 rounded-full">
           {blog.category.name[locale]}
         </span>
 

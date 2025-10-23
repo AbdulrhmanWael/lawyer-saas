@@ -12,6 +12,7 @@ import { getCategories, Category } from "@/services/categories";
 import { usePathname } from "next/navigation";
 import { slugify } from "@/utils/slugify";
 import { NavItem, navItemsClient } from "@/services/navItems";
+import { FaEnvelope, FaPhone } from "react-icons/fa6";
 
 type NavItemWithChildren = NavItem & { children?: NavItemWithChildren[] };
 
@@ -25,17 +26,25 @@ export default function Header() {
   const [categories, setCategories] = useState<Category[]>([]);
   const pathname = usePathname();
   const [navItems, setNavItems] = useState<NavItemWithChildren[]>([]);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
         const data = await navItemsClient.getAll();
-        console.log(data);
         setNavItems(data.filter((item) => item.visible));
       } catch (err) {
         console.error("Failed to load navigation", err);
       }
     })();
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY != 0);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
@@ -68,16 +77,18 @@ export default function Header() {
     const map = new Map<string, NavItemWithChildren>();
     const roots: NavItemWithChildren[] = [];
 
-    items.forEach((item) => map.set(item.id, { ...item, children: [] }));
+    for (const item of items) {
+      map.set(item.id, { ...item, children: [] });
+    }
 
-    items.forEach((item) => {
+    for (const item of items) {
       if (item.parentId) {
         const parent = map.get(item.parentId);
         if (parent) parent.children!.push(map.get(item.id)!);
       } else {
         roots.push(map.get(item.id)!);
       }
-    });
+    }
 
     return roots;
   };
@@ -85,16 +96,52 @@ export default function Header() {
   const menuTree = buildTree(navItems);
   if (!siteSettings) {
     return (
-      <header className="sticky top-0 z-50 bg-[var(--color-bg)] border-b border-[var(--form-border)] shadow-sm"></header>
+      <header className="sticky top-0 z-50 bg-[var(--color-bg)]/90 border-b border-[var(--form-border)] shadow-sm"></header>
     );
   }
   return (
     <>
       {/* Top Header */}
-      <header className="sticky top-0 z-50 bg-[var(--color-bg)] border-b border-[var(--form-border)] shadow-sm">
-        <div className="container mx-auto flex items-center justify-between px-4 py-3">
+      <div
+        className={`flex justify-around z-50 mx-5 items-center transition-all duration-700 ease-in-out ${
+          scrolled
+            ? "opacity-0 max-h-0 pointer-events-none"
+            : "opacity-100 max-h-[120px]"
+        }`}
+      >
+        <div className="flex items-center">
+          <span className="md:flex hidden items-center text-[var(--color-primary)]">
+            <FaPhone /> &nbsp;
+            <a href={`tel:${siteSettings.footer.phone}`}>
+              <span>{siteSettings.footer.phone}</span>
+            </a>
+          </span>
+          <span className="md:flex hidden items-center text-[var(--color-primary)]">
+            &nbsp; | &nbsp;
+            <FaEnvelope />
+            &nbsp;
+            <a href={`mailto:${siteSettings.footer.email}`}>
+              {siteSettings.footer.email}
+            </a>
+          </span>
+        </div>
+        <div className="flex gap-x-5 items-center mt-2">
+          <ThemeToggle />
+          <LanguageSwitcher />
+        </div>
+      </div>
+      <header
+        className={`sticky top-0 z-40 transition-all duration-700 ease-in-out ${
+          scrolled
+            ? "bg-[var(--color-bg)]/70 shadow-sm backdrop-blur-md"
+            : "bg-[var(--color-bg)] shadow-none"
+        }`}
+      >
+        <div
+          className={`container mx-auto flex items-center justify-between px-4 py-3`}
+        >
           {/* Logo */}
-          <div>
+          <div className="">
             <Link href="/">
               {siteSettings?.logoUrl ? (
                 <Image
@@ -243,9 +290,6 @@ export default function Header() {
 
           {/* Right Controls */}
           <div className="flex items-center gap-3">
-            <ThemeToggle />
-            <LanguageSwitcher />
-
             {/* Hamburger for Mobile */}
             <button
               className="md:hidden text-[var(--color-text)]"
@@ -350,7 +394,6 @@ export default function Header() {
           </div>
         )}
 
-        {/* Blog Categories Navbar */}
         {/* Blog Categories Navbar */}
         {pathname.startsWith(`/${locale.toLowerCase()}/blogs`) &&
           categories.length > 0 && (

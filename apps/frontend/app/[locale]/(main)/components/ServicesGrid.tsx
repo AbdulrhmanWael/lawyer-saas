@@ -56,7 +56,7 @@ export default function ServicesGrid() {
                 {/* Excerpt */}
                 <p
                   className={`text-sm text-gray-50 mb-4 line-clamp-4 text-center ${
-                    locale === "ar" ? "text-right" : "text-left"
+                    locale === "AR" ? "text-right" : "text-left"
                   }`}
                 >
                   {service.excerpt?.[locale]}

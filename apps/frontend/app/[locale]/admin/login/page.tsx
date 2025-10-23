@@ -15,11 +15,9 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleEmail = (e: { target: { value: string } }) => {
-    console.log(e);
     setEmail(e.target.value);
   };
   const handlePassword = (e: { target: { value: string } }) => {
-    console.log(e);
     setPassword(e.target.value);
   };
 

@@ -39,7 +39,7 @@ export default function WhyUsSection() {
         </h2>
         <p
           className={`text-lg text-[var(--color-text)] mb-6 ${
-            locale === "ar" ? "text-right" : "text-left"
+            locale === "AR" ? "text-right" : "text-left"
           }`}
         >
           {item.paragraph[locale]}

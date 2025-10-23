@@ -77,7 +77,6 @@ export default function PracticeAreaForm({
       contentAsJSON[lang] = htmlToJSON("<p></p>");
     }
   });
-  console.log(contentAsJSON);
 
   const form = useForm<FormData>({
     resolver: zodResolver(practiceAreaSchema),
@@ -117,7 +116,6 @@ export default function PracticeAreaForm({
     const sanitizeRecord = (rec: Record<string, string | undefined>) =>
       Object.fromEntries(Object.entries(rec).map(([k, v]) => [k, v ?? ""]));
 
-    console.log(data.contentHtml[activeLang]);
 
     const contentAsHTML: Record<string, string> = {};
     LANGS.forEach((lang) => {

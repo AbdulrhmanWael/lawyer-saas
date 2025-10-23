@@ -19,15 +19,18 @@ export default function LogoDropzone({
     onFileSelected(file);
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     accept: { "image/*": [] },
     multiple: false,
+    noClick: true,
   });
 
   return (
     <div
-      {...getRootProps()}
+      {...getRootProps({
+        onClick: () => open(),
+      })}
       className={`border-2 min-h-[120px] border-dashed flex justify-center items-center rounded-lg p-6 text-center cursor-pointer transition ${
         isDragActive
           ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5"

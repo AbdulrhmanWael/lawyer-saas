@@ -105,7 +105,7 @@ export default function HeroCarousel() {
 
           <motion.p
             className={`max-w-2xl text-lg md:text-xl text-gray-200 ${
-              locale === "ar" ? "text-right" : "text-left"
+              locale === "AR" ? "text-right" : "text-left"
             }`}
             initial={{ x: locale === "ar" ? 40 : -40, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
