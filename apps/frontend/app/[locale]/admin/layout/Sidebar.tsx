@@ -101,7 +101,7 @@ export default function Sidebar() {
         className="
           mt-4
           flex flex-col space-y-2
-          overflow-y-auto scrollbar-hide
+          overflow-y-auto
           max-h-[calc(100vh-4rem)]
           px-2 py-3
         "

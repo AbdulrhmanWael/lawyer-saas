@@ -82,7 +82,9 @@ export default function Footer() {
             </h2>
           )}
           <p className="mb-4 text-sm">{t("newsletterText")}</p>
-          {!subscribed ? (
+          {subscribed ? (
+            <p className="text-green-400 text-sm">Subscribed successfully!</p>
+          ) : (
             <div className="flex">
               <label htmlFor="newsletter-email" className="sr-only">
                 {t("subscribePlaceholder")}
@@ -103,8 +105,6 @@ export default function Footer() {
                 <Mail />
               </button>
             </div>
-          ) : (
-            <p className="text-green-400 text-sm">Subscribed successfully!</p>
           )}
         </div>
 
