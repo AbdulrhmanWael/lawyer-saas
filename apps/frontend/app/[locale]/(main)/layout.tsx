@@ -39,7 +39,7 @@ export default function MainLayout({
     <div className="flex flex-col min-h-screen relative">
       <Header />
 
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 mt-[120px]">{children}</main>
 
       {/* Floating buttons */}
       {!hideButtons && (

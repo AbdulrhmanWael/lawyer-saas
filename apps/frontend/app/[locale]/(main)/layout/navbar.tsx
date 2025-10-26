@@ -100,13 +100,13 @@ export default function Header() {
     );
   }
   return (
-    <>
+    <div className="fixed z-50 w-full">
       {/* Top Header */}
       <div
-        className={`flex justify-around z-50 mx-5 items-center transition-all duration-700 ease-in-out ${
+        className={`flex relative w-full bg-white justify-around z-51 items-center transition-all duration-700 ease-in-out ${
           scrolled
-            ? "opacity-0 max-h-0 pointer-events-none"
-            : "opacity-100 max-h-[120px]"
+            ? "-top-[46px] pointer-events-none [transition-delay:0ms]"
+            : "top-0 max-h-[120px] [transition-delay:0ms]"
         }`}
       >
         <div className="flex items-center">
@@ -131,10 +131,10 @@ export default function Header() {
         </div>
       </div>
       <header
-        className={`sticky top-0 z-40 transition-all duration-700 ease-in-out ${
+        className={`fixed w-full z-40 transition-all duration-700 ease-in-out ${
           scrolled
-            ? "bg-[var(--color-bg)]/70 shadow-sm backdrop-blur-md"
-            : "bg-[var(--color-bg)] shadow-none"
+            ? "top-0 bg-[var(--color-bg)] shadow-none [transition-delay:0ms]"
+            : "top-10 bg-[var(--color-bg)]/90 shadow-sm"
         }`}
       >
         <div
@@ -433,6 +433,6 @@ export default function Header() {
           }}
         />
       </header>
-    </>
+    </div>
   );
 }

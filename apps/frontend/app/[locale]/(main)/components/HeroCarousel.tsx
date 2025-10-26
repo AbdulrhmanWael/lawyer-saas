@@ -57,20 +57,18 @@ export default function HeroCarousel() {
 
   useEffect(() => {
     if (!items.length) return;
-
     const timeout = setTimeout(() => {
       const next = (active + 1) % items.length;
       setActive(next);
     }, 5000);
-
     return () => clearTimeout(timeout);
   }, [active, items]);
 
   if (!items.length) return null;
 
   return (
-    <section className="relative w-full h-[80vh] overflow-hidden text-center bg-[var(--color-bg)]">
-      {/* Images */}
+    <section className="relative w-full min-h-[70vh] md:h-[80vh] lg:h-[90vh] overflow-hidden text-center bg-[var(--color-bg)]">
+      {/* Background image */}
       <div className="absolute inset-0">
         <AnimatePresence>
           <motion.img
@@ -81,48 +79,56 @@ export default function HeroCarousel() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.9, ease: "easeInOut" }}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover object-center"
           />
         </AnimatePresence>
       </div>
 
-      {/* overlay */}
+      {/* Overlay */}
       <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
 
-      {/* Text */}
-      <div className="absolute inset-0 flex flex-col justify-center items-center px-4">
+      {/* Content */}
+      <div className="relative flex flex-col justify-center items-center px-6 md:px-10 lg:px-20 text-center py-16 sm:py-20 md:py-28">
         <motion.div
           key={items[active].id + "-text"}
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.6 }}
-          className="max-w-5xl flex flex-col items-center gap-6"
+          className="max-w-5xl flex flex-col items-center gap-4 md:gap-6"
         >
-          <h1 className="text-4xl md:text-6xl font-bold text-white">
+          {/* Header */}
+          <h1
+            className={`font-bold text-white leading-tight ${
+              locale === "AR" ? "text-right" : "text-center"
+            } text-3xl sm:text-4xl md:text-5xl lg:text-6xl`}
+          >
             {items[active].header?.[locale]}
           </h1>
 
+          {/* Paragraph */}
           <motion.p
-            className={`max-w-2xl text-lg md:text-xl text-gray-200 ${
-              locale === "AR" ? "text-right" : "text-left"
-            }`}
-            initial={{ x: locale === "ar" ? 40 : -40, opacity: 0 }}
+            className={`text-gray-200 leading-relaxed ${
+              locale === "AR" ? "text-right" : "text-center"
+            } text-base sm:text-lg md:text-xl max-w-2xl`}
+            initial={{ x: locale === "AR" ? 40 : -40, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: locale === "ar" ? -20 : 20, opacity: 0 }}
+            exit={{ x: locale === "AR" ? -20 : 20, opacity: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             {items[active].paragraph?.[locale]}
           </motion.p>
 
+          {/* Button */}
           <motion.div
-            initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-4 sm:mt-6"
           >
             <Link
               href={items[active].buttonLink || "/contact"}
-              className="px-6 py-3 bg-[var(--color-primary)] text-white rounded-lg shadow-lg hover:bg-[var(--color-accent)] transition"
+              className="inline-block px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 bg-[var(--color-primary)] text-white rounded-lg shadow-lg hover:bg-[var(--color-accent)] transition-all duration-300 text-sm sm:text-base md:text-lg"
             >
               {items[active].buttonText[locale] || t("learnMore")}
             </Link>
@@ -130,16 +136,16 @@ export default function HeroCarousel() {
         </motion.div>
       </div>
 
-      {/* Dots */}
-      <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-3">
+      {/* Navigation dots */}
+      <div className="absolute bottom-4 sm:bottom-6 left-0 right-0 flex justify-center gap-2 sm:gap-3">
         {items.map((_, idx) => (
           <button
             key={idx + 1}
             onClick={() => setActive(idx)}
-            className={`w-3 h-3 rounded-full transition ${
+            className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-transform duration-300 ${
               idx === active
                 ? "bg-[var(--color-primary)] scale-110"
-                : "bg-white/60 hover:bg-white"
+                : "bg-white/70 hover:bg-white"
             }`}
           />
         ))}
