@@ -39,7 +39,7 @@ export default function HeroCarousel() {
         parsed.forEach((it) => {
           if (it.imageUrl) {
             const src = BASE + it.imageUrl;
-            const img = new window.Image();
+            const img = new globalThis.Image();
             img.src = src;
             img.onload = () =>
               setLoaded((prev) => {
@@ -67,7 +67,7 @@ export default function HeroCarousel() {
   if (!items.length) return null;
 
   return (
-    <section className="relative w-full min-h-[70vh] md:h-[80vh] lg:h-[90vh] overflow-hidden text-center bg-[var(--color-bg)]">
+    <section className="relative w-full min-h-[70vh] lg:min-h-[85vh] overflow-hidden text-center bg-[var(--color-bg)]">
       {/* Background image */}
       <div className="absolute inset-0">
         <AnimatePresence>
@@ -88,20 +88,20 @@ export default function HeroCarousel() {
       <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
 
       {/* Content */}
-      <div className="relative flex flex-col justify-center items-center px-6 md:px-10 lg:px-20 text-center py-16 sm:py-20 md:py-28">
+      <div className="relative flex flex-col justify-center items-center px-6 md:px-10 lg:px-20 text-center py-12 sm:py-16 md:py-20">
         <motion.div
           key={items[active].id + "-text"}
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.6 }}
-          className="max-w-5xl flex flex-col items-center gap-4 md:gap-6"
+          className="max-w-4xl flex flex-col pt-20 items-center gap-4 md:gap-6"
         >
           {/* Header */}
           <h1
             className={`font-bold text-white leading-tight ${
               locale === "AR" ? "text-right" : "text-center"
-            } text-3xl sm:text-4xl md:text-5xl lg:text-6xl`}
+            } text-2xl sm:text-3xl md:text-4xl lg:text-5xl`}
           >
             {items[active].header?.[locale]}
           </h1>
@@ -110,7 +110,7 @@ export default function HeroCarousel() {
           <motion.p
             className={`text-gray-200 leading-relaxed ${
               locale === "AR" ? "text-right" : "text-center"
-            } text-base sm:text-lg md:text-xl max-w-2xl`}
+            } text-sm sm:text-base md:text-lg max-w-2xl`}
             initial={{ x: locale === "AR" ? 40 : -40, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: locale === "AR" ? -20 : 20, opacity: 0 }}

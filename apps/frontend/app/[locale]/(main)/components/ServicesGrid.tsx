@@ -43,6 +43,7 @@ export default function ServicesGrid() {
                       src={process.env.NEXT_PUBLIC_BACKEND_URL + logoUrl}
                       alt={service.title[locale]}
                       fill
+                      sizes="auto"
                       className="object-contain"
                     />
                   </div>

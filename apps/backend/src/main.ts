@@ -10,7 +10,11 @@ async function bootstrap() {
   app.use(cookieParser());
   await app.get(SeedService).run();
   app.enableCors({
-    origin: [process.env.FRONTEND_URL, process.env.FRONTEND_URL2],
+    origin: [
+      process.env.FRONTEND_URL,
+      process.env.FRONTEND_URL2,
+      'http://192.168.43.240:3000',
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });

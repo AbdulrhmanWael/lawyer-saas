@@ -20,19 +20,34 @@ export default function TestimonialsSection() {
 
   if (!testimonials.length) return null;
 
-  // Slick settings
   const settings = {
     dots: true,
-    infinite: true,
-    autoplay: true,
+    infinite: testimonials.length > 1,
+    autoplay: testimonials.length > 1,
     autoplaySpeed: 5000,
     speed: 600,
-    slidesToShow: 3,
+    slidesToShow: Math.min(testimonials.length, 3),
     slidesToScroll: 1,
     pauseOnHover: true,
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 640, settings: { slidesToShow: 1 } },
+      {
+        breakpoint: 1280,
+        settings: {
+          slidesToShow: Math.min(testimonials.length, 2),
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+      {
+        breakpoint: 640,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
     ],
   };
 
@@ -59,10 +74,7 @@ export default function TestimonialsSection() {
         <p className="text-lg text-[var(--color-text)]">{t("intro")}</p>
       </div>
 
-      <Slider
-        {...settings}
-        className="testimonial-slider -mx-3 -my-3" // offset padding
-      >
+      <Slider {...settings} className="testimonial-slider -mx-3 sm:mx-0">
         {testimonials.map((test, idx) => (
           <motion.div
             key={test.id}
@@ -72,7 +84,7 @@ export default function TestimonialsSection() {
             transition={{ duration: 0.6, delay: idx * 0.1 }}
             className="p-3"
           >
-            <div className="bg-[var(--color-bg)]/90 rounded-2xl shadow-lg hover:shadow-xl p-6 flex border border-[var(--form-border)] flex-col justify-between max-h-[320px] min-h-[280px]">
+            <div className="bg-[var(--color-bg)]/90 rounded-2xl shadow-lg hover:shadow-xl p-6 sm:p-8 flex border border-[var(--form-border)] flex-col justify-between max-h-[320px] min-h-[280px]">
               {/* Quote */}
               <p className="italic text-[var(--color-text)] mb-6 text-center line-clamp-5">
                 “{getQuote(test)}”

@@ -1,10 +1,9 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
-import { JSX, useState } from "react";
+import { useTranslations } from "next-intl";
+import { JSX } from "react";
 import Link from "next/link";
 import { useSiteData } from "../../context/SiteContext";
-import { newsletterApi } from "@/services/newsletterService";
 
 import {
   FaFacebook,
@@ -15,97 +14,54 @@ import {
 } from "react-icons/fa6";
 import Image from "next/image";
 import { Mail, MapPin, Phone } from "lucide-react";
+import Newsletter from "./Newsletter";
 
 export default function Footer() {
-  const locale = useLocale().toUpperCase();
   const t = useTranslations("Main.footer");
-  const { siteSettings, practiceAreas } = useSiteData();
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
+  const { siteSettings } = useSiteData();
+
   const year = new Date().getFullYear();
-
-  const handleSubscribe = async () => {
-    if (!email) return;
-    try {
-      await newsletterApi.subscribe({ email });
-      setSubscribed(true);
-    } catch (err) {
-      console.error("Subscription failed", err);
-    }
-  };
-
   const socialIcons: Record<
     string,
     { icon: JSX.Element; placeholder: string }
   > = {
-    facebook: {
-      icon: <FaFacebook className="" />,
-      placeholder: "Facebook URL",
-    },
-    whatsapp: {
-      icon: <FaWhatsapp className="" />,
-      placeholder: "WhatsApp link",
-    },
-    instagram: {
-      icon: <FaInstagram className="" />,
-      placeholder: "Instagram URL",
-    },
-    twitter: {
-      icon: <FaXTwitter className="" />,
-      placeholder: "X (Twitter) URL",
-    },
-    linkedin: {
-      icon: <FaLinkedin className="" />,
-      placeholder: "LinkedIn URL",
-    },
+    facebook: { icon: <FaFacebook />, placeholder: "Facebook URL" },
+    whatsapp: { icon: <FaWhatsapp />, placeholder: "WhatsApp link" },
+    instagram: { icon: <FaInstagram />, placeholder: "Instagram URL" },
+    twitter: { icon: <FaXTwitter />, placeholder: "X (Twitter) URL" },
+    linkedin: { icon: <FaLinkedin />, placeholder: "LinkedIn URL" },
   };
 
   return (
     <footer
       role="contentinfo"
-      className="relative bg-[var(--color-primary)] text-[var(--color-bg)] mt-16 bg-[url('/footer-bg.webp')] bg-cover bg-no-repeat bg-center"
+      className="relative bg-[var(--color-primary)]  text-[var(--color-bg)] mt-16 bg-[url('/footer-bg.webp')] bg-cover bg-no-repeat bg-center"
     >
-      <div className="relative container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-6 py-16">
-        {/* Column 1 - Logo + Newsletter */}
+      <div className="relative container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-6 py-16">
+        {/* Column 1 - Logo */}
         <div className="space-y-5">
           {siteSettings?.logoUrl ? (
-            <Image
-              src={process.env.NEXT_PUBLIC_BACKEND_URL + siteSettings?.logoUrl}
-              alt={`${siteSettings?.metaTitle} Logo`}
-              width={200}
-              height={200}
-              loading="lazy"
-            />
+            <div className="relative">
+              <Image
+                src={
+                  process.env.NEXT_PUBLIC_BACKEND_URL + siteSettings?.logoUrl
+                }
+                alt={`${siteSettings?.metaTitle} Logo`}
+                width={200}
+                height={115}
+                priority
+                className="ms-2"
+              />
+            </div>
           ) : (
             <h2 className="text-xl font-bold text-[var(--color-primary)] mb-4">
               Law Firm
             </h2>
           )}
-          <p className="mb-4 text-sm">{t("newsletterText")}</p>
-          {subscribed ? (
-            <p className="text-green-400 text-sm">Subscribed successfully!</p>
-          ) : (
-            <div className="flex">
-              <label htmlFor="newsletter-email" className="sr-only">
-                {t("subscribePlaceholder")}
-              </label>
-              <input
-                id="newsletter-email"
-                name="email"
-                type="email"
-                placeholder={t("subscribePlaceholder")}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="px-3 py-2  border border-[var(--form-border)] bg-[var(--color-bg)] text-[var(--color-text)] w-full"
-              />
-              <button
-                onClick={handleSubscribe}
-                className="px-4 py-2 bg-[var(--color-primary)] border-[var(--color-bg)] border text-[var(--color-bg)] hover:bg-[var(--color-accent)] transition"
-              >
-                <Mail />
-              </button>
-            </div>
-          )}
+          {/* Newsletter on mobile */}
+          <div className="md:hidden">
+            <Newsletter />
+          </div>
         </div>
 
         {/* Column 2 - Contact Details */}
@@ -186,27 +142,16 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Column 4 - Services */}
-        <div>
-          <h3 className="font-semibold mb-2">{t("servicesHeading")}</h3>
+        {/* Column 4 - Newsletter (moved here) */}
+        <div className="hidden md:block">
+          <h3 className="font-semibold mb-2">{t("newsletterHeading")}</h3>
           <hr className="mb-4 text-gray-300 w-10/12" />
-          <ul className="space-y-4 text-sm">
-            {practiceAreas.map((service) => (
-              <li key={service.id}>
-                <Link
-                  href={`/services/${service.slug}`}
-                  className="hover:text-[var(--color-accent)]"
-                >
-                  {service.title[locale] ?? service.slug}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <Newsletter />
         </div>
       </div>
 
       {/* Bottom Bar */}
-      <div className="relative border-t bg-[var(--color-bg)] border-[var(--form-border)] px-32 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="relative border-t bg-[var(--color-bg)] border-[var(--form-border)] px-4 sm:px-8 md:px-16 lg:px-32 py-4 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
         <p className="text-black">
           <a
             href="#top"
@@ -233,6 +178,8 @@ export default function Footer() {
           )}
         </div>
       </div>
+
+      {/* Schema markup */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

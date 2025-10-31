@@ -28,8 +28,9 @@ export default function ClientsCarousel() {
     autoplaySpeed: 2000,
     pauseOnHover: true,
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 3 } },
-      { breakpoint: 640, settings: { slidesToShow: 2 } },
+      { breakpoint: 1280, settings: { slidesToShow: 3 } },
+      { breakpoint: 1024, settings: { slidesToShow: 2 } },
+      { breakpoint: 640, settings: { slidesToShow: 1 } },
     ],
   };
 
@@ -47,17 +48,17 @@ export default function ClientsCarousel() {
           <motion.div
             key={client.id}
             whileHover={{ scale: 1.05 }}
-            className="p-4 flex justify-center items-center"
+            className="px-6 py-4 flex justify-center items-center"
           >
             {client.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={process.env.NEXT_PUBLIC_BACKEND_URL +client.imageUrl}
+                src={process.env.NEXT_PUBLIC_BACKEND_URL + client.imageUrl}
                 alt={client.name}
-                className="h-64 object-contain"
+                className="h-48 sm:h-56 md:h-64 object-contain"
               />
             ) : (
-              <span className="text-[var(--color-heading)] font-semibold">
+              <span className="text-[var(--color-heading)] font-semibold text-lg sm:text-xl">
                 {client.name}
               </span>
             )}

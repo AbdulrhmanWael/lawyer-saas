@@ -53,9 +53,9 @@ export default function MainLayout({
             aria-label="Chat on WhatsApp"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-18 h-18 rounded-full bg-green-500 flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+            className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-green-500 flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
           >
-            <FaWhatsapp className="text-4xl text-white" />
+            <FaWhatsapp className="text-2xl sm:text-3xl text-white" />
           </a>
 
           {/* Messenger */}
@@ -64,9 +64,9 @@ export default function MainLayout({
             target="_blank"
             aria-label="Open Messenger"
             rel="noopener noreferrer"
-            className="w-18 h-18 rounded-full bg-blue-500 flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+            className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-blue-500 flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
           >
-            <FaFacebookMessenger className="text-white text-4xl" />
+            <FaFacebookMessenger className="text-2xl sm:text-3xl text-white" />
           </a>
         </div>
       )}
@@ -74,7 +74,7 @@ export default function MainLayout({
       {hideButtons && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="w-10 text-[var(--color-bg)] fixed ms-5 right-5 bottom-5 flex items-center justify-center h-10 rounded-lg z-50 bg-[var(--color-primary)]"
+          className="w-10 text-[var(--color-primary)] fixed ms-5 right-5 bottom-5 flex items-center justify-center h-10 rounded-lg z-50 bg-[var(--color-bg)]"
         >
           <FaArrowUp />
         </button>

@@ -43,7 +43,7 @@ export default function Header({ userProp }: { userProp?: any }) {
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (typeof window === "undefined") return;
+      if (globalThis.window === undefined) return;
 
       const storedUser = JSON.parse(localStorage.getItem("user") || "null");
       if (storedUser?.id) {

@@ -16,44 +16,67 @@ export default function StaffSection() {
   useEffect(() => {
     staffClient.getAll().then((res) => {
       const sorted = [...res].sort((a, b) => a.order - b.order);
-      setStaff(sorted.slice(0, 3)); // or all staff if you want full slider
+      setStaff(sorted.slice(0, 3));
     });
   }, []);
 
   if (!staff.length) return null;
   const settings = {
-    infinite: true,
-    slidesToShow: 5,
+    infinite: staff.length > 1,
+    slidesToShow: Math.min(staff.length, 4),
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: staff.length > 1,
     autoplaySpeed: 2000,
     pauseOnHover: true,
+    centerMode: true,
+    centerPadding: "0px",
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 3 } },
-      { breakpoint: 640, settings: { slidesToShow: 2 } },
+      {
+        breakpoint: 1280,
+        settings: {
+          slidesToShow: Math.min(staff.length, 3),
+          centerMode: true,
+          centerPadding: "0px",
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: Math.min(staff.length, 2),
+          centerMode: true,
+          centerPadding: "0px",
+        },
+      },
+      {
+        breakpoint: 640,
+        settings: {
+          slidesToShow: 1,
+          centerMode: true,
+          centerPadding: "0px",
+        },
+      },
     ],
   };
 
   return (
-    <section className="container mx-auto px-4 py-14">
+    <section className="container mx-auto px-4 py-14 overflow-hidden">
       <div className="text-center max-w-2xl mx-auto mb-8">
         <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-primary)] mb-2">
           {t("title")}
         </h2>
         <p className="text-base text-[var(--color-text)]">{t("intro")}</p>
       </div>
-
       <Slider {...settings}>
         {staff.map((member) => (
           <motion.div
             key={member.id}
             whileHover={{ scale: 1.03 }}
-            className="flex justify-center items-center"
+            className="!flex !justify-center !items-center w-full h-full"
           >
             <div
               className="rounded-lg overflow-hidden shadow-md hover:shadow-lg
-                      bg-[var(--color-bg)]/90 transition-transform border border-[var(--form-border)] duration-300
-                      flex flex-col w-[250px]"
+                bg-[var(--color-bg)]/90 transition-transform border border-[var(--form-border)] duration-300
+                flex flex-col w-[90%] sm:w-[250px] max-w-[300px]"
             >
               {member.imageUrl && (
                 // eslint-disable-next-line @next/next/no-img-element
