@@ -6,8 +6,8 @@ import { setCookie, getCookie } from "../../utils/cookies";
 import ReactCountryFlag from "react-country-flag";
 
 const LANGS = [
-  { code: "en", countryCode: "GB", label: "English" },
   { code: "ar", countryCode: "SA", label: "العربية" },
+  { code: "en", countryCode: "GB", label: "English" },
   { code: "de", countryCode: "DE", label: "Deutsch" },
   { code: "fr", countryCode: "FR", label: "Français" },
   { code: "ru", countryCode: "RU", label: "Русский" },
@@ -20,7 +20,7 @@ export default function LanguageSwitcher() {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [locale, setLocale] = useState("en");
+  const [locale, setLocale] = useState("ar");
   const searchParams = useSearchParams();
 
   const LOCALE_KEY = "preferred-locale";

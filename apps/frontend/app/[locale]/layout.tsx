@@ -31,8 +31,8 @@ export const metadata: Metadata = {
 
 export function generateStaticParams() {
   return [
-    { locale: "en" },
     { locale: "ar" },
+    { locale: "en" },
     { locale: "de" },
     { locale: "fr" },
     { locale: "ru" },
